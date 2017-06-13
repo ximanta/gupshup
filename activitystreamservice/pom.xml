@@ -48,6 +48,14 @@
 			<artifactId>kafka-clients</artifactId>
 			<version>0.9.0.0</version>
 		</dependency>
+		
+		<dependency>
+    		<groupId>org.mutabilitydetector</groupId>
+    		<artifactId>MutabilityDetector</artifactId>
+    		<version>0.9.6</version>
+   			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<dependencyManagement>
