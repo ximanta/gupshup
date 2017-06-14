@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: circleservice
+  cloud:
+    config:
+      uri: http://localhost:8888
