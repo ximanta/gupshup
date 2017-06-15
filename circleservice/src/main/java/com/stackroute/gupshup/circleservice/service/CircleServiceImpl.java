@@ -17,29 +17,28 @@ public class CircleServiceImpl implements CircleService {
 	//-------- find all circle-----------
 	@Override
 	public List<Circle> findAllCircle() throws CircleCreationException {
-		
-		
-		try{
-			
-			 throw new CircleCreationException("");		
-			
+		Circle circle = null;
+		try {
+			if(circle==null) {
+			 throw new CircleCreationException("Cann't find circle");		
 			}
-			catch(CircleCreationException circlecreationException)
-			{
+			}
+			catch(CircleCreationException circlecreationException)	{
 				circlecreationException.getMessage();
 			}
 		return circleRepo.findAll();
 	}
 	//-------create circle---------------------------
 	public Circle createCircle(Circle circle) throws CircleCreationException {
-		
-		try{
+		try {
+			if(circle.getCircleName()==null) {
+				throw new CircleCreationException("Give Circle Name");		
+			}
+			else {
 			circleRepo.save(circle);
-		 throw new CircleCreationException("");		
-		
+			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 		return circle;
@@ -47,13 +46,12 @@ public class CircleServiceImpl implements CircleService {
 	//----------------find circle by id--------------------
 	@Override
 	public Circle findById(String id) throws CircleCreationException{
-		 try{
-		 
-		 throw new CircleCreationException("");		
-		
+		 try {
+		 if(id==null) {
+			 throw new CircleCreationException("No Circle available");		
+		 }
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 		 return circleRepo.findOne(id);
@@ -61,20 +59,16 @@ public class CircleServiceImpl implements CircleService {
 	//------------circle is exist--------------------------
 	@Override
 	public boolean ifCircleExist(Circle circle) throws CircleCreationException{
-		try{
+		try {
 			String circleid = circle.getId().toString();
-			
-			if(findById(circleid).equals(circle))
-			{
+			if(findById(circleid).equals(circle)) {
 				return true;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 		return true;
@@ -82,12 +76,15 @@ public class CircleServiceImpl implements CircleService {
 	//-----------------update circle-------------------------
 	@Override
 	public void updateCircle(Circle currentCircle) {
-		try{
-			circleRepo.save(currentCircle);
-			throw new CircleCreationException("");
+		try {
+			if(currentCircle.getCircleName()!=null)	{
+				circleRepo.save(currentCircle);
+			}
+			else {
+				throw new CircleCreationException("Give Circle name");
+			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 		
@@ -95,24 +92,30 @@ public class CircleServiceImpl implements CircleService {
 	//----------delete circle-----------------------
 	@Override
 	public void deleteCircle(String id) throws CircleCreationException {
-		try{
-			circleRepo.delete(id);
-			throw new CircleCreationException("");
+		try {
+			if(id!=null) {
+				circleRepo.delete(id);
+			}
+			else {
+				throw new CircleCreationException("Cann't delete circle");
+			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 	}
 	//------------delete all circles------------------------
 		@Override
 		public void deleteAllCircle() throws CircleCreationException {
-			try{
-				circleRepo.deleteAll();
-				throw new CircleCreationException("");
+			try {
+				if(circleRepo.findAll()!=null) {
+					circleRepo.deleteAll();
+				}
+				else {
+					throw new CircleCreationException("No circle Available");
+				}
 			}
-			catch(CircleCreationException circlecreationException)
-			{
+			catch(CircleCreationException circlecreationException) {
 				circlecreationException.getMessage();
 			}
 			

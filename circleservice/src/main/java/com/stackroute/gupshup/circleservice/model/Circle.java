@@ -1,9 +1,13 @@
 package com.stackroute.gupshup.circleservice.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.hateoas.ResourceSupport;
 
 public class Circle extends ResourceSupport{
+	@Autowired
+	private User user;
+	
 	@Id
 	private String circleId;
 	private String personName;

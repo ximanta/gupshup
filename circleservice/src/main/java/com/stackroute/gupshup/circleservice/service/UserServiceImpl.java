@@ -14,13 +14,16 @@ public class UserServiceImpl implements UserService{
 	private UserRepository userRepo;
 	
 	//-------create user-------------
-	public User createUser(User user) throws CircleCreationException{
+	public User createUser(User user) throws CircleCreationException {
 		try{
-			userRepo.save(user);
-			throw new CircleCreationException("");
+			if(user!=null) {
+				userRepo.save(user);
+			}
+			else {
+				throw new CircleCreationException("User Detail More Needed");
+			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException) {
 			circlecreationException.getMessage();
 		}
 		return user; 
@@ -28,12 +31,13 @@ public class UserServiceImpl implements UserService{
 	//---------find all user-------------------
 	@Override
 	public List<User> findAllUsers() throws CircleCreationException {
-		try{
+		try {
+			if(userRepo.findAll()==null) {
+				throw new CircleCreationException("No User Available");
+			}
 			
-			throw new CircleCreationException("");
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException) {
 			circlecreationException.getMessage();
 		}
 		return userRepo.findAll();
@@ -41,9 +45,11 @@ public class UserServiceImpl implements UserService{
 	//---------find user by id------------
 	@Override
 	public User findById(String id) throws CircleCreationException {
-		try{
+		try {
+			if(id==null) {
+				throw new CircleCreationException("Cann't find User");
+			}
 			
-			throw new CircleCreationException("");
 		}
 		catch(CircleCreationException circlecreationException)
 		{
@@ -54,20 +60,17 @@ public class UserServiceImpl implements UserService{
 	//---------is user exist---------------------
 	@Override
 	public boolean ifUserExist(User user) throws CircleCreationException {
-		try{
+		try {
 			String userid = user.getId().toString();
 			
-			if(findById(userid).equals(user))
-			{
+			if(findById(userid).equals(user)) {
 				return true;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
 		}
 		return true;
@@ -75,51 +78,52 @@ public class UserServiceImpl implements UserService{
 	//----------update user by id---------------
 	@Override
 	public void updateUser(User currentUser) throws CircleCreationException {
-		
-		try{
-			userRepo.save(currentUser);
-			throw new CircleCreationException("");
+		try {
+			if(currentUser.getPersonName()==null) {
+				throw new CircleCreationException("Cann't edit User");
+			}
+			else {
+				userRepo.save(currentUser);
+				
+			}
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException) {
 			circlecreationException.getMessage();
 		}
 		
 	}
 	//------delete user by id-------------------
 	@Override
-	public void deleteUser(String id) throws CircleCreationException{
-		try{
-			userRepo.delete(id);
-			throw new CircleCreationException("");
+	public void deleteUser(String id) throws CircleCreationException {
+		try {
+			if(id==null) {
+				throw new CircleCreationException("Cann't delete user");
+			}
+			else if(findById(id)==null) {
+				throw new CircleCreationException("Id not found");
+			}
+			else {
+				userRepo.delete(id);
+			}			
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
-		}
-		
-		
+		}		
 	}
 	//------------delete all users------------------------
 	@Override
 	public void deleteAllUsers() throws CircleCreationException {
 		try{
-			userRepo.deleteAll();
-			throw new CircleCreationException("");
+			if(findAllUsers()==null) {
+				throw new CircleCreationException("There is no users");
+			}
+			else {
+				userRepo.deleteAll();
+			}			
 		}
-		catch(CircleCreationException circlecreationException)
-		{
+		catch(CircleCreationException circlecreationException) {
 			circlecreationException.getMessage();
 		}
-		
-		
+			
 	}
-	
-	
-	
-
-
-	
-
-
 }

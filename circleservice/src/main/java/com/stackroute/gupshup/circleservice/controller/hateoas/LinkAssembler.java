@@ -7,4 +7,6 @@ import com.stackroute.gupshup.circleservice.model.*;
 public interface LinkAssembler
 {
     Iterable<Circle> assembleLinksForCircleList(List<Circle> circle);
+    Iterable<User> assembleLinksForUserList(List<User> user);
+    
 }
