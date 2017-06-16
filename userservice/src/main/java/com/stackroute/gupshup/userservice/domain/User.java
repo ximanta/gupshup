@@ -93,7 +93,11 @@ public class User extends ResourceSupport {
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
 	}
+<<<<<<< HEAD
 	public  long getFollowingCount() {
+=======
+	public long getFollowingCount() {
+>>>>>>> f000d8a5426d0b669b4eec63a2f453bae7a3e903
 		return followingCount;
 	}
 	public void setFollowingCount(long followingCount) {
