@@ -1,31 +1,44 @@
 package com.stackroute.gupshup.userservice.domain;
 
 import java.util.List;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize
+@Document
 public class User extends ResourceSupport {
 	
 	@Id
-	private String userId;
+	private ObjectId _id;
 	private String firstName;
 	private String lastName;
 	private String userName;
 	private String password;
+	public ObjectId get_id() {
+		return _id;
+	}
+	public void set_id(ObjectId _id) {
+		this._id = _id;
+	}
 	private String gender;
 	private String dob;
 	private String emailId;
 	private String contactNo;
 	private String profilePhoto;
-	private int followingCount;
+	private long followingCount;
 	private List<User> following;
 	
-	public String getUserId() {
+	/*public String getUserId() {
 		return userId;
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
+	}*/
 	public String getFirstName() {
 		return firstName;
 	}
@@ -80,10 +93,10 @@ public class User extends ResourceSupport {
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
 	}
-	public int getFollowingCount() {
+	public  long getFollowingCount() {
 		return followingCount;
 	}
-	public void setFollowingCount(int followingCount) {
+	public void setFollowingCount(long followingCount) {
 		this.followingCount = followingCount;
 	}
 	public List<User> getFollowing() {
