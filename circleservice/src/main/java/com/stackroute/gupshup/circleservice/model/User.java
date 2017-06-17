@@ -1,52 +1,40 @@
 package com.stackroute.gupshup.circleservice.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.hateoas.ResourceSupport;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class User extends ResourceSupport{
-	private String personName;
-	@Id
-	private String personId;
-	private String gender;
-	private String email;
-	private String mobile;
-	private String dob;
+@JsonSerialize
+public class User {
 	
-	public String getPersonName() {
-		return personName;
+	private String userId;
+	private String userName;
+	private String profilePicture;
+	private String emailId;
+	
+	public User() {
 	}
-	public void setPersonName(String personName) {
-		this.personName = personName;
+	public String getUserId() {
+		return userId;
 	}
-	public String getPersonId() {
-		return personId;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-	public void setPersonId(String personId) {
-		this.personId = personId;
+	public String getUserName() {
+		return userName;
 	}
-	public String getGender() {
-		return gender;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public void setGender(String gender) {
-		this.gender = gender;
+	public String getProfilePicture() {
+		return profilePicture;
 	}
-	public String getEmail() {
-		return email;
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public String getEmailId() {
+		return emailId;
 	}
-	public String getMobile() {
-		return mobile;
-	}
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-	public String getDob() {
-		return dob;
-	}
-	public void setDob(String dob) {
-		this.dob = dob;
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 	
 }
