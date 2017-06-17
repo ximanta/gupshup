@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
@@ -52,37 +55,70 @@ public class UserServiceImpl implements UserService {
 		/* deleting a user account */
 		userRepository.delete(userId);
 	}
-
+	
+	/* check the type of activity  */
 	@Override
-	public void followingOperations(JsonNode node) {
-		// TODO Auto-generated method stub
-		/* code to create following list of top 10 following user */
-		String type = node.path("type").asText();
-		if(type.equalsIgnoreCase("follow")) {
-			JsonNode sourceNode = node.path("actor");
-			String sourceUserName = sourceNode.path("name").asText();
-			
-			JsonNode targetNode = node.path("object");
-			String targetUserName = targetNode.path("name").asText();
-			
-			User targetUser = getUserByUserName(targetUserName);
-			User sourceUser = getUserByUserName(sourceUserName);
-
-			List<User> followingList = sourceUser.getFollowing();
-			if(sourceUser.getFollowingCount() < 10) {
-				followingList.add(targetUser);
-								
-				sourceUser.setFollowing(followingList);
-				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-				userRepository.save(sourceUser);
-			} else {
-				followingList.remove(0);
-				followingList.add(targetUser);
-				sourceUser.setFollowing(followingList);
-				
-				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-				userRepository.save(sourceUser);
-			}
+	public void checkActivityType(JsonNode node)
+	{
+		String activityType = node.path("type").asText();
+		if(activityType.equalsIgnoreCase("follow"))
+		{
+			followUser(node);
 		}
+		else if(activityType.equalsIgnoreCase("update"))
+		{
+			updateUserActivity(node);
+		}
+	}
+	
+	/* method to create following list of top 10 following user */
+	@Override
+	public void followUser(JsonNode node) {
+		// TODO Auto-generated method stub
+		
+		JsonNode sourceNode = node.path("actor");
+		String sourceUserName = sourceNode.path("name").asText();
+			
+		JsonNode targetNode = node.path("object");
+		String targetUserName = targetNode.path("name").asText();
+			
+		User targetUser = getUserByUserName(targetUserName);
+		User sourceUser = getUserByUserName(sourceUserName);
+
+		List<User> followingList = sourceUser.getFollowing();
+		if(sourceUser.getFollowingCount() < 10) {
+			followingList.add(targetUser);
+							
+			sourceUser.setFollowing(followingList);
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		} else {
+			followingList.remove(0);
+			followingList.add(targetUser);
+			sourceUser.setFollowing(followingList);
+				
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		}
+		
+	}/*  followUser() method end  */
+
+	/*  update user profile */
+	public void updateUserActivity(JsonNode node)
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode sourceNode = node.path("actor");
+		String sourceNodeName = sourceNode.path("type").asText();
+		JsonNode sourceUserNode = node.path("object");
+		
+		User sourceUser=null;
+		try {
+			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		updateUser(sourceUser);
 	}
 }
