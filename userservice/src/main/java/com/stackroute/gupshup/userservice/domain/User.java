@@ -1,6 +1,8 @@
 package com.stackroute.gupshup.userservice.domain;
 
 import java.util.List;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
@@ -12,7 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class User extends ResourceSupport {
 	
 	@Id
-	private String userId;
+	private ObjectId _id;
 	private String firstName;
 	private String lastName;
 	private String userName;
@@ -25,11 +27,12 @@ public class User extends ResourceSupport {
 	private long followingCount;
 	private List<User> following;
 	
-	public String getUserId() {
-		return userId;
+
+	public ObjectId get_id() {
+		return _id;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void set_id(ObjectId _id) {
+		this._id = _id;
 	}
 	public String getFirstName() {
 		return firstName;
