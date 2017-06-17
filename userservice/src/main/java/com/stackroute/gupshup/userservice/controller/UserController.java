@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.GetUserException;
+import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 import com.stackroute.gupshup.userservice.exception.UserCreateException;
 import com.stackroute.gupshup.userservice.exception.UserDeleteException;
 import com.stackroute.gupshup.userservice.exception.UserUpdateException;
@@ -23,8 +22,6 @@ import com.stackroute.gupshup.userservice.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @Api(value="UserService", description="Operations pertaining to User")
 @CrossOrigin()
@@ -38,7 +35,6 @@ public class UserController {
 	    {
 	    	this.userService = userService;
 	    }
-	    
 
 	    /* Add a User */
 	    @ApiOperation(value = "Add a User")
@@ -60,20 +56,18 @@ public class UserController {
 	    	{
 	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
-
 	    }
-	    
 	    
 	    /* GET User by userName */
 	    @ApiOperation(value = "Get user by userName",response = User.class)
 	    @RequestMapping(value="/{userName}", method=RequestMethod.GET)
-	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws GetUserException{
+	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws UserNotFoundException{
 	    	
 	    	try
 	    	{
 	    		if(userName == null)
 	    		{
-	    			throw new GetUserException();
+	    			throw new UserNotFoundException("user not found");
 	    		}
 	    		else
 	    		{
@@ -81,19 +75,16 @@ public class UserController {
 	    			return new ResponseEntity<>(user, HttpStatus.OK);
 	    		}
 	    	}
-	    	catch(GetUserException exception)
+	    	catch(UserNotFoundException exception)
 	    	{
 	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
-
 	    }
-	    
 	    
 	    /* Update User details */
 	    @ApiOperation(value = "Update a User")
 	    @RequestMapping(value="/{userId}",method=RequestMethod.PUT )
 	    public ResponseEntity updateUser(@PathVariable String userId, @RequestBody User user) throws UserUpdateException{
-	    	
 	    	try
 	    	{
 	    		if(userId == null)
@@ -112,15 +103,12 @@ public class UserController {
 	    	{
     	        return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
-	    	
 	    }
-	    
 
 	    /* Delete a User */
-	   @ApiOperation(value = "Delete a User")
+	    @ApiOperation(value = "Delete a User")
 	    @RequestMapping(value="/{userId}",method=RequestMethod.DELETE )
 	    public ResponseEntity deleteUser(@PathVariable String userId) throws UserDeleteException{
-		   
 		   try
 		   {
 			   if(userId == null)
@@ -134,13 +122,10 @@ public class UserController {
 				   messageMap.put("message","User deleted successsfully");
 				   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 			   }
-	    		
 	    	}
 	    	catch(UserDeleteException exception)
 	    	{
 	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
-
 	    }
-	
 }

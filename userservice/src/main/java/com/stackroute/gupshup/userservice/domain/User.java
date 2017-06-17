@@ -12,19 +12,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize
 @Document
 public class User extends ResourceSupport {
-	
-	@Id
+
 	private ObjectId _id;
 	private String firstName;
 	private String lastName;
+	@Id
 	private String userName;
 	private String password;
-	public ObjectId get_id() {
-		return _id;
-	}
-	public void set_id(ObjectId _id) {
-		this._id = _id;
-	}
 	private String gender;
 	private String dob;
 	private String emailId;
@@ -32,13 +26,7 @@ public class User extends ResourceSupport {
 	private String profilePhoto;
 	private long followingCount;
 	private List<User> following;
-	
-	/*public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}*/
+		
 	public String getFirstName() {
 		return firstName;
 	}
@@ -93,11 +81,8 @@ public class User extends ResourceSupport {
 	public void setProfilePhoto(String profilePhoto) {
 		this.profilePhoto = profilePhoto;
 	}
-<<<<<<< HEAD
-	public  long getFollowingCount() {
-=======
+
 	public long getFollowingCount() {
->>>>>>> f000d8a5426d0b669b4eec63a2f453bae7a3e903
 		return followingCount;
 	}
 	public void setFollowingCount(long followingCount) {
@@ -108,5 +93,11 @@ public class User extends ResourceSupport {
 	}
 	public void setFollowing(List<User> following) {
 		this.following = following;
+	}
+	public ObjectId get_id() {
+		return _id;
+	}
+	public void set_id(ObjectId _id) {
+		this._id = _id;
 	}
 }
