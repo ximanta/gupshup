@@ -12,12 +12,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize
 @Document
 public class User extends ResourceSupport {
-
+	
+	@Id
+	private String userName;
 	private ObjectId _id;
 	private String firstName;
 	private String lastName;
-	@Id
-	private String userName;
 	private String password;
 	private String gender;
 	private String dob;
@@ -26,6 +26,7 @@ public class User extends ResourceSupport {
 	private String profilePhoto;
 	private long followingCount;
 	private List<User> following;
+
 		
 	public String getFirstName() {
 		return firstName;
