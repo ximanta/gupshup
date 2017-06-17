@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 		User user1 = null;
 		for(User user: userList) {
 			if(user.getUserName().equalsIgnoreCase(userName)) {
-				user1 = userRepository.findOne(String.valueOf(user.get_id()));
+				user1 = user;
 			}
 		}
 		return user1;

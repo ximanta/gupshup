@@ -3,9 +3,12 @@ package com.stackroute.gupshup.userservice.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,7 @@ import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 import com.stackroute.gupshup.userservice.exception.UserCreateException;
 import com.stackroute.gupshup.userservice.exception.UserDeleteException;
 import com.stackroute.gupshup.userservice.exception.UserUpdateException;
+import com.stackroute.gupshup.userservice.linkassembler.UserLinkAssembler;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -30,27 +34,37 @@ public class UserController {
 	    
 	    /* Autowire of UserService */
 	    private UserService userService;
+	    private UserLinkAssembler userLinkAssembler;
+	    
 	    @Autowired
 	    public void setUserService(UserService userService)
 	    {
 	    	this.userService = userService;
 	    }
+	    
+	    @Autowired
+	    public void setUserLinkAssembler(UserLinkAssembler userLinkAssembler) {
+	    	this.userLinkAssembler = userLinkAssembler;
+	    }
 
 	    /* Add a User */
 	    @ApiOperation(value = "Add a User")
 	    @RequestMapping(value="", method=RequestMethod.POST )
-	    public ResponseEntity addUser(@RequestBody User user) throws UserCreateException {
-	    	
+	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserCreateException {
+	    	if(bindingResult.hasErrors()) {
+	    		
+	    	}
 	    	Map<String, String> messageMap = new HashMap<>();
 	    	try
 	    	{
 		    	User newUser = userService.addUser(user);
+		    	User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 		    	if(newUser == null)
 		    	{
 		    		throw new UserCreateException();
 		    	}
 		    	else
-		    		return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 	    	}
 	    	catch(UserCreateException exception)
 	    	{
@@ -72,7 +86,8 @@ public class UserController {
 	    		else
 	    		{
 	    			User user = userService.getUserByUserName(userName);
-	    			return new ResponseEntity<>(user, HttpStatus.OK);
+	    			User newUser = userLinkAssembler.followUserLinks(user);
+	    			return new ResponseEntity<>(newUser, HttpStatus.OK);
 	    		}
 	    	}
 	    	catch(UserNotFoundException exception)
