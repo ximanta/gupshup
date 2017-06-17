@@ -50,7 +50,7 @@ public class UserConsumerThread extends Thread {
 				
 				try {
 					JsonNode newNode = mapper.readTree(value);
-					userService.followingOperations(newNode);
+					userService.checkActivityType(newNode);
 					
 				} catch (JsonProcessingException e) {
 					// TODO Auto-generated catch block

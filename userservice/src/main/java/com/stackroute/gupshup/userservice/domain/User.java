@@ -14,10 +14,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class User extends ResourceSupport {
 	
 	@Id
-	private String userName;
 	private ObjectId _id;
 	private String firstName;
 	private String lastName;
+	private String userName;
 	private String password;
 	private String gender;
 	private String dob;

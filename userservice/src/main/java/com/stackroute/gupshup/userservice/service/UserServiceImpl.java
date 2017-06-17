@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
@@ -50,13 +53,30 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		userRepository.delete(userId);
 	}
+	
+	/*   check the type of activity  */
+	@Override
+	public void checkActivityType(JsonNode node)
+	{
+		String activityType = node.path("type").asText();
+		if(activityType.equalsIgnoreCase("follow"))
+		{
+			followUser(node);
+		}
+		if(activityType.equalsIgnoreCase("update"))
+		{
+			updateUserActivity(node);
+		}
+	}
+	
+	
 
 	@Override
-	public void followingOperations(JsonNode node) {
+	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
 
-		String type = node.path("type").asText();
-		if(type.equalsIgnoreCase("follow")) {
+/*		String type = node.path("type").asText();
+		if(type.equalsIgnoreCase("follow")) {*/
 			JsonNode sourceNode = node.path("actor");
 			String sourceUserName = sourceNode.path("name").asText();
 			//System.out.println(sourceUserName);
@@ -91,7 +111,29 @@ public class UserServiceImpl implements UserService {
 				userRepository.save(sourceUser);
 				//System.out.println(sourceUser.getFollowingCount());
 			}
-		}
-	}
+		//}
+	}/*  followUser() method end  */
 
+	
+	
+	/*  update the user when other user update his profile */
+	public void updateUserActivity(JsonNode node)
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode sourceNode = node.path("actor");
+		String sourceNodeName = sourceNode.path("type").asText();
+		JsonNode sourceUserNode = node.path("object");
+		
+		User sourceUser=null;
+		try {
+			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		updateUser(sourceUser);
+		
+	}
+	
 }
