@@ -45,12 +45,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateUser(User user) {
 		// TODO Auto-generated method stub
+		/* updating a user profile */
 		userRepository.save(user);
 	}
 
 	@Override
 	public void deleteUser(String userId) {
 		// TODO Auto-generated method stub
+		/* deleting a user account */
 		userRepository.delete(userId);
 	}
 	
@@ -74,42 +76,38 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 
 /*		String type = node.path("type").asText();
 		if(type.equalsIgnoreCase("follow")) {*/
+=======
+		/* code to create following list of top 10 following user */
+		String type = node.path("type").asText();
+		if(type.equalsIgnoreCase("follow")) {
+>>>>>>> 11f6f6dced1e40204dfefab748bf0359b625cc0f
 			JsonNode sourceNode = node.path("actor");
 			String sourceUserName = sourceNode.path("name").asText();
-			//System.out.println(sourceUserName);
-
+			
 			JsonNode targetNode = node.path("object");
 			String targetUserName = targetNode.path("name").asText();
-			//System.out.println(targetUserName);
-
+			
 			User targetUser = getUserByUserName(targetUserName);
 			User sourceUser = getUserByUserName(sourceUserName);
 
 			List<User> followingList = sourceUser.getFollowing();
-			//System.out.println(followingList.size()+"here");
-			
 			if(sourceUser.getFollowingCount() < 10) {
 				followingList.add(targetUser);
-				/*for(int i=0;i<followingList.size();i++)
-					System.out.println(followingList.get(i).getUserName());*/
-				
+								
 				sourceUser.setFollowing(followingList);
 				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 				userRepository.save(sourceUser);
-				//System.out.println(sourceUser.getFollowingCount());
 			} else {
 				followingList.remove(0);
 				followingList.add(targetUser);
 				sourceUser.setFollowing(followingList);
-				/*for(int i=0;i<followingList.size();i++)
-					System.out.println(followingList.get(i).getUserName());*/
-
+				
 				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 				userRepository.save(sourceUser);
-				//System.out.println(sourceUser.getFollowingCount());
 			}
 		//}
 	}/*  followUser() method end  */
@@ -135,5 +133,8 @@ public class UserServiceImpl implements UserService {
 		updateUser(sourceUser);
 		
 	}
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 11f6f6dced1e40204dfefab748bf0359b625cc0f
 }
