@@ -61,7 +61,7 @@ public class UserController {
 		    	User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 		    	if(newUser == null)
 		    	{
-		    		throw new UserCreateException();
+		    		throw new UserCreateException("user could not be registered");
 		    	}
 		    	else
 		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
@@ -104,7 +104,7 @@ public class UserController {
 	    	{
 	    		if(userId == null)
 	    		{
-	    			throw new UserUpdateException();
+	    			throw new UserUpdateException("user could not be updated");
 	    		}
 	    		else
 	    		{
@@ -128,7 +128,7 @@ public class UserController {
 		   {
 			   if(userId == null)
 			   {
-				   throw new UserDeleteException();
+				   throw new UserDeleteException("user could not be deleted");
 			   }
 			   else
 			   {
