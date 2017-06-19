@@ -27,7 +27,7 @@ public class ActivityController {
 	@RequestMapping(value="join", method=RequestMethod.POST)
 	public String join(@RequestBody Join join){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(join));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(join));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -37,7 +37,7 @@ public class ActivityController {
 	@RequestMapping(value="leave", method=RequestMethod.POST)
 	public String leave(@RequestBody Leave leave){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(leave));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(leave));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -47,7 +47,7 @@ public class ActivityController {
 	@RequestMapping(value="like", method=RequestMethod.POST)
 	public String like(@RequestBody Like like){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(like));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(like));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -57,7 +57,7 @@ public class ActivityController {
 	@RequestMapping(value="dislike", method=RequestMethod.POST)
 	public String dislike(@RequestBody Dislike dislike){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(dislike));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(dislike));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -77,7 +77,7 @@ public class ActivityController {
 	@RequestMapping(value="create", method=RequestMethod.POST)
 	public String create(@RequestBody Create create){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(create));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(create));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -87,7 +87,7 @@ public class ActivityController {
 	@RequestMapping(value="add", method=RequestMethod.POST)
 	public String add(@RequestBody Add add){
 		try {
-			activityProducer.publishMessage("group",new ObjectMapper().writeValueAsString(add));
+			activityProducer.publishMessage("circle",new ObjectMapper().writeValueAsString(add));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
