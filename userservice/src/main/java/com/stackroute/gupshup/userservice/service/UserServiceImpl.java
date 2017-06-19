@@ -8,14 +8,24 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stackroute.gupshup.userservice.domain.Activity;
+import com.stackroute.gupshup.userservice.domain.Create;
+import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.exception.UserCreateException;
+import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-	UserRepository userRepository;
+	private UserRepository userRepository;
+	private UserProducer userProducer;
+	
+	@Autowired
+	public void setUserProducer(UserProducer userProducer) {
+		this.userProducer = userProducer;
+	}
 
 	@Autowired
 	public void setUserRepository(UserRepository userRepository) {
@@ -35,6 +45,14 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch(UserCreateException exception) {
 			return new User();
+		}
+		Person person =new Person(null,"PERSON",user.getUserName());
+		Activity activity = new Create(null,"CREATE","user registered",person,person);
+		
+		try {
+			userProducer.publishUserActivity("Mailbox1",new ObjectMapper().writeValueAsString(activity));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 		return userRepository.save(user);
 	}

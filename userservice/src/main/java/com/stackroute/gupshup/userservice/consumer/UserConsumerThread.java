@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.producer.UserProducer;
+import com.stackroute.gupshup.userservice.producer.UserProducerImpl;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 public class UserConsumerThread extends Thread {
@@ -50,6 +51,7 @@ public class UserConsumerThread extends Thread {
 				System.out.println(record.value());
 				String value = record.value();
 				userProducer.publishUserActivity("Recommendation", value);
+				userProducer.publishUserActivity("Mailbox1", value);
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {
