@@ -24,11 +24,9 @@ public class UserLinkAssemblerImpl implements UserLinkAssembler {
 	@Override
 	public User followUserLinks(User user) {
 		// TODO Auto-generated method stub
-		
 		Link followLink = linkTo(UserController.class).slash(user.get_id()).withRel("Follow");
 		user.add(followLink);
 		
 		return user;
 	}
 }
-
