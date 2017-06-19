@@ -1,6 +1,5 @@
 package com.stackroute.gupshup.userservice.repository;
 
-<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -87,8 +86,5 @@ public class UserRepositoryTest {
     public void tearDown() throws Exception {
         this.userRepository.deleteAll();
     }
-=======
-public class UserRepositoryTest {
->>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 
 }

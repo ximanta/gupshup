@@ -10,3 +10,5 @@ spring:
       database: gupshup  
       port: 27017
 
+application:
+  name: user

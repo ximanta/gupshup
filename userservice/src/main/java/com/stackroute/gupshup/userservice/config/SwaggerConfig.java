@@ -17,15 +17,15 @@ public class SwaggerConfig {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.stackroute.ng2boot.controllers"))
-                .paths(regex("/v1/api.*"))
+                .apis(RequestHandlerSelectors.basePackage("com.stackroute.gupshup.userservice.controller"))
+                .paths(regex("/gupshup/user.*"))
                 .build()
                 .apiInfo(metaData());
     }
     private ApiInfo metaData() {
         ApiInfo apiInfo = new ApiInfo(
-                "Spring Boot Movie REST API",
-                "Spring Boot REST API for Movie",
+                "Spring Boot GUPSHUP REST API",
+                "Spring Boot REST API for Gupshup",
                 "1.0",
                 "Terms of service",
                 new Contact("Stack Route", "https://stackroute.in/", "simanta.sarma@stackroute.in"),

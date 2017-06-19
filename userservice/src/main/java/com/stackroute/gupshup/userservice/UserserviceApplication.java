@@ -12,11 +12,10 @@ import com.stackroute.gupshup.userservice.consumer.UserConsumer;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableMongoRepositories
-@EnableFeignClients
 public class UserserviceApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(UserserviceApplication.class, args);
-		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("kafkauser");
+		//applicationContext.getBean(UserConsumer.class).subscribeUserActivity("kafkauser");
 	}
 }

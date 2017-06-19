@@ -80,27 +80,19 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-<<<<<<< HEAD
-	
-=======
->>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
+
 	/* method to create following list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
-<<<<<<< HEAD
-		
-=======
-			
->>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 		JsonNode targetNode = node.path("object");
 		String targetUserName = targetNode.path("name").asText();
 			
 		User targetUser = getUserByUserName(targetUserName);
 		User sourceUser = getUserByUserName(sourceUserName);
-<<<<<<< HEAD
+
 
 		List<User> followingList = sourceUser.getFollowing();
 		if(sourceUser.getFollowingCount() < 10) {
@@ -121,25 +113,6 @@ public class UserServiceImpl implements UserService {
 	}/* followUser() method end  */
 	
 	/* update user profile */
-=======
-
-		List<User> followingList = sourceUser.getFollowing();
-		if(sourceUser.getFollowingCount() < 10) {
-			followingList.add(targetUser);
-			sourceUser.setFollowing(followingList);
-			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-			userRepository.save(sourceUser);
-		} else {
-			followingList.remove(0);
-			followingList.add(targetUser);
-			sourceUser.setFollowing(followingList);
-			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-			userRepository.save(sourceUser);
-		}
-	}/*  followUser() method end  */
-
-	/*  update user profile */
->>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 	public void updateUserActivity(JsonNode node)
 	{
 		ObjectMapper mapper = new ObjectMapper();
