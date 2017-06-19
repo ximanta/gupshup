@@ -103,6 +103,8 @@
 		<module>gupshup-discoveryregistry</module>
 		<module>gupshup-configserver</module>
 		<module>activitystreamservice</module>
+		<module>circleservice</module>
+		<module>userservice</module>
 	</modules>
 
 </project>

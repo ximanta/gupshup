@@ -1,12 +1,10 @@
 package com.stackroute.gupshup.circleservice.controller;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stackroute.gupshup.circleservice.controller.hateoas.LinkAssembler;
 import com.stackroute.gupshup.circleservice.exception.CircleCreationException;
-import com.stackroute.gupshup.circleservice.model.*;
+import com.stackroute.gupshup.circleservice.model.Circle;
 import com.stackroute.gupshup.circleservice.service.CircleService;
 
 
 @RestController
+//@CrossOrigin("localhost:4200")
 @RequestMapping("/circle")
 public class CircleController {
 
@@ -35,64 +34,75 @@ public class CircleController {
 	public ResponseEntity<List<Circle>> listAllCircles() {
 		List<Circle> circle = null;
 		try {
-			circle = circleService.findAllCircle();
-			linkAssembler.assembleLinksForCircleList(circle);
-			if(circle.isEmpty()){
+
+			if(circleService.findAllCircle()==null) {
 				return new ResponseEntity<List<Circle>>(HttpStatus.NO_CONTENT);
+			}
+			else {
+				circle = circleService.findAllCircle();
+				linkAssembler.assembleLinksForCircleList(circle);
 			}
 		} catch (CircleCreationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<List<Circle>>(HttpStatus.NO_CONTENT);
 		}
 
-		return new ResponseEntity<List<Circle>>(circle, HttpStatus.OK);
+		return new ResponseEntity<List<Circle>>(circle, HttpStatus.FOUND);
 	}
+
 	//---------create circle------------------------------
 	@RequestMapping(value="",method=RequestMethod.POST)
-	public ResponseEntity<Circle> saveCircle(@RequestBody Circle circle )
-	{
+	public ResponseEntity<Circle> saveCircle(@RequestBody Circle circle ) {
 		Circle circlesave = null;
-		try{
-			circlesave=circleService.createCircle(circle);   
+		try {
+			if(circle.getCircleName()==null) {
+				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
+			}
+			else {
+				circlesave=circleService.createCircle(circle); 
+			}
 		}
 
 		catch(CircleCreationException circleCreationException){
-			circleCreationException.getMessage();
+
+			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<Circle>(circlesave, HttpStatus.OK);
+		return new ResponseEntity<Circle>(circlesave, HttpStatus.CREATED);
 	}
 	//--------delete circle by id-----------------
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public ResponseEntity deleteCircle(@PathVariable String id)
-	{
-		Map msgMap = new HashMap<String,String>();
-		msgMap.put("message","Circle deleted successsfully");
+	public ResponseEntity<Circle> deleteCircle(@PathVariable String id)  {
 		try {
-			circleService.deleteCircle(id);
-
+			if(id==null) {
+				return new ResponseEntity<Circle>(HttpStatus.NO_CONTENT);
+			}
+			else {
+				circleService.deleteCircle(id);
+			}
 		} catch (CircleCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Map<String,String>>(msgMap, HttpStatus.OK);
+		return new ResponseEntity<Circle>(HttpStatus.OK);
 
 	}
 	//-------------------Retrieve Single circle--------------------------------------------------------
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Circle> getCircle(@PathVariable("id") String id){
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Circle> getCircle(@PathVariable("id") String id) {
 
 		Circle circle = null;
 		try {
-			circle = circleService.findById(id);
-			if (circle == null) {
-				//System.out.println("User with id " + id + " not found");
+
+			if (circleService.findById(id) == null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
+			else {
+				circle = circleService.findById(id);
+			}
 		} catch (CircleCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 		}
 
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
@@ -100,39 +110,38 @@ public class CircleController {
 	//---------update circle-----------------------------
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Circle> updateCircle(@PathVariable("id") String id, @RequestBody Circle circle){
-		// System.out.println("Updating User " + id);
-		Circle currentCircle = null;
-		try{
 
-			currentCircle = circleService.findById(id);
-			if (currentCircle==null) {
-				//System.out.println("User with id " + id + " not found");
+		try {
+			circleService.updateCircle(circle);
+			if (circleService.findById(id) == null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
-
-			currentCircle.setCircleName(circle.getCircleName());
-			currentCircle.setCircleMembers(circle.getCircleMembers());
-			currentCircle.setCircleDescription(circle.getCircleDescription());
-
-			circleService.updateCircle(currentCircle);
-
+			else {
+				circleService.updateCircle(circle);
+			}
 		}
 		catch (CircleCreationException e) {
-			// TODO Auto-generated catch block
-			e.getMessage();
+			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Circle>(currentCircle, HttpStatus.OK);
+		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}
+
 	//-----------------Delete all user------------------
 	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE)
 	public ResponseEntity<Circle> deleteAllCircle() {
-		try{
-			circleService.deleteAllCircle();
+		try {
+			if(circleService.findAllCircle()!=null)	{
+				circleService.deleteAllCircle();
+			}
+			else {
+				return new ResponseEntity<Circle>(HttpStatus.BAD_REQUEST);
+			}
 		}
 		catch (CircleCreationException e) {
-			// TODO Auto-generated catch block
-			e.getMessage();
+			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
+
 		}
 		return new ResponseEntity<Circle>(HttpStatus.OK);
 	}
+
 }

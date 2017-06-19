@@ -1,0 +1,14 @@
+server:
+  port: 8084
+  
+spring:
+  data:
+    mongodb:
+      username: superAdmin
+      password: admin123
+      authentication-database: admin
+      database: gupshup  
+      port: 27017
+      
+  application:
+    name: user
