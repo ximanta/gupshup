@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableMongoRepositories
 public class CircleserviceApplication {
 
 	public static void main(String[] args) {

@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ActorObjectImplTest {
 	
 	@Test public void checkMyClassIsImmutable() {
-	    assertImmutable(ActorObjectImpl.class); 
+	    assertImmutable(Person.class); 
 	}
 
 }

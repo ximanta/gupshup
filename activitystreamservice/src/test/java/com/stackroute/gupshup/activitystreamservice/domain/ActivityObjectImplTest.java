@@ -11,7 +11,7 @@ import static org.mutabilitydetector.unittesting.MutabilityAssert.assertImmutabl
 public class ActivityObjectImplTest {
 	
 	@Test public void checkMyClassIsImmutable() {
-	    assertImmutable(ActivityObjectImpl.class); 
+	    assertImmutable(Note.class); 
 	}
 
 }

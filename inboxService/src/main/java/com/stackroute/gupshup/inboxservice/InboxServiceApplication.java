@@ -14,7 +14,7 @@ public class InboxServiceApplication {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(InboxServiceApplication.class, args);
 		ActivityConsumer consumer = applicationContext.getBean(ActivityConsumer.class);
-		consumer.publishMessage("notopic");
+		consumer.publishMessage("group");
 		
 	}
 }

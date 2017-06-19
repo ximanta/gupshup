@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ActivityProducer {
 
-	public void publishMessage(String topicName,String message){
+	public void publishMessage(String topicName,String activity){
 
 		Properties configProperties = new Properties();
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer");
 
-		Producer producer = new KafkaProducer(configProperties);
-		//TODO: Make sure to use the ProducerRecord constructor that does not take parition Id
-		ProducerRecord<String, String> rec = new ProducerRecord<String, String>(topicName,message);
+		Producer<String, String> producer = new KafkaProducer<String, String>(configProperties);
+		
+		ProducerRecord<String, String> rec = new ProducerRecord<String, String>(topicName,activity);
 		producer.send(rec);
 		producer.close();
 	}
