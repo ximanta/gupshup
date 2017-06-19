@@ -72,49 +72,38 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-
+	/* method to create following list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
-
-/*		String type = node.path("type").asText();
-		if(type.equalsIgnoreCase("follow")) {*/
-=======
-		/* code to create following list of top 10 following user */
-		String type = node.path("type").asText();
-		if(type.equalsIgnoreCase("follow")) {
->>>>>>> 11f6f6dced1e40204dfefab748bf0359b625cc0f
-			JsonNode sourceNode = node.path("actor");
-			String sourceUserName = sourceNode.path("name").asText();
+		JsonNode sourceNode = node.path("actor");
+		String sourceUserName = sourceNode.path("name").asText();
+		
+		JsonNode targetNode = node.path("object");
+		String targetUserName = targetNode.path("name").asText();
 			
-			JsonNode targetNode = node.path("object");
-			String targetUserName = targetNode.path("name").asText();
+		User targetUser = getUserByUserName(targetUserName);
+		User sourceUser = getUserByUserName(sourceUserName);
+
+		List<User> followingList = sourceUser.getFollowing();
+		if(sourceUser.getFollowingCount() < 10) {
+			followingList.add(targetUser);
+							
+			sourceUser.setFollowing(followingList);
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		} else {
+			followingList.remove(0);
+			followingList.add(targetUser);
+			sourceUser.setFollowing(followingList);
 			
-			User targetUser = getUserByUserName(targetUserName);
-			User sourceUser = getUserByUserName(sourceUserName);
-
-			List<User> followingList = sourceUser.getFollowing();
-			if(sourceUser.getFollowingCount() < 10) {
-				followingList.add(targetUser);
-								
-				sourceUser.setFollowing(followingList);
-				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-				userRepository.save(sourceUser);
-			} else {
-				followingList.remove(0);
-				followingList.add(targetUser);
-				sourceUser.setFollowing(followingList);
-				
-				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
-				userRepository.save(sourceUser);
-			}
-		//}
-	}/*  followUser() method end  */
-
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		}
+		
+	}/* followUser() method end  */
 	
-	
-	/*  update the user when other user update his profile */
+	/* update user profile */
 	public void updateUserActivity(JsonNode node)
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -133,8 +122,4 @@ public class UserServiceImpl implements UserService {
 		updateUser(sourceUser);
 		
 	}
-<<<<<<< HEAD
-	
-=======
->>>>>>> 11f6f6dced1e40204dfefab748bf0359b625cc0f
 }
