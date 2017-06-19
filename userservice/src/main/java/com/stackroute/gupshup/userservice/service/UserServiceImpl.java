@@ -32,10 +32,11 @@ public class UserServiceImpl implements UserService {
 		this.userRepository = userRepository;
 	}
 	
+	/* Registering a new user */
 	@Override
 	public User addUser(User user) {
 		// TODO Auto-generated method stub
-		/* code to register user */
+		/* code to check if a user is already registered */
 		List<User> userList = userRepository.findAll();
 		try {
 			for(User newUser: userList) {
@@ -46,9 +47,11 @@ public class UserServiceImpl implements UserService {
 		} catch(UserCreateException exception) {
 			return new User();
 		}
+		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"PERSON",user.getUserName());
 		Activity activity = new Create(null,"CREATE","user registered",person,person);
 		
+		/* publishing the created object to mailbox topic */
 		try {
 			userProducer.publishUserActivity("Mailbox1",new ObjectMapper().writeValueAsString(activity));
 		} catch (JsonProcessingException e) {
@@ -56,7 +59,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return userRepository.save(user);
 	}
-
+	
+	/* fetching a user by its user name */
 	@Override
 	public User getUserByUserName(String userName) {
 		// TODO Auto-generated method stub
@@ -71,17 +75,19 @@ public class UserServiceImpl implements UserService {
 		return user1;
 	}
 
+	/* updating a user profile */
 	@Override
 	public void updateUser(User user) {
 		// TODO Auto-generated method stub
-		/* updating a user profile */
+		/* code to update a user profile */
 		userRepository.save(user);
 	}
 
+	/* deleting a user profile */
 	@Override
 	public void deleteUser(String userId) {
 		// TODO Auto-generated method stub
-		/* deleting a user account */
+		/* code to delete a user account */
 		userRepository.delete(userId);
 	}
 	
@@ -102,15 +108,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
+		/* fetching source user name from the node tree */
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
-			
+		/* fetching target user name from the node tree */
 		JsonNode targetNode = node.path("object");
 		String targetUserName = targetNode.path("name").asText();
 			
 		User targetUser = getUserByUserName(targetUserName);
 		User sourceUser = getUserByUserName(sourceUserName);
 
+		/* updating the following list and following count of a user */
 		List<User> followingList = sourceUser.getFollowing();
 		if(sourceUser.getFollowingCount() < 10) {
 			followingList.add(targetUser);
@@ -124,7 +132,7 @@ public class UserServiceImpl implements UserService {
 			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 			userRepository.save(sourceUser);
 		}
-	}/*  followUser() method end  */
+	}/* followUser() method end */
 
 	/*  update user profile */
 	public void updateUserActivity(JsonNode node)

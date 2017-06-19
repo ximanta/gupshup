@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.producer.UserProducer;
-import com.stackroute.gupshup.userservice.producer.UserProducerImpl;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 public class UserConsumerThread extends Thread {
@@ -35,6 +34,7 @@ public class UserConsumerThread extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		Properties configProperties = new Properties();
+		/* setting all configurations for a consumer */
 		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.160:9092");
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
@@ -42,6 +42,7 @@ public class UserConsumerThread extends Thread {
 		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
 		
 		userConsumer = new KafkaConsumer<String, String>(configProperties);
+		/* subscribing a topic */
 		userConsumer.subscribe(Arrays.asList(topicName));
 		
 		while(true) {
@@ -50,6 +51,7 @@ public class UserConsumerThread extends Thread {
 			for(ConsumerRecord<String, String> record: records ) {
 				System.out.println(record.value());
 				String value = record.value();
+				/* publishing activity to Recommendation and Mailbox1 topic */
 				userProducer.publishUserActivity("Recommendation", value);
 				userProducer.publishUserActivity("Mailbox1", value);
 				ObjectMapper mapper = new ObjectMapper();

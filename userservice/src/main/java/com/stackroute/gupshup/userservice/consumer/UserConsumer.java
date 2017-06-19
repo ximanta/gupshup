@@ -15,6 +15,7 @@ public class UserConsumer {
 	@Autowired
 	UserProducer userProducer;
 	
+	/* subscribing a activity */
 	public void subscribeUserActivity(String topic) {
 
 		UserConsumerThread userConsumerRunnable = new UserConsumerThread(topic, topic, service, userProducer);
