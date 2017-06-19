@@ -2,7 +2,12 @@ package com.stackroute.gupshup.userservice.domain;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
@@ -15,18 +20,28 @@ public class User extends ResourceSupport {
 	
 	@Id
 	private ObjectId _id;
-	private String firstName;
-	private String lastName;
+	//@NotNull
 	private String userName;
+	//@NotNull
+	private String firstName;
+	//@NotNull
+	private String lastName;
+	//@NotNull
+	//@Size(min=8)
 	private String password;
+	//@NotNull
 	private String gender;
+	//@NotNull
+	//@Past
 	private String dob;
+	//@NotNull
+	//@Email
 	private String emailId;
+	//@NotNull
 	private String contactNo;
 	private String profilePhoto;
 	private long followingCount;
 	private List<User> following;
-
 		
 	public String getFirstName() {
 		return firstName;

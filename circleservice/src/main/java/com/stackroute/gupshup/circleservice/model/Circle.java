@@ -1,39 +1,39 @@
 package com.stackroute.gupshup.circleservice.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.hateoas.ResourceSupport;
 
 public class Circle extends ResourceSupport{
-	@Autowired
-	private User user;
 	
 	@Id
+	private String _id;
 	private String circleId;
-	private String personName;
-	private String personId;
 	private String circleName;
 	private String circleDescription;
 	private String circleCreatedBy;
 	private String circleCreatedDate;
-	private String circleMembers[];
+	private List<User> circleMembers;
+	private List<String> keywords;
+	
+	public Circle() {
+	}
+	
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
 	public String getCircleId() {
 		return circleId;
 	}
 	public void setCircleId(String circleId) {
 		this.circleId = circleId;
-	}
-	public String getPersonName() {
-		return personName;
-	}
-	public void setPersonName(String personName) {
-		this.personName = personName;
-	}
-	public String getPersonId() {
-		return personId;
-	}
-	public void setPersonId(String personId) {
-		this.personId = personId;
 	}
 	public String getCircleName() {
 		return circleName;
@@ -53,19 +53,24 @@ public class Circle extends ResourceSupport{
 	public void setCircleCreatedBy(String circleCreatedBy) {
 		this.circleCreatedBy = circleCreatedBy;
 	}
+	
 	public String getCircleCreatedDate() {
 		return circleCreatedDate;
 	}
 	public void setCircleCreatedDate(String circleCreatedDate) {
 		this.circleCreatedDate = circleCreatedDate;
 	}
-	public String[] getCircleMembers() {
+	public List<User> getCircleMembers() {
 		return circleMembers;
 	}
-	public void setCircleMembers(String[] circleMembers) {
+	public void setCircleMembers(List<User> circleMembers) {
 		this.circleMembers = circleMembers;
 	}
-	
-	
+	public List<String> getKeywords() {
+		return keywords;
+	}
+	public void setKeywords(List<String> keywords) {
+		this.keywords = keywords;
+	}
 	
 }

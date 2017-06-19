@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.User;
+import com.stackroute.gupshup.userservice.exception.UserCreateException;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
 @Service
@@ -25,6 +26,16 @@ public class UserServiceImpl implements UserService {
 	public User addUser(User user) {
 		// TODO Auto-generated method stub
 		/* code to register user */
+		List<User> userList = userRepository.findAll();
+		try {
+			for(User newUser: userList) {
+				if(newUser.getUserName().equalsIgnoreCase(user.getUserName())) {
+					throw new UserCreateException("already registered");
+				}
+			}
+		} catch(UserCreateException exception) {
+			return new User();
+		}
 		return userRepository.save(user);
 	}
 
@@ -36,7 +47,7 @@ public class UserServiceImpl implements UserService {
 		User user1 = null;
 		for(User user: userList) {
 			if(user.getUserName().equalsIgnoreCase(userName)) {
-				user1 = userRepository.findOne(String.valueOf(user.get_id()));
+				user1 = user;
 			}
 		}
 		return user1;
@@ -56,34 +67,40 @@ public class UserServiceImpl implements UserService {
 		userRepository.delete(userId);
 	}
 	
-	/*   check the type of activity  */
+	/* check the type of activity  */
 	@Override
 	public void checkActivityType(JsonNode node)
 	{
 		String activityType = node.path("type").asText();
-		if(activityType.equalsIgnoreCase("follow"))
-		{
+		if(activityType.equalsIgnoreCase("follow")) {
 			followUser(node);
 		}
-		if(activityType.equalsIgnoreCase("update"))
-		{
+		else if(activityType.equalsIgnoreCase("update")) {
 			updateUserActivity(node);
 		}
 	}
 	
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 	/* method to create following list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
 		// TODO Auto-generated method stub
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
+<<<<<<< HEAD
 		
+=======
+			
+>>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 		JsonNode targetNode = node.path("object");
 		String targetUserName = targetNode.path("name").asText();
 			
 		User targetUser = getUserByUserName(targetUserName);
 		User sourceUser = getUserByUserName(sourceUserName);
+<<<<<<< HEAD
 
 		List<User> followingList = sourceUser.getFollowing();
 		if(sourceUser.getFollowingCount() < 10) {
@@ -104,6 +121,25 @@ public class UserServiceImpl implements UserService {
 	}/* followUser() method end  */
 	
 	/* update user profile */
+=======
+
+		List<User> followingList = sourceUser.getFollowing();
+		if(sourceUser.getFollowingCount() < 10) {
+			followingList.add(targetUser);
+			sourceUser.setFollowing(followingList);
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		} else {
+			followingList.remove(0);
+			followingList.add(targetUser);
+			sourceUser.setFollowing(followingList);
+			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
+			userRepository.save(sourceUser);
+		}
+	}/*  followUser() method end  */
+
+	/*  update user profile */
+>>>>>>> 8bc797819a49df3710d104295c8fda914c564e8f
 	public void updateUserActivity(JsonNode node)
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -111,15 +147,13 @@ public class UserServiceImpl implements UserService {
 		String sourceNodeName = sourceNode.path("type").asText();
 		JsonNode sourceUserNode = node.path("object");
 		
-		User sourceUser=null;
+		User sourceUser = null;
 		try {
 			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		updateUser(sourceUser);
-		
 	}
 }

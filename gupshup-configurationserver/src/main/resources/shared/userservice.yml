@@ -9,6 +9,4 @@ spring:
       authentication-database: admin
       database: gupshup  
       port: 27017
-      
-  application:
-    name: user
+

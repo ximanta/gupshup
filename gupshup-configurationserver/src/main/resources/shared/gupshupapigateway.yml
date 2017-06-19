@@ -1,2 +1,11 @@
 server:
  port: 8080
+ 
+activitystreamservice:
+  ribbon:  
+    listOfServers: localhost:8010,localhost:8011,localhost:8012
+    ServerListRefreshInterval: 15000
+
+ribbon:
+    eureka:
+      enabled: false
