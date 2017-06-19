@@ -12,6 +12,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 public class UserConsumerThread extends Thread {
@@ -20,11 +21,13 @@ public class UserConsumerThread extends Thread {
 	private String consumerGroupId;
 	private KafkaConsumer<String, String> userConsumer;
 	private UserService userService;
+	private UserProducer userProducer;
 	
-	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService) {
+	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService, UserProducer userProducer) {
 		this.topicName = topicName;
 		this.consumerGroupId = consumerGroupId;
 		this.userService = userService;
+		this.userProducer = userProducer;
 	}
 	
 	@Override
@@ -46,6 +49,7 @@ public class UserConsumerThread extends Thread {
 			for(ConsumerRecord<String, String> record: records ) {
 				System.out.println(record.value());
 				String value = record.value();
+				userProducer.publishUserActivity("Recommendation", value);
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {

@@ -12,7 +12,6 @@ import com.stackroute.gupshup.userservice.consumer.UserConsumer;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableMongoRepositories
-@EnableFeignClients
 public class UserserviceApplication {
 
 	public static void main(String[] args) {
