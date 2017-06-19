@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.stackroute.gupshup.userservice.domain.User;
+import com.stackroute.gupshup.userservice.linkassembler.UserLinkAssembler;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 
@@ -39,6 +40,9 @@ public class UserControllerTest {
 	
 	@MockBean
     private UserService userService;
+	
+	@MockBean
+	private UserLinkAssembler userLinkAssembler;
 	
 	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
     
