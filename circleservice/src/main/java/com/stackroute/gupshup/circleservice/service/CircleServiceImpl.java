@@ -224,7 +224,7 @@ public class CircleServiceImpl implements CircleService {
 
 			if(type.equalsIgnoreCase("add")){
 				Add add = objectMapper.treeToValue(node,Add.class);
-				Group group = (Group) add.getObject();
+				Group group = (Group) add.getTarget();
 				String circleId = group.getName();
 				Note note = (Note) add.getObject(); 
 
