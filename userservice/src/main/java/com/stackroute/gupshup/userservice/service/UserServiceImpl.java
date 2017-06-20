@@ -8,23 +8,35 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stackroute.gupshup.userservice.domain.Activity;
+import com.stackroute.gupshup.userservice.domain.Delete;
+import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.exception.UserCreateException;
+import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
+import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	UserRepository userRepository;
+	UserProducer userProducer;
 
 	@Autowired
 	public void setUserRepository(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 	
+	@Autowired
+	public void setUserProducer(UserProducer userProducer) {
+		this.userProducer = userProducer;
+	}
+	
+	/* Add a User */
 	@Override
 	public User addUser(User user) {
-		// TODO Auto-generated method stub
+
 		/* code to register user */
 		List<User> userList = userRepository.findAll();
 		try {
@@ -39,35 +51,59 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(user);
 	}
 
+	/* Find a user by username */
 	@Override
 	public User getUserByUserName(String userName) {
-		// TODO Auto-generated method stub
 		/* code to find a user by his/her user name */
 		List<User> userList = userRepository.findAll();
 		User user1 = null;
-		for(User user: userList) {
-			if(user.getUserName().equalsIgnoreCase(userName)) {
-				user1 = user;
+		try {
+			for(User user: userList) {
+				if(user.getUserName().equalsIgnoreCase(userName)) {
+					user1 = user;
+				}
 			}
+			if(user1 == null)
+			{
+				throw new UserNotFoundException("User not registered");
+			}
+		}
+		catch(UserNotFoundException exception)
+		{
+			return user1;
 		}
 		return user1;
 	}
 
+	/* Update User profile details */
 	@Override
 	public void updateUser(User user) {
-		// TODO Auto-generated method stub
 		/* updating a user profile */
 		userRepository.save(user);
 	}
+	
 
+	/* Delete a user by its user name  */
 	@Override
-	public void deleteUser(String userId) {
-		// TODO Auto-generated method stub
-		/* deleting a user account */
-		userRepository.delete(userId);
+	public void deleteUser(String userName) {
+
+		/* creating the object of user to publish it to the Mailbox service */
+		User user = getUserByUserName(userName);
+		Person person = new Person(null, "PERSON", user.getUserName());
+		Activity activity = new Delete(null, "DELETE", "user deleted", person, person);
+		
+		/* deleting the user and publishing the user object to mailbox topic  */
+		userRepository.delete((user.get_id()).toString());
+		try {
+			userProducer.publishUserActivity("Mailbox1", new ObjectMapper().writeValueAsString(person));
+			
+		}
+		catch (JsonProcessingException ex) {
+			ex.printStackTrace();
+		}	
 	}
 	
-	/* check the type of activity  */
+	/* method to check the type of activity  */
 	@Override
 	public void checkActivityType(JsonNode node)
 	{
@@ -80,11 +116,10 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-
-	/* method to create following list of top 10 following user */
+	/* method to create following user list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
-		// TODO Auto-generated method stub
+
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
 		JsonNode targetNode = node.path("object");
@@ -110,7 +145,7 @@ public class UserServiceImpl implements UserService {
 			userRepository.save(sourceUser);
 		}
 		
-	}/* followUser() method end  */
+	}
 	
 	/* update user profile */
 	public void updateUserActivity(JsonNode node)
@@ -124,7 +159,6 @@ public class UserServiceImpl implements UserService {
 		try {
 			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		updateUser(sourceUser);

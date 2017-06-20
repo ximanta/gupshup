@@ -59,7 +59,7 @@ public class UserController {
 		    	User newUser = userService.addUser(user);
 		    	
 		    	if(newUser.get_id() == null) {
-		    		throw new UserCreateException("already registered");
+		    		throw new UserCreateException("User already registered");
 		    	} else {
 		    		User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
@@ -69,7 +69,7 @@ public class UserController {
 	    	}
 	    }
 	    
-	    /* GET User by userName */
+	    /* GET User by username */
 	    @ApiOperation(value = "Get user by userName",response = User.class)
 	    @RequestMapping(value="/{userName}", method=RequestMethod.GET)
 	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws UserNotFoundException{
@@ -79,12 +79,17 @@ public class UserController {
 	    		}
 	    		else {
 	    			User user = userService.getUserByUserName(userName);
-	    			User newUser = userLinkAssembler.followUserLinks(user);
-	    			return new ResponseEntity<>(newUser, HttpStatus.OK);
+	    			if(user == null){
+	    				throw new UserNotFoundException("User not registered");
+	    			}
+	    			else{
+	    				User newUser = userLinkAssembler.followUserLinks(user);
+		    			return new ResponseEntity<>(newUser, HttpStatus.OK);
+	    			}
 	    		}
 	    	}
 	    	catch(UserNotFoundException exception) {
-	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 	    
@@ -102,7 +107,7 @@ public class UserController {
 	    		else {
 	    			userService.updateUser(user);
 	    			Map messageMap = new HashMap<String,String>();
-	    			messageMap.put("message","Movie updated successsfully");
+	    			messageMap.put("message","User updated successfully");
 	    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 	    		}
 	    	}
@@ -113,21 +118,21 @@ public class UserController {
 
 	    /* Delete a User */
 	    @ApiOperation(value = "Delete a User")
-	    @RequestMapping(value="/{userId}",method=RequestMethod.DELETE )
-	    public ResponseEntity deleteUser(@PathVariable String userId) throws UserDeleteException{
+	    @RequestMapping(value="/{userName}",method=RequestMethod.DELETE )
+	    public ResponseEntity deleteUser(@PathVariable String userName) throws UserDeleteException{
 		   try {
-			   if(userId == null) {
+			   if(userName == null) {
 				   throw new UserDeleteException("user could not be deleted");
 			   }
 			   else {
-				   userService.deleteUser(userId);
+				   userService.deleteUser(userName);
 				   Map messageMap = new HashMap<String,String>();
-				   messageMap.put("message","User deleted successsfully");
+				   messageMap.put("message","User deleted successfully");
 				   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 			   }
 	    	}
 	    	catch(UserDeleteException exception) {
-	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 }
