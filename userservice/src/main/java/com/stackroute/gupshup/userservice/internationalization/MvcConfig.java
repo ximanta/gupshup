@@ -24,12 +24,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         return slr;
     }
 
-	@Bean
+	/*@Bean
     public MessageSource messageSource() {
          ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
          messageSource.setBasename("classpath:/messages");
          return messageSource;
-    }
+    }*/
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
