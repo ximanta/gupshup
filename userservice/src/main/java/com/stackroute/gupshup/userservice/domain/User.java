@@ -20,24 +20,24 @@ public class User extends ResourceSupport {
 	
 	@Id
 	private ObjectId _id;
-	//@NotNull
+	@NotNull
 	private String userName;
-	//@NotNull
+	@NotNull
 	private String firstName;
-	//@NotNull
+	@NotNull
 	private String lastName;
-	//@NotNull
-	//@Size(min=8)
+	@NotNull
+	@Size(min=8)
 	private String password;
-	//@NotNull
+	@NotNull
 	private String gender;
-	//@NotNull
-	//@Past
+	@NotNull
+	@Past
 	private String dob;
-	//@NotNull
-	//@Email
+	@NotNull
+	@Email
 	private String emailId;
-	//@NotNull
+	@NotNull
 	private String contactNo;
 	private String profilePhoto;
 	private long followingCount;
@@ -115,5 +115,12 @@ public class User extends ResourceSupport {
 	}
 	public void set_id(ObjectId _id) {
 		this._id = _id;
+	}
+	@Override
+	public String toString() {
+		return "User [_id=" + _id + ", userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", password=" + password + ", gender=" + gender + ", dob=" + dob + ", emailId=" + emailId
+				+ ", contactNo=" + contactNo + ", profilePhoto=" + profilePhoto + ", followingCount=" + followingCount
+				+ ", following=" + following + "]";
 	}
 }

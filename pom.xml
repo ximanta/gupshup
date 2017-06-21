@@ -7,7 +7,6 @@
 	<artifactId>gupshup</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
 	<name>gupshup</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -101,10 +100,10 @@
 	<modules>
 		<module>gupshup-apigateway</module>
 		<module>gupshup-discoveryregistry</module>
-		<module>gupshup-configserver</module>
-		<module>activitystreamservice</module>
+		<module>activityproducer</module>
 		<module>circleservice</module>
 		<module>userservice</module>
+		<module>gupshup-configserver</module>
 	</modules>
 
 </project>

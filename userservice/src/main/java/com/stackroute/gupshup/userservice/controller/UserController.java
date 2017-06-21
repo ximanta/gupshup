@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,24 +18,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stackroute.gupshup.userservice.domain.User;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
+import com.stackroute.gupshup.userservice.exception.UserNotDeletedException;
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
-import com.stackroute.gupshup.userservice.exception.UserCreateException;
-import com.stackroute.gupshup.userservice.exception.UserDeleteException;
-import com.stackroute.gupshup.userservice.exception.UserUpdateException;
+import com.stackroute.gupshup.userservice.exception.UserNotUpdatedException;
 import com.stackroute.gupshup.userservice.linkassembler.UserLinkAssembler;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value="UserService", description="Operations pertaining to User")
-@CrossOrigin()
 @RestController
+@CrossOrigin
+@Api(value="UserService", description="Operations pertaining to User")
+@RequestMapping("user")
 public class UserController {
 	    
 	    /* Autowire of UserService */
 	    private UserService userService;
 	    private UserLinkAssembler userLinkAssembler;
+	    
+	    @Autowired
+		MessageSource messageSource;
 	    
 	    @Autowired
 	    public void setUserService(UserService userService)
@@ -50,84 +55,94 @@ public class UserController {
 	    /* Add a User */
 	    @ApiOperation(value = "Add a User")
 	    @RequestMapping(value="", method=RequestMethod.POST )
-	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserCreateException {
+	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserNotCreatedException {
 	    	if(bindingResult.hasErrors()) {
+	    		System.out.println(bindingResult.getAllErrors());
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	    	}
-	    	Map<String, String> messageMap = new HashMap<>();
+	    	//Map<String, String> messageMap = new HashMap<>();
 	    	try {
 		    	User newUser = userService.addUser(user);
 		    	
 		    	if(newUser.get_id() == null) {
-		    		throw new UserCreateException("already registered");
+		    		throw new UserNotCreatedException("User already registered");
 		    	} else {
 		    		User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 		    	}
-		    } catch(UserCreateException exception) {
+		    } catch(UserNotCreatedException exception) {
 	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
+	    	} catch(NullPointerException exception) {
+				return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 	    
-	    /* GET User by userName */
+	    /* GET User by username */
 	    @ApiOperation(value = "Get user by userName",response = User.class)
 	    @RequestMapping(value="/{userName}", method=RequestMethod.GET)
 	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws UserNotFoundException{
+	    	//Locale locale = LocaleContextHolder.getLocale();
+			//String message = messageSource.getMessage ("prop:message", null, locale );
 	    	try {
 	    		if(userName == null) {
 	    			throw new UserNotFoundException("user not found");
 	    		}
 	    		else {
 	    			User user = userService.getUserByUserName(userName);
-	    			User newUser = userLinkAssembler.followUserLinks(user);
-	    			return new ResponseEntity<>(newUser, HttpStatus.OK);
+	    			if(user == null){
+	    				throw new UserNotFoundException("User not registered");
+	    			}
+	    			else{
+	    				User newUser = userLinkAssembler.followUserLinks(user);
+		    			return new ResponseEntity<>(newUser, HttpStatus.OK);
+	    			}
 	    		}
 	    	}
 	    	catch(UserNotFoundException exception) {
-	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 	    
 	    /* Update User details */
 	    @ApiOperation(value = "Update a User")
-	    @RequestMapping(value="/{userId}",method=RequestMethod.PUT )
-	    public ResponseEntity updateUser(@Valid User validUser, BindingResult bindingResult, @PathVariable String userId, @RequestBody User user) throws UserUpdateException{
+	    @RequestMapping(value="/{userName}",method=RequestMethod.PUT )
+	    public ResponseEntity updateUser(@Valid User validUser, BindingResult bindingResult, @PathVariable String userName, @RequestBody User user) throws UserNotUpdatedException{
 	    	if(bindingResult.hasErrors()) {
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
 	    	}
 	    	try {
-	    		if(userId == null) {
-	    			throw new UserUpdateException("user could not be updated");
+	    		if(userName == null) {
+	    			throw new UserNotUpdatedException("user could not be updated");
 	    		}
 	    		else {
 	    			userService.updateUser(user);
 	    			Map messageMap = new HashMap<String,String>();
-	    			messageMap.put("message","Movie updated successsfully");
+	    			messageMap.put("message","User updated successfully");
 	    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 	    		}
 	    	}
-	    	catch(UserUpdateException exception) {
+	    	catch(UserNotUpdatedException exception) {
     	        return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
 	    }
 
 	    /* Delete a User */
 	    @ApiOperation(value = "Delete a User")
-	    @RequestMapping(value="/{userId}",method=RequestMethod.DELETE )
-	    public ResponseEntity deleteUser(@PathVariable String userId) throws UserDeleteException{
+	    @RequestMapping(value="/{userName}",method=RequestMethod.DELETE )
+	    public ResponseEntity deleteUser(@PathVariable String userName) throws UserNotDeletedException{
 		   try {
-			   if(userId == null) {
-				   throw new UserDeleteException("user could not be deleted");
+			   if(userName == null) {
+				   throw new UserNotDeletedException("user could not be deleted");
 			   }
 			   else {
-				   userService.deleteUser(userId);
+				   userService.deleteUser(userName);
 				   Map messageMap = new HashMap<String,String>();
-				   messageMap.put("message","User deleted successsfully");
+				   messageMap.put("message","User deleted successfully");
 				   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 			   }
 	    	}
-	    	catch(UserDeleteException exception) {
-	    		return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
+	    	catch(UserNotDeletedException exception) {
+	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 }

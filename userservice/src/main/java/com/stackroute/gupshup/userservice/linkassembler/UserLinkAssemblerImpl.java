@@ -20,6 +20,9 @@ public class UserLinkAssemblerImpl implements UserLinkAssembler {
 		Link updateLink = linkTo(UserController.class).slash(user.get_id()).withRel("updateProfile");
 		user.add(updateLink);
 		
+		Link deleteLink = linkTo(UserController.class).slash(user.get_id()).withRel("deleteProfile");
+		user.add(deleteLink);
+		
 		return user;
 	}
 

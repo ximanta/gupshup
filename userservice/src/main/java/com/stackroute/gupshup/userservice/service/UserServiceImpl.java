@@ -9,10 +9,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.Activity;
+
+import com.stackroute.gupshup.userservice.domain.Delete;
+import com.stackroute.gupshup.userservice.domain.Person;
+import com.stackroute.gupshup.userservice.domain.User;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
+import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
+
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserCreateException;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
+
 import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
@@ -32,20 +40,21 @@ public class UserServiceImpl implements UserService {
 		this.userRepository = userRepository;
 	}
 	
+
 	/* Registering a new user */
 	@Override
 	public User addUser(User user) {
-		// TODO Auto-generated method stub
+
 		/* code to check if a user is already registered */
 		List<User> userList = userRepository.findAll();
 		try {
 			for(User newUser: userList) {
 				if(newUser.getUserName().equalsIgnoreCase(user.getUserName())) {
-					throw new UserCreateException("already registered");
+					throw new UserNotCreatedException("already registered");
 				}
 			}
-		} catch(UserCreateException exception) {
-			return new User();
+		} catch(UserNotCreatedException exception) {
+			return null;
 		}
 		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"PERSON",user.getUserName());
@@ -59,39 +68,57 @@ public class UserServiceImpl implements UserService {
 		}
 		return userRepository.save(user);
 	}
+
 	
 	/* fetching a user by its user name */
 	@Override
 	public User getUserByUserName(String userName) {
-		// TODO Auto-generated method stub
 		/* code to find a user by his/her user name */
 		List<User> userList = userRepository.findAll();
 		User user1 = null;
-		for(User user: userList) {
-			if(user.getUserName().equalsIgnoreCase(userName)) {
-				user1 = user;
+		try {
+			for(User user: userList) {
+				if(user.getUserName().equalsIgnoreCase(userName)) {
+					user1 = user;
+				}
 			}
+			if(user1 == null) {
+				throw new UserNotFoundException("user not found");
+			}
+		} catch(UserNotFoundException exception) {
+			return user1;
 		}
-		return user1;
+		return  user1;
 	}
 
-	/* updating a user profile */
+	/* Update User profile details */
 	@Override
 	public void updateUser(User user) {
-		// TODO Auto-generated method stub
 		/* code to update a user profile */
 		userRepository.save(user);
 	}
 
 	/* deleting a user profile */
 	@Override
-	public void deleteUser(String userId) {
-		// TODO Auto-generated method stub
-		/* code to delete a user account */
-		userRepository.delete(userId);
+	public void deleteUser(String userName) {
+
+		/* creating the object of user to publish it to the Mailbox service */
+		User user = getUserByUserName(userName);
+		Person person = new Person(null, "PERSON", user.getUserName());
+		Activity activity = new Delete(null, "DELETE", "user deleted", person, person);
+		
+		/* deleting the user and publishing the user object to mailbox topic  */
+		userRepository.delete((user.get_id()).toString());
+		try {
+			userProducer.publishUserActivity("Mailbox1", new ObjectMapper().writeValueAsString(person));
+			
+		}
+		catch (JsonProcessingException ex) {
+			ex.printStackTrace();
+		}	
 	}
 	
-	/* check the type of activity  */
+	/* method to check the type of activity  */
 	@Override
 	public void checkActivityType(JsonNode node)
 	{
@@ -104,13 +131,13 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	/* method to create following list of top 10 following user */
+	/* method to create following user list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
-		// TODO Auto-generated method stub
 		/* fetching source user name from the node tree */
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
+		
 		/* fetching target user name from the node tree */
 		JsonNode targetNode = node.path("object");
 		String targetUserName = targetNode.path("name").asText();
@@ -132,7 +159,7 @@ public class UserServiceImpl implements UserService {
 			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 			userRepository.save(sourceUser);
 		}
-	}/* followUser() method end */
+	}
 
 	/*  update user profile */
 	public void updateUserActivity(JsonNode node)
@@ -146,7 +173,6 @@ public class UserServiceImpl implements UserService {
 		try {
 			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		updateUser(sourceUser);
