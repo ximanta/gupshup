@@ -1,4 +1,5 @@
 package com.stackroute.gupshup.userservice.domain;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,6 +19,7 @@ public class Follow implements Activity{
 			@JsonProperty("summary") String summary,
 			@JsonDeserialize(as=Person.class) @JsonProperty("actor") ASObject actor,
 			@JsonDeserialize(as=Person.class) @JsonProperty("object") ASObject object) {
+
 		this.context = context;
 		this.type = type;
 		this.summary = summary;
@@ -44,6 +46,5 @@ public class Follow implements Activity{
 	public ASObject getObject() {
 		return object;
 	}
-	
 	
 }
