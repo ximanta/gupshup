@@ -6,5 +6,5 @@ spring:
   mongodb:
     username: superAdmin
     password: admin123
-    authentication-database: admin
+    authorization: admin
     database: gupshup
