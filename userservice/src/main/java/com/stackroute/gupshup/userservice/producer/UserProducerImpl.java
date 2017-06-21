@@ -15,7 +15,6 @@ public class UserProducerImpl implements UserProducer {
 	public void publishUserActivity(String topicName, String message)
 	{
 		Properties configProperties = new Properties();
-		
 		/* setting all the configurations for a producer */
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.159:9092");
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -23,7 +22,9 @@ public class UserProducerImpl implements UserProducer {
 		
 		Producer userProducer = new KafkaProducer<>(configProperties);
 		ProducerRecord<String, String> record = new ProducerRecord<String, String>(topicName, message);
-				
+		/* publishing an activity */
+		userProducer.send(record);
+		userProducer.close();	
 	}
 
 }

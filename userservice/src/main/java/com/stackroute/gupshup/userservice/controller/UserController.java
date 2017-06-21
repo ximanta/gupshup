@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserCreateException;
-import com.stackroute.gupshup.userservice.exception.UserDeleteException;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
+import com.stackroute.gupshup.userservice.exception.UserNotDeletedException;
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
-import com.stackroute.gupshup.userservice.exception.UserUpdateException;
+import com.stackroute.gupshup.userservice.exception.UserNotUpdatedException;
 import com.stackroute.gupshup.userservice.linkassembler.UserLinkAssembler;
 import com.stackroute.gupshup.userservice.service.UserService;
 
@@ -38,6 +39,9 @@ public class UserController {
 	    private UserLinkAssembler userLinkAssembler;
 	    
 	    @Autowired
+		MessageSource messageSource;
+	    
+	    @Autowired
 	    public void setUserService(UserService userService)
 	    {
 	    	this.userService = userService;
@@ -51,22 +55,25 @@ public class UserController {
 	    /* Add a User */
 	    @ApiOperation(value = "Add a User")
 	    @RequestMapping(value="", method=RequestMethod.POST )
-	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserCreateException {
+	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserNotCreatedException {
 	    	if(bindingResult.hasErrors()) {
+	    		System.out.println(bindingResult.getAllErrors());
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	    	}
-	    	Map<String, String> messageMap = new HashMap<>();
+	    	//Map<String, String> messageMap = new HashMap<>();
 	    	try {
 		    	User newUser = userService.addUser(user);
 		    	
 		    	if(newUser.get_id() == null) {
-		    		throw new UserCreateException("User already registered");
+		    		throw new UserNotCreatedException("User already registered");
 		    	} else {
 		    		User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 		    	}
-		    } catch(UserCreateException exception) {
+		    } catch(UserNotCreatedException exception) {
 	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
+	    	} catch(NullPointerException exception) {
+				return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 	    
@@ -74,6 +81,8 @@ public class UserController {
 	    @ApiOperation(value = "Get user by userName",response = User.class)
 	    @RequestMapping(value="/{userName}", method=RequestMethod.GET)
 	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws UserNotFoundException{
+	    	//Locale locale = LocaleContextHolder.getLocale();
+			//String message = messageSource.getMessage ("prop:message", null, locale );
 	    	try {
 	    		if(userName == null) {
 	    			throw new UserNotFoundException("user not found");
@@ -96,14 +105,14 @@ public class UserController {
 	    
 	    /* Update User details */
 	    @ApiOperation(value = "Update a User")
-	    @RequestMapping(value="/{userId}",method=RequestMethod.PUT )
-	    public ResponseEntity updateUser(@Valid User validUser, BindingResult bindingResult, @PathVariable String userId, @RequestBody User user) throws UserUpdateException{
+	    @RequestMapping(value="/{userName}",method=RequestMethod.PUT )
+	    public ResponseEntity updateUser(@Valid User validUser, BindingResult bindingResult, @PathVariable String userName, @RequestBody User user) throws UserNotUpdatedException{
 	    	if(bindingResult.hasErrors()) {
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
 	    	}
 	    	try {
-	    		if(userId == null) {
-	    			throw new UserUpdateException("user could not be updated");
+	    		if(userName == null) {
+	    			throw new UserNotUpdatedException("user could not be updated");
 	    		}
 	    		else {
 	    			userService.updateUser(user);
@@ -112,7 +121,7 @@ public class UserController {
 	    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 	    		}
 	    	}
-	    	catch(UserUpdateException exception) {
+	    	catch(UserNotUpdatedException exception) {
     	        return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
 	    	}
 	    }
@@ -120,10 +129,10 @@ public class UserController {
 	    /* Delete a User */
 	    @ApiOperation(value = "Delete a User")
 	    @RequestMapping(value="/{userName}",method=RequestMethod.DELETE )
-	    public ResponseEntity deleteUser(@PathVariable String userName) throws UserDeleteException{
+	    public ResponseEntity deleteUser(@PathVariable String userName) throws UserNotDeletedException{
 		   try {
 			   if(userName == null) {
-				   throw new UserDeleteException("user could not be deleted");
+				   throw new UserNotDeletedException("user could not be deleted");
 			   }
 			   else {
 				   userService.deleteUser(userName);
@@ -132,7 +141,7 @@ public class UserController {
 				   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
 			   }
 	    	}
-	    	catch(UserDeleteException exception) {
+	    	catch(UserNotDeletedException exception) {
 	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }

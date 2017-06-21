@@ -31,7 +31,7 @@ public class SwaggerConfig {
 				"Spring Boot REST API for USER",
 				"1.0",
 				"Terms of service",
-				new Contact("Stack Route", "https://stackroute.in/", "simanta.sarma@stackroute.in"),
+				new Contact("Stack Route", "https://stackroute.in/", "charu.bhatt@stackroute.in, randeep.kaur@stackroute.in"),
 				"Apache License Version 2.0",
 				"https://www.apache.org/licenses/LICENSE-2.0");
 		return apiInfo;

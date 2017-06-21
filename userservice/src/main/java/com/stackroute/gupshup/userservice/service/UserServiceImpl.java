@@ -13,13 +13,13 @@ import com.stackroute.gupshup.userservice.domain.Activity;
 import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserCreateException;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserCreateException;
+import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
 
 import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
 		try {
 			for(User newUser: userList) {
 				if(newUser.getUserName().equalsIgnoreCase(user.getUserName())) {
-					throw new UserCreateException("already registered");
+					throw new UserNotCreatedException("already registered");
 				}
 			}
-		} catch(UserCreateException exception) {
-			return new User();
+		} catch(UserNotCreatedException exception) {
+			return null;
 		}
 		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"PERSON",user.getUserName());
@@ -82,27 +82,21 @@ public class UserServiceImpl implements UserService {
 					user1 = user;
 				}
 			}
-			if(user1 == null)
-			{
-				throw new UserNotFoundException("User not registered");
+			if(user1 == null) {
+				throw new UserNotFoundException("user not found");
 			}
-		}
-		catch(UserNotFoundException exception)
-		{
+		} catch(UserNotFoundException exception) {
 			return user1;
 		}
-		return user1;
+		return  user1;
 	}
-
 
 	/* Update User profile details */
 	@Override
 	public void updateUser(User user) {
-
 		/* code to update a user profile */
 		userRepository.save(user);
 	}
-	
 
 	/* deleting a user profile */
 	@Override
@@ -140,7 +134,6 @@ public class UserServiceImpl implements UserService {
 	/* method to create following user list of top 10 following user */
 	@Override
 	public void followUser(JsonNode node) {
-
 		/* fetching source user name from the node tree */
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
@@ -156,7 +149,6 @@ public class UserServiceImpl implements UserService {
 		List<User> followingList = sourceUser.getFollowing();
 		if(sourceUser.getFollowingCount() < 10) {
 			followingList.add(targetUser);
-							
 			sourceUser.setFollowing(followingList);
 			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 			userRepository.save(sourceUser);
@@ -164,11 +156,9 @@ public class UserServiceImpl implements UserService {
 			followingList.remove(0);
 			followingList.add(targetUser);
 			sourceUser.setFollowing(followingList);
-			
 			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 			userRepository.save(sourceUser);
 		}
-		
 	}
 
 	/*  update user profile */
