@@ -23,7 +23,7 @@ public class Circle extends ResourceSupport{
 	
 	public Circle() {
 	}
-
+	@Id
 	public String getCircleId() {
 		return circleId;
 	}

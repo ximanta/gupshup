@@ -115,12 +115,12 @@ public class CircleController {
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}   
 	//---------update circle-----------------------------
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Circle> updateCircle(@PathVariable("id") String id, @RequestBody Circle circle){
+	@RequestMapping(value = "", method = RequestMethod.PUT)
+	public ResponseEntity<Circle> updateCircle(@RequestBody Circle circle){
 		
 		try {
-			circleService.updateCircle(circle);
-			if (circleService.findById(id) == null) {
+			
+			if (circleService.findById(circle.getCircleId()) == null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
 			else {

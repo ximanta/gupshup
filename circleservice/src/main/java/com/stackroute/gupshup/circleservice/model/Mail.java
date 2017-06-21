@@ -1,23 +1,21 @@
 package com.stackroute.gupshup.circleservice.model;
 
 
-import java.util.Date;
-
 public class Mail
 {
-	long mailID;
+	String mailID;
 	String To;
     String From;
     String message;
-    Date timeCreated;
-    
-	public Date getTimeCreated() {
+    String timeCreated;
+   
+	
+	public String getTimeCreated() {
 		return timeCreated;
 	}
-	public void setTimeCreated(Date timeCreated) {
+	public void setTimeCreated(String timeCreated) {
 		this.timeCreated = timeCreated;
 	}
-	
 	public String getTo() {
 		return To;
 	}
@@ -33,14 +31,15 @@ public class Mail
 	public String getMessage() {
 		return message;
 	}
-	public long getMailID() {
-		return mailID;
-	}
-	public void setMailID(long mailID) {
-		this.mailID = mailID;
-	}
+	
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public String getMailID() {
+		return mailID;
+	}
+	public void setMailID(String mailID) {
+		this.mailID = mailID;
 	}
     
 }

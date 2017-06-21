@@ -121,10 +121,11 @@ public class CircleServiceImpl implements CircleService {
 	//-----------------update circle-------------------------
 	@Override
 	public void updateCircle(Circle currentCircle) {
-		circleRepo.save(currentCircle);
+		
 		try {
-			circleRepo.save(currentCircle);
+			
 			if(currentCircle!=null)	{
+				currentCircle.setCircleId(currentCircle.getCircleId());
 				circleRepo.save(currentCircle);
 			}
 			else {
