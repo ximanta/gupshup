@@ -18,11 +18,11 @@ public class LinkAssemblerImpl implements LinkAssembler {
 	{
 		for(Circle circle1:circle)
 		{    
-			Link selfLink=linkTo(CircleController.class).slash(circle1.get_id()).withSelfRel();
+			Link selfLink=linkTo(CircleController.class).slash(circle1.getCircleId()).withSelfRel();
 			circle1.add(selfLink);
-			Link updateLink=linkTo(CircleController.class).slash(circle1.get_id()).withRel("update");
+			Link updateLink=linkTo(CircleController.class).slash(circle1.getCircleId()).withRel("update");
 			circle1.add(updateLink);
-			Link deleteLink=linkTo(CircleController.class).slash(circle1.get_id()).withRel("delete");
+			Link deleteLink=linkTo(CircleController.class).slash(circle1.getCircleId()).withRel("delete");
 			circle1.add(deleteLink);
 		}
 		return circle;

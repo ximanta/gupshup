@@ -14,7 +14,7 @@ public class ActivityProducer {
 	public void publishMessage(String topicName,String activity){
 
 		Properties configProperties = new Properties();
-		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
+		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"172.23.239.182:9092");
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer");
 
@@ -23,6 +23,5 @@ public class ActivityProducer {
 		ProducerRecord<String, String> rec = new ProducerRecord<String, String>(topicName,activity);
 		producer.send(rec);
 		producer.close();
-	}
-	
+	}	
 }
