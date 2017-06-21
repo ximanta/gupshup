@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 import com.stackroute.gupshup.userservice.exception.UserCreateException;
 import com.stackroute.gupshup.userservice.exception.UserDeleteException;
+import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 import com.stackroute.gupshup.userservice.exception.UserUpdateException;
 import com.stackroute.gupshup.userservice.linkassembler.UserLinkAssembler;
 import com.stackroute.gupshup.userservice.service.UserService;
@@ -27,9 +27,10 @@ import com.stackroute.gupshup.userservice.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value="UserService", description="Operations pertaining to User")
-@CrossOrigin()
 @RestController
+@CrossOrigin
+@Api(value="UserService", description="Operations pertaining to User")
+@RequestMapping("user")
 public class UserController {
 	    
 	    /* Autowire of UserService */

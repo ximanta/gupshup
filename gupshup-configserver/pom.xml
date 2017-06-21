@@ -5,7 +5,7 @@
 
 	<artifactId>gupshup-configserver</artifactId>
 	<packaging>jar</packaging>
-	<name>gupshup-configurationserver</name>
+	<name>gupshup-configserver</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
