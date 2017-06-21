@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		} catch(UserNotCreatedException exception) {
-			return null;
+			return new User();
 		}
 		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"PERSON",user.getUserName());

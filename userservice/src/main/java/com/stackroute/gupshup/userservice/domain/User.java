@@ -1,14 +1,11 @@
 package com.stackroute.gupshup.userservice.domain;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.bson.types.ObjectId;
-import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
@@ -21,24 +18,22 @@ public class User extends ResourceSupport {
 	
 	@Id
 	private ObjectId _id;
-	//@NotNull
+	@NotNull(message = "user name can not be null")
 	private String userName;
-	//@NotNull
+	@NotNull(message = "first name can not be null")
 	private String firstName;
-	//@NotNull
+	@NotNull(message = "Last name can not be null")
 	private String lastName;
-	//@NotNull
-	//@Size(min=8)
+	@NotNull(message = "password can not be null")
+	@Size(min=8, message = "password length can not be less than 8")
 	private String password;
-	//@NotNull
+	@NotNull(message = "gender can not be null")
 	private String gender;
-	//@NotNull
-	//@Past
+	@NotNull(message = "DOB can not be null")
 	private String dob;
-	//@NotNull
-	//@Email
+	@NotNull(message = "email can not be null")
 	private String emailId;
-	//@NotNull
+	@NotNull(message = "contact no. can not be null")
 	private String contactNo;
 	private String profilePhoto;
 	private long followingCount;
@@ -74,8 +69,6 @@ public class User extends ResourceSupport {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	
-	
 	public String getDob() {
 		return dob;
 	}
