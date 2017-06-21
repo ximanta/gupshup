@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +20,17 @@ import com.stackroute.gupshup.circleservice.service.CircleService;
 
 
 @RestController
-//@CrossOrigin("localhost:4200")
-@RequestMapping("/circle")
+@RequestMapping(value="circle")
 public class CircleController {
 
 	@Autowired
 	private CircleService circleService;
-
+	
 	@Autowired
 	private LinkAssembler linkAssembler;
 
 	//---------------get all circle-----------------
+	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<List<Circle>> listAllCircles() {
 		List<Circle> circle = null;
@@ -49,16 +50,22 @@ public class CircleController {
 
 		return new ResponseEntity<List<Circle>>(circle, HttpStatus.FOUND);
 	}
-
+	
 	//---------create circle------------------------------
+	//@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value="",method=RequestMethod.POST)
 	public ResponseEntity<Circle> saveCircle(@RequestBody Circle circle ) {
+		
+		System.out.println(circle);
 		Circle circlesave = null;
 		try {
 			if(circle.getCircleName()==null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
 			else {
+//				circle.setCircleCreatedBy("hema");
+//				circle.setCircleCreatedDate("19/06/2017");
+//				circle.setKeywords(circle.getKeywords());
 				circlesave=circleService.createCircle(circle); 
 			}
 		}
@@ -108,12 +115,12 @@ public class CircleController {
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}   
 	//---------update circle-----------------------------
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Circle> updateCircle(@PathVariable("id") String id, @RequestBody Circle circle){
-
+	@RequestMapping(value = "", method = RequestMethod.PUT)
+	public ResponseEntity<Circle> updateCircle(@RequestBody Circle circle){
+		
 		try {
-			circleService.updateCircle(circle);
-			if (circleService.findById(id) == null) {
+			
+			if (circleService.findById(circle.getCircleId()) == null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
 			else {
@@ -143,5 +150,5 @@ public class CircleController {
 		}
 		return new ResponseEntity<Circle>(HttpStatus.OK);
 	}
-
+	
 }

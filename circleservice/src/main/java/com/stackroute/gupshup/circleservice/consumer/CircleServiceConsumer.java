@@ -21,9 +21,12 @@ import com.stackroute.gupshup.circleservice.service.CircleServiceImpl;
 @Service
 public class CircleServiceConsumer {
 	
+	@Autowired
+	CircleService circleService;
+	
 	public void consumeActivity(String topic) 
     {
-	    ConsumerThread consumerRunnable = new ConsumerThread(topic,topic);
+	    ConsumerThread consumerRunnable = new ConsumerThread(topic,topic,circleService);
         consumerRunnable.start();
         consumerRunnable.getKafkaConsumer().wakeup();
         System.out.println("Stopping consumer .....");
@@ -42,14 +45,16 @@ class ConsumerThread extends Thread
     private String topicName;
     private String groupId;
     private KafkaConsumer<String,String> kafkaConsumer;
+    private CircleService circleService;
 
-    public ConsumerThread(String topicName, String groupId){
+    public ConsumerThread(String topicName, String groupId, CircleService circleService){
         this.topicName = topicName;
         this.groupId = groupId;
+        this.circleService = circleService;
     }
     public void run() {
         Properties configProperties = new Properties();
-        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.182:9092");
         configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -68,7 +73,6 @@ class ConsumerThread extends Thread
 					try {
 						JsonNode node = objectMapper.readTree(record.value());
 						System.out.println(record.value());
-						CircleService circleService =new CircleServiceImpl();
 						circleService.getActivityType(node);
 					} catch (JsonProcessingException e) {
 						e.printStackTrace();
