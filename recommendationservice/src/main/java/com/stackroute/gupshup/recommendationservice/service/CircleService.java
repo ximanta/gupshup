@@ -23,7 +23,7 @@ public class CircleService {
 	}
 	
 	public Iterable<Map<String, Object>> createSubscribedRelation(){
-		return circleRepository.getSubscribedRelationship("ay21", "blue");
+		return circleRepository.getSubscribedRelationship("ay19", "blue");
 	}
 
 }
