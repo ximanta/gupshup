@@ -35,7 +35,7 @@ public class UserConsumerThread extends Thread {
 		// TODO Auto-generated method stub
 		Properties configProperties = new Properties();
 		/* setting all configurations for a consumer */
-		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.160:9092");
+		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
@@ -52,8 +52,8 @@ public class UserConsumerThread extends Thread {
 				System.out.println(record.value());
 				String value = record.value();
 				/* publishing activity to Recommendation and Mailbox1 topic */
-				userProducer.publishUserActivity("Recommendation", value);
-				userProducer.publishUserActivity("Mailbox1", value);
+				userProducer.publishUserActivity("TestRecommendation", value);
+				userProducer.publishUserActivity("TestMailbox", value);
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {

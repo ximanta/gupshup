@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.userservice.domain;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -20,24 +21,24 @@ public class User extends ResourceSupport {
 	
 	@Id
 	private ObjectId _id;
-	@NotNull
+	//@NotNull
 	private String userName;
-	@NotNull
+	//@NotNull
 	private String firstName;
-	@NotNull
+	//@NotNull
 	private String lastName;
-	@NotNull
-	@Size(min=8)
+	//@NotNull
+	//@Size(min=8)
 	private String password;
-	@NotNull
+	//@NotNull
 	private String gender;
-	@NotNull
-	@Past
+	//@NotNull
+	//@Past
 	private String dob;
-	@NotNull
-	@Email
+	//@NotNull
+	//@Email
 	private String emailId;
-	@NotNull
+	//@NotNull
 	private String contactNo;
 	private String profilePhoto;
 	private long followingCount;
@@ -73,6 +74,8 @@ public class User extends ResourceSupport {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	
 	public String getDob() {
 		return dob;
 	}

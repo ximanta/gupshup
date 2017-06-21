@@ -62,7 +62,8 @@ public class UserServiceImpl implements UserService {
 		
 		/* publishing the created object to mailbox topic */
 		try {
-			userProducer.publishUserActivity("Mailbox1",new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestMailbox",new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestRecommendation",new ObjectMapper().writeValueAsString(activity));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -110,8 +111,8 @@ public class UserServiceImpl implements UserService {
 		/* deleting the user and publishing the user object to mailbox topic  */
 		userRepository.delete((user.get_id()).toString());
 		try {
-			userProducer.publishUserActivity("Mailbox1", new ObjectMapper().writeValueAsString(person));
-			
+			userProducer.publishUserActivity("TestMailbox", new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
 		}
 		catch (JsonProcessingException ex) {
 			ex.printStackTrace();
