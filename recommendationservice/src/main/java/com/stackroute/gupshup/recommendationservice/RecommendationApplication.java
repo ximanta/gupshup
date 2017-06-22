@@ -8,10 +8,10 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableNeo4jRepositories
-public class DemoUserApplication {
+@EnableNeo4jRepositories(basePackages={"com.stackroute.gupshup.recommendationservice.repository"})
+public class RecommendationApplication {
 	
 	public static void main(String[] args) {
-		SpringApplication.run(DemoUserApplication.class, args);
+		SpringApplication.run(RecommendationApplication.class, args);
 	}
 }
