@@ -52,8 +52,13 @@ public class UserConsumerThread extends Thread {
 				System.out.println(record.value());
 				String value = record.value();
 				/* publishing activity to Recommendation and Mailbox1 topic */
+<<<<<<< HEAD
 				userProducer.publishUserActivity("TestMailbox", value);
 				userProducer.publishUserActivity("TestRecommendation", value);
+=======
+				userProducer.publishUserActivity("TestRecommendation", value);
+				userProducer.publishUserActivity("TestMailbox", value);
+>>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {

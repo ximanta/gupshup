@@ -3,11 +3,9 @@ package com.stackroute.gupshup.userservice.domain;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.bson.types.ObjectId;
-import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
@@ -20,6 +18,7 @@ public class User extends ResourceSupport {
 	
 	@Id
 	private ObjectId _id;
+<<<<<<< HEAD
 	//@NotNull
 	private String userName;
 	//@NotNull
@@ -38,6 +37,24 @@ public class User extends ResourceSupport {
 	//@Email
 	private String emailId;
 	//@NotNull
+=======
+	@NotNull(message = "user name can not be null")
+	private String userName;
+	@NotNull(message = "first name can not be null")
+	private String firstName;
+	@NotNull(message = "Last name can not be null")
+	private String lastName;
+	@NotNull(message = "password can not be null")
+	@Size(min=8, message = "password length can not be less than 8")
+	private String password;
+	@NotNull(message = "gender can not be null")
+	private String gender;
+	@NotNull(message = "DOB can not be null")
+	private String dob;
+	@NotNull(message = "email can not be null")
+	private String emailId;
+	@NotNull(message = "contact no. can not be null")
+>>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 	private String contactNo;
 	private String profilePhoto;
 	private long followingCount;

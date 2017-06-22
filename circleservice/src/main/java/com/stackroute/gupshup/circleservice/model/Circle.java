@@ -4,12 +4,13 @@ package com.stackroute.gupshup.circleservice.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
 
+@Document
 public class Circle extends ResourceSupport{
 	
 	@Id
-	private String _id;
 	private String circleId;
 	private String circleName;
 	private String circleDescription;
@@ -17,24 +18,19 @@ public class Circle extends ResourceSupport{
 	private String circleCreatedDate;
 	private List<User> circleMembers;
 	private List<String> keywords;
+	private List<Mail> mailbox;
+	
 	
 	public Circle() {
 	}
-	
-	public String get_id() {
-		return _id;
-	}
-
-	public void set_id(String _id) {
-		this._id = _id;
-	}
-
+	@Id
 	public String getCircleId() {
 		return circleId;
 	}
 	public void setCircleId(String circleId) {
 		this.circleId = circleId;
 	}
+	
 	public String getCircleName() {
 		return circleName;
 	}
@@ -72,5 +68,14 @@ public class Circle extends ResourceSupport{
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
 	}
+
+	public List<Mail> getMailbox() {
+		return mailbox;
+	}
+
+	public void setMailbox(List<Mail> mailbox) {
+		this.mailbox = mailbox;
+	}
+	
 	
 }

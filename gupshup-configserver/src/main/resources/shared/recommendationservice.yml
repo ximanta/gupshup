@@ -1,0 +1,9 @@
+server:
+  port: 8085
+spring:
+  data:
+    neo4j:
+      port: 7474
+      username: neo4j
+      password: pass
+       

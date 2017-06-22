@@ -11,11 +11,12 @@ import com.stackroute.gupshup.circleservice.consumer.CircleServiceConsumer;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableMongoRepositories
 public class CircleserviceApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(CircleserviceApplication.class, args);
 		CircleServiceConsumer circleServiceConsumer = applicationContext.getBean(CircleServiceConsumer.class);
-		circleServiceConsumer.consumeActivity("group");
+		circleServiceConsumer.consumeActivity("circle");
 	}
 }

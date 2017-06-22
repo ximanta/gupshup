@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		} catch(UserNotCreatedException exception) {
-			return null;
+			return new User();
 		}
 		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"PERSON",user.getUserName());
@@ -63,7 +63,11 @@ public class UserServiceImpl implements UserService {
 		/* publishing the created object to mailbox topic and recommendation topic */
 		try {
 			userProducer.publishUserActivity("TestMailbox",new ObjectMapper().writeValueAsString(activity));
+<<<<<<< HEAD
 			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
+=======
+			userProducer.publishUserActivity("TestRecommendation",new ObjectMapper().writeValueAsString(activity));
+>>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -125,6 +129,7 @@ public class UserServiceImpl implements UserService {
 		User user1 = null;
 		String deleteStatus = null;
 		try {
+<<<<<<< HEAD
 			for(User user: userList) {
 				if(user.getUserName().equalsIgnoreCase(userName)) {
 					user1 = user;
@@ -148,6 +153,10 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch(UserNotFoundException exception) {
 			deleteStatus = "NotDeleted";
+=======
+			userProducer.publishUserActivity("TestMailbox", new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
+>>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 		}
 		catch (JsonProcessingException ex) {
 			ex.printStackTrace();
