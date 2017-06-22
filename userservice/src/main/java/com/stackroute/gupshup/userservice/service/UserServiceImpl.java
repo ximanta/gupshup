@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
 				/* deleting the user */
 				userRepository.delete((user1.get_id()).toString());
 				
-				/* and publishing the user object to mailbox topic and recommendation topic */
+				/* publishing the user object to mailbox topic and recommendation topic */
 				userProducer.publishUserActivity("TestMailbox", new ObjectMapper().writeValueAsString(activity));
 				userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
 				deleteStatus = "deleted";
