@@ -60,9 +60,10 @@ public class UserServiceImpl implements UserService {
 		Person person =new Person(null,"PERSON",user.getUserName());
 		Activity activity = new Create(null,"CREATE","user registered",person,person);
 		
-		/* publishing the created object to mailbox topic */
+		/* publishing the created object to mailbox topic and recommendation topic */
 		try {
-			userProducer.publishUserActivity("Mailbox1",new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestMailbox",new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -93,29 +94,66 @@ public class UserServiceImpl implements UserService {
 
 	/* Update User profile details */
 	@Override
-	public void updateUser(User user) {
-		/* code to update a user profile */
-		userRepository.save(user);
+	public String updateUser(User user) {
+		
+		/* code to find a user by his/her user name and then update his/her profile */
+		List<User> userList = userRepository.findAll();
+		User user1 = null;
+		String updateStatus = null;
+		try {
+			for(User user2: userList) {
+				if(user2.getUserName().equalsIgnoreCase(user.getUserName())) {
+					user1 = user;
+					userRepository.save(user1);
+					updateStatus = "updated";
+				}
+			}
+			if(user1 == null) {
+				throw new UserNotFoundException("user not found");
+			}
+		} catch(UserNotFoundException exception) {
+			updateStatus = "NotUpdated";
+		}
+		return  updateStatus;
 	}
 
 	/* deleting a user profile */
 	@Override
-	public void deleteUser(String userName) {
-
-		/* creating the object of user to publish it to the Mailbox service */
-		User user = getUserByUserName(userName);
-		Person person = new Person(null, "PERSON", user.getUserName());
-		Activity activity = new Delete(null, "DELETE", "user deleted", person, person);
-		
-		/* deleting the user and publishing the user object to mailbox topic  */
-		userRepository.delete((user.get_id()).toString());
+	public String deleteUser(String userName) {
+		/* code to find a user by his/her user name */
+		List<User> userList = userRepository.findAll();
+		User user1 = null;
+		String deleteStatus = null;
 		try {
-			userProducer.publishUserActivity("Mailbox1", new ObjectMapper().writeValueAsString(person));
-			
+			for(User user: userList) {
+				if(user.getUserName().equalsIgnoreCase(userName)) {
+					user1 = user;
+				}
+			}
+			if(user1 == null) {
+				throw new UserNotFoundException("user not found");
+			}
+			else {
+				/* creating the object of user to publish it to the Mailbox service */
+				Person person = new Person(null, "PERSON", user1.getUserName());
+				Activity activity = new Delete(null, "DELETE", "user deleted", person, person);
+				
+				/* deleting the user */
+				userRepository.delete((user1.get_id()).toString());
+				
+				/* and publishing the user object to mailbox topic and recommendation topic */
+				userProducer.publishUserActivity("TestMailbox", new ObjectMapper().writeValueAsString(activity));
+				userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
+				deleteStatus = "deleted";
+			}
+		} catch(UserNotFoundException exception) {
+			deleteStatus = "NotDeleted";
 		}
 		catch (JsonProcessingException ex) {
 			ex.printStackTrace();
-		}	
+			deleteStatus = "NotDeleted";
+		}
+		return deleteStatus;
 	}
 	
 	/* method to check the type of activity  */

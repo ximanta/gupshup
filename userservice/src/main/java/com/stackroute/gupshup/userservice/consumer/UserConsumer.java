@@ -15,7 +15,7 @@ public class UserConsumer {
 	@Autowired
 	UserProducer userProducer;
 	
-	/* subscribing a activity */
+	/* subscribing an activity */
 	public void subscribeUserActivity(String topic) {
 
 		UserConsumerThread userConsumerRunnable = new UserConsumerThread(topic, topic, service, userProducer);
@@ -28,7 +28,6 @@ public class UserConsumer {
 		try {
 			userConsumerRunnable.join();
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}

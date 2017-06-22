@@ -56,11 +56,10 @@ public class UserController {
 	    @ApiOperation(value = "Add a User")
 	    @RequestMapping(value="", method=RequestMethod.POST )
 	    public ResponseEntity addUser(@Valid User validUser, BindingResult bindingResult, @RequestBody User user) throws UserNotCreatedException {
-	    	if(bindingResult.hasErrors()) {
+	    	/*if(bindingResult.hasErrors()) {
 	    		System.out.println(bindingResult.getAllErrors());
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	    	}
-	    	//Map<String, String> messageMap = new HashMap<>();
+	    	}*/
 	    	try {
 		    	User newUser = userService.addUser(user);
 		    	
@@ -72,9 +71,9 @@ public class UserController {
 		    	}
 		    } catch(UserNotCreatedException exception) {
 	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
-	    	} catch(NullPointerException exception) {
+	    	} /*catch(NullPointerException exception) {
 				return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
-	    	}
+	    	}*/
 	    }
 	    
 	    /* GET User by username */
@@ -107,22 +106,27 @@ public class UserController {
 	    @ApiOperation(value = "Update a User")
 	    @RequestMapping(value="/{userName}",method=RequestMethod.PUT )
 	    public ResponseEntity updateUser(@Valid User validUser, BindingResult bindingResult, @PathVariable String userName, @RequestBody User user) throws UserNotUpdatedException{
-	    	if(bindingResult.hasErrors()) {
+	    	/*if(bindingResult.hasErrors()) {
 	    		return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
-	    	}
+	    	}*/
 	    	try {
 	    		if(userName == null) {
 	    			throw new UserNotUpdatedException("user could not be updated");
 	    		}
 	    		else {
-	    			userService.updateUser(user);
-	    			Map messageMap = new HashMap<String,String>();
-	    			messageMap.put("message","User updated successfully");
-	    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+	    			if((userService.updateUser(user)).equalsIgnoreCase("updated")) {
+		    			Map messageMap = new HashMap<String,String>();
+		    			messageMap.put("message","User updated successfully");
+		    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+	    			}
+	    			else {
+	    				throw new UserNotUpdatedException("user could not be updated");
+	    			}
+
 	    		}
 	    	}
 	    	catch(UserNotUpdatedException exception) {
-    	        return new ResponseEntity<>(exception, HttpStatus.NOT_FOUND);
+    	        return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}
 	    }
 
@@ -135,10 +139,14 @@ public class UserController {
 				   throw new UserNotDeletedException("user could not be deleted");
 			   }
 			   else {
-				   userService.deleteUser(userName);
-				   Map messageMap = new HashMap<String,String>();
-				   messageMap.put("message","User deleted successfully");
-				   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+				   if((userService.deleteUser(userName)).equalsIgnoreCase("deleted")) {
+					   Map messageMap = new HashMap<String,String>();
+					   messageMap.put("message","User deleted successfully");
+					   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+				   }
+				   else {
+					   throw new UserNotDeletedException("user could not be deleted");
+				   }
 			   }
 	    	}
 	    	catch(UserNotDeletedException exception) {
