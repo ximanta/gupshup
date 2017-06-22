@@ -31,7 +31,6 @@ public class UserserviceApplication extends WebMvcConfigurerAdapter {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(UserserviceApplication.class, args);
 		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("testuserkafka");
-<<<<<<< HEAD
 	}
 	
 	@Bean
@@ -51,7 +50,5 @@ public class UserserviceApplication extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 	    registry.addInterceptor(localeChangeInterceptor());
-=======
->>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 	}
 }

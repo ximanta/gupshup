@@ -10,16 +10,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.Activity;
 
+import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
-
-import com.stackroute.gupshup.userservice.domain.Create;
-import com.stackroute.gupshup.userservice.domain.Person;
-import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
 
 import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
@@ -63,11 +59,7 @@ public class UserServiceImpl implements UserService {
 		/* publishing the created object to mailbox topic and recommendation topic */
 		try {
 			userProducer.publishUserActivity("TestMailbox",new ObjectMapper().writeValueAsString(activity));
-<<<<<<< HEAD
 			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
-=======
-			userProducer.publishUserActivity("TestRecommendation",new ObjectMapper().writeValueAsString(activity));
->>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -129,7 +121,6 @@ public class UserServiceImpl implements UserService {
 		User user1 = null;
 		String deleteStatus = null;
 		try {
-<<<<<<< HEAD
 			for(User user: userList) {
 				if(user.getUserName().equalsIgnoreCase(userName)) {
 					user1 = user;
@@ -153,10 +144,6 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch(UserNotFoundException exception) {
 			deleteStatus = "NotDeleted";
-=======
-			userProducer.publishUserActivity("TestMailbox", new ObjectMapper().writeValueAsString(activity));
-			userProducer.publishUserActivity("TestRecommendation", new ObjectMapper().writeValueAsString(activity));
->>>>>>> 204b0ae6c124ea16fd46c73f3f533270b0f63c12
 		}
 		catch (JsonProcessingException ex) {
 			ex.printStackTrace();
