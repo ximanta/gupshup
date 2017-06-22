@@ -7,18 +7,24 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NodeEntity(label="circle")
-public class Circle {
+public class CircleRecommendation {
 	
 	@GraphId Long id;
 	
 	String keyword;
 	String type;
 	
-	public Circle(){ };
+	public CircleRecommendation(){ };
 	
-	public Circle(String keyword, String type){
+	@JsonCreator
+	public CircleRecommendation(
+			@JsonProperty("keyword") String keyword,
+			@JsonProperty("type") String type
+			){
 		this.keyword = keyword;
 		this.type = type;
 	}
@@ -35,8 +41,16 @@ public class Circle {
 		return keyword;
 	}
 
-	public void setName(String keyword) {
+	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

@@ -7,8 +7,11 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @NodeEntity(label="person")
-public class User {
+public class UserRecommendation {
 	
 	@GraphId Long id;
 	
@@ -19,9 +22,16 @@ public class User {
 	private String intrest;
 	private int DOB;
 	
-	public User(){};
+	public UserRecommendation(){};
 	
-	public User(String name, String firstname, String lastname, String gender, String intrest, int DOB){
+	@JsonCreator
+	public UserRecommendation(
+			@JsonProperty("name") String name, 
+			@JsonProperty("firstname") String firstname, 
+			@JsonProperty("lastname") String lastname, 
+			@JsonProperty("gender") String gender, 
+			@JsonProperty("intrest") String intrest,
+			@JsonProperty("DOB") int DOB){
 		this.name = name;
 		this.firstname = firstname;
 		this.lastname = lastname;
