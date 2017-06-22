@@ -12,6 +12,3 @@ spring:
      
   application:
     name: user
-
-application:
-  name: user

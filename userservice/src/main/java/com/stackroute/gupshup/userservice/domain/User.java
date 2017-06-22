@@ -19,29 +19,29 @@ public class User extends ResourceSupport {
 	@Id
 	private ObjectId _id;
 
-	@NotNull(message = "user name can not be null")
+	@NotNull(message = "error.userName.notnull")
 	private String userName;
 	
-	@NotNull(message = "first name can not be null")
+	@NotNull(message = "error.firstName.notnull")
 	private String firstName;
 	
-	@NotNull(message = "Last name can not be null")
+	@NotNull(message = "error.lastName.notnull")
 	private String lastName;
 	
-	@NotNull(message = "password can not be null")
-	@Size(min=8, message = "password length can not be less than 8")
+	@NotNull(message = "error.password.notnull")
+	@Size(min=8, message = "error.password.size")
 	private String password;
 	
-	@NotNull(message = "gender can not be null")
+	@NotNull(message = "error.gender.notnull")
 	private String gender;
 	
-	@NotNull(message = "DOB can not be null")
+	@NotNull(message = "error.dob.notnull")
 	private String dob;
 	
-	@NotNull(message = "email can not be null")
+	@NotNull(message = "error.emailId.notnull")
 	private String emailId;
 	
-	@NotNull(message = "contact no. can not be null")
+	@NotNull(message = "error.contactNo.notnull")
 	private String contactNo;
 	
 	private String profilePhoto;

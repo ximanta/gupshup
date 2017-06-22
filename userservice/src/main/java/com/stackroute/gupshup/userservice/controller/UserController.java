@@ -1,12 +1,14 @@
 package com.stackroute.gupshup.userservice.controller;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -57,9 +59,14 @@ public class UserController {
 	    @ApiOperation(value = "Add a User")
 	    @RequestMapping(value="", method=RequestMethod.POST )
 	    public ResponseEntity addUser(@Valid @RequestBody User user, BindingResult bindingResult) throws UserNotCreatedException {
+	    	
+	    	Locale locale = LocaleContextHolder.getLocale();
+		    String message = messageSource.getMessage ("error.user.alreadyregistered", null, locale );
+	    	
 	    	if(bindingResult.hasErrors()) {
 	    		//System.out.println(bindingResult.getAllErrors());
-	    		return new ResponseEntity<>(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST);
+	    		String validationErrorMessage = messageSource.getMessage (bindingResult.getFieldError().getDefaultMessage(), null, locale );
+	    		return new ResponseEntity<>(validationErrorMessage, HttpStatus.BAD_REQUEST);
 	    	}
 	    	try {
 		    	User newUser = userService.addUser(user);
@@ -71,19 +78,21 @@ public class UserController {
 		    		return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 		    	}
 		    } catch(UserNotCreatedException exception) {
-	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 	    	} /*catch(NullPointerException exception) {
 				return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
 	    	}*/
 	    		//return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+	    	
 	    }
 	    
 	    /* GET User by username */
 	    @ApiOperation(value = "Get user by userName",response = User.class)
 	    @RequestMapping(value="/{userName}", method=RequestMethod.GET)
 	    public ResponseEntity getUserByUserName(@PathVariable String userName) throws UserNotFoundException{
-	    	//Locale locale = LocaleContextHolder.getLocale();
-			//String message = messageSource.getMessage ("prop:message:", null, locale );
+	    	
+	    	Locale locale = LocaleContextHolder.getLocale();
+		    String msg = messageSource.getMessage ("error.user.notregistered", null, locale );
 	    	try {
 	    		if(userName == null) {
 	    			throw new UserNotFoundException("user not found");
@@ -100,7 +109,7 @@ public class UserController {
 	    		}
 	    	}
 	    	catch(UserNotFoundException exception) {
-	    		return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(msg, HttpStatus.NOT_FOUND);
 	    	}
 	    }
 	    
@@ -108,8 +117,13 @@ public class UserController {
 	    @ApiOperation(value = "Update a User")
 	    @RequestMapping(value="/{userName}",method=RequestMethod.PUT )
 	    public ResponseEntity updateUser(@PathVariable String userName,@Valid @RequestBody User user, BindingResult bindingResult) throws UserNotUpdatedException{
+	    	
+	    	Locale locale = LocaleContextHolder.getLocale();
+		    String message = messageSource.getMessage ("error.user.notupdated", null, locale );
+	    	
 	    	if(bindingResult.hasErrors()) {
-	    		return new ResponseEntity<>(bindingResult.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST); 
+	    		String validationErrorMessage = messageSource.getMessage (bindingResult.getFieldError().getDefaultMessage(), null, locale );
+	    		return new ResponseEntity<>(validationErrorMessage, HttpStatus.BAD_REQUEST); 
 	    	}
 	    	try {
 	    		if(userName == null) {
@@ -128,7 +142,7 @@ public class UserController {
 	    		}
 	    	}
 	    	catch(UserNotUpdatedException exception) {
-    	        return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
+    	        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 	    	}
 	    }
 
@@ -136,7 +150,11 @@ public class UserController {
 	    @ApiOperation(value = "Delete a User")
 	    @RequestMapping(value="/{userName}",method=RequestMethod.DELETE )
 	    public ResponseEntity deleteUser(@PathVariable String userName) throws UserNotDeletedException{
-		   try {
+		   
+	    	Locale locale = LocaleContextHolder.getLocale();
+		    String message = messageSource.getMessage ("error.user.notdeleted", null, locale );
+	    	
+	    	try {
 			   if(userName == null) {
 				   throw new UserNotDeletedException("user could not be deleted");
 			   }
@@ -152,7 +170,8 @@ public class UserController {
 			   }
 	    	}
 	    	catch(UserNotDeletedException exception) {
-	    		return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
+	    		return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 	    	}
 	    }
+	    
 }
