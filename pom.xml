@@ -100,10 +100,11 @@
 	<modules>
 		<module>gupshup-apigateway</module>
 		<module>gupshup-discoveryregistry</module>
+                <module>gupshup-configserver</module>
 		<module>activityproducer</module>
 		<module>circleservice</module>
 		<module>userservice</module>
-		<module>gupshup-configserver</module>
+		<module>mailboxservice</module>
 	</modules>
 
 </project>
