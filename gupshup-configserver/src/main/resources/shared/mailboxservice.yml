@@ -6,8 +6,8 @@ eureka:
 spring:
   data:
     mongodb:
-      username: superAdmin
-      password: admin123
+      username: vijay
+      password: vijay1994
       authentication-database: admin
       database: gupshup  
       port: 27017
