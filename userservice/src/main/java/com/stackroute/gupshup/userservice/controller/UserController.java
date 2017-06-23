@@ -37,12 +37,9 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("user")
 public class UserController {
 	    
-	    /* Autowire of UserService */
+	    /* Autowiring */
 	    private UserService userService;
 	    private UserLinkAssembler userLinkAssembler;
-	    
-	    @Autowired
-		MessageSource messageSource;
 	    
 	    @Autowired
 	    public void setUserService(UserService userService)
@@ -54,6 +51,9 @@ public class UserController {
 	    public void setUserLinkAssembler(UserLinkAssembler userLinkAssembler) {
 	    	this.userLinkAssembler = userLinkAssembler;
 	    }
+	    
+	    @Autowired
+		MessageSource messageSource;
 
 	    /* Add a User */
 	    @ApiOperation(value = "Add a User")
@@ -131,9 +131,8 @@ public class UserController {
 	    		}
 	    		else {
 	    			if((userService.updateUser(user)).equalsIgnoreCase("updated")) {
-		    			Map messageMap = new HashMap<String,String>();
-		    			messageMap.put("message","User updated successfully");
-		    	        return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+	    				String successMessage = messageSource.getMessage ("error.user.notupdated", null, locale );
+		    	        return new ResponseEntity<>(successMessage, HttpStatus.OK);
 	    			}
 	    			else {
 	    				throw new UserNotUpdatedException("user could not be updated");
@@ -160,9 +159,8 @@ public class UserController {
 			   }
 			   else {
 				   if((userService.deleteUser(userName)).equalsIgnoreCase("deleted")) {
-					   Map messageMap = new HashMap<String,String>();
-					   messageMap.put("message","User deleted successfully");
-					   return new ResponseEntity<Map<String,String>>(messageMap, HttpStatus.OK);
+					   String successMessage = messageSource.getMessage ("error.user.success.userdelete", null, locale );
+					   return new ResponseEntity<>(successMessage, HttpStatus.OK);
 				   }
 				   else {
 					   throw new UserNotDeletedException("user could not be deleted");

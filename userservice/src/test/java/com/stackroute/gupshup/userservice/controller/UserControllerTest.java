@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,6 +44,10 @@ public class UserControllerTest {
 	
 	@MockBean
 	private UserLinkAssembler userLinkAssembler;
+    
+    @Autowired
+	MessageSource messageSource;
+	
 	
 	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
     
@@ -87,8 +92,8 @@ public class UserControllerTest {
                 "}";
         
 
-        doNothing().when(userService).deleteUser("5943c522e103597e5c996a88");
-        mockMvc.perform(delete("/user/5943c522e103597e5c996a88")
+        doNothing().when(userService).deleteUser("randeep18");
+        mockMvc.perform(delete("/user/randeep18")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
