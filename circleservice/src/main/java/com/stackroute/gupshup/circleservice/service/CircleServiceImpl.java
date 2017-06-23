@@ -85,8 +85,8 @@ public class CircleServiceImpl implements CircleService {
 				Person person = new Person(null,"Person",circle.getCircleCreatedBy(),circle.getCircleId());
 				Group group = new Group(null,"Circle",circle.getCircleId());
 				Create create = new Create("null","create",circle.getCircleCreatedBy()+" created "+circle.getCircleName(),person,group);
-				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(create));
-				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(create));
+				producer.publishMessage("mailbox",new ObjectMapper().writeValueAsString(create));
+				producer.publishMessage("recommendation",new ObjectMapper().writeValueAsString(create));
 			}
 		} catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
@@ -150,8 +150,8 @@ public class CircleServiceImpl implements CircleService {
 				Person person = new Person(null,"Person",currentCircle.getCircleCreatedBy(),currentCircle.getCircleId());
 				Group group = new Group(null,"Circle",currentCircle.getCircleId());
 				Update update = new Update("null","update",currentCircle.getCircleCreatedBy()+" updated "+currentCircle.getCircleName(),person,group);
-				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(update));
-				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(update));
+				producer.publishMessage("mailbox",new ObjectMapper().writeValueAsString(update));
+				producer.publishMessage("recommendation",new ObjectMapper().writeValueAsString(update));
 				}
 			}
 		}
@@ -220,8 +220,8 @@ public class CircleServiceImpl implements CircleService {
 				Person person = new Person(null,"Person",members.get(i).getUserId(),circle.getCircleId());
 				Group group = new Group(null,"Circle",circle.getCircleId());
 				Delete delete = new Delete("null","delete",circle.getCircleCreatedBy()+" deleted the "+circle.getCircleName(),person,group);
-				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(delete));
-				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(delete));
+				producer.publishMessage("mailbox",new ObjectMapper().writeValueAsString(delete));
+				producer.publishMessage("recommendation",new ObjectMapper().writeValueAsString(delete));
 				}
 				
 			}
@@ -351,8 +351,8 @@ public class CircleServiceImpl implements CircleService {
 	                            Group person1 = new Group(circleId,"Group",members.get(i).getUserId());
 	                            System.out.println(person1.getName());
 	                            Join addActivity = new Join(join.getContext(),join.getType(),join.getSummary(),join.getActor(),person1);
-	                            producer.publishMessage("person",objectMapper.writeValueAsString(addActivity));
-	                            producer.publishMessage("testcirclerecommendation",objectMapper.writeValueAsString(addActivity));
+	                            producer.publishMessage("mailbox",objectMapper.writeValueAsString(addActivity));
+	                            producer.publishMessage("recommendation",objectMapper.writeValueAsString(addActivity));
 	                            
 	                        }
 	                    }
@@ -395,7 +395,7 @@ public class CircleServiceImpl implements CircleService {
                         System.out.println(members.get(i).getUserId());
                         Person person1 = new Person(null,"Person",members.get(i).getUserId(),circleId);
                         Leave leaveActivity = new Leave(leave.getContext(),leave.getType(),leave.getSummary(),leave.getActor(),person1);
-                        producer.publishMessage("person",objectMapper.writeValueAsString(leaveActivity));
+                        producer.publishMessage("mailbox",objectMapper.writeValueAsString(leaveActivity));
                     }
                 }
 				
@@ -424,7 +424,7 @@ public class CircleServiceImpl implements CircleService {
 	                    for(int i=0;i<members.size();i++){
 	                        Person person2 = new Person(null,"Person",members.get(i).getUserId(),circleId);
 	                        Add addActivity = new Add(add.getContext(),add.getType(),add.getSummary(),add.getActor(),add.getObject(),person2);
-	                        producer.publishMessage("person",objectMapper.writeValueAsString(addActivity));
+	                        producer.publishMessage("mailbox",objectMapper.writeValueAsString(addActivity));
 	                    }
 	                }
 	            }

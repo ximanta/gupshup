@@ -11,7 +11,7 @@ public final class Person implements ASObject{
 	private final String circleName;
 	
 	@JsonCreator
-	public Person(@JsonProperty("@context") String context, @JsonProperty("type") String type, @JsonProperty("name") String name,@JsonProperty("name") String circleName) {
+	public Person(@JsonProperty("@context") String context, @JsonProperty("type") String type, @JsonProperty("name") String name,@JsonProperty("circleName") String circleName) {
 		this.context = context;
 		this.type = type;
 		this.name = name;
