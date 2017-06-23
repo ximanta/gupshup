@@ -27,7 +27,7 @@ import com.stackroute.gupshup.userservice.consumer.UserConsumer;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableMongoRepositories
+//@EnableMongoRepositories
 @EnableWebMvc
 public class UserserviceApplication extends WebMvcConfigurerAdapter {
 
