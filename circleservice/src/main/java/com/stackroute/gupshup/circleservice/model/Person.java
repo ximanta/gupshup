@@ -8,12 +8,14 @@ public final class Person implements ASObject{
 	private final String context;
 	private final String type;
 	private final String name;
+	private final String circleName;
 	
 	@JsonCreator
-	public Person(@JsonProperty("@context") String context, @JsonProperty("type") String type, @JsonProperty("name") String name) {
+	public Person(@JsonProperty("@context") String context, @JsonProperty("type") String type, @JsonProperty("name") String name,@JsonProperty("name") String circleName) {
 		this.context = context;
 		this.type = type;
 		this.name = name;
+		this.circleName = circleName;
 	}
 
 	@Override
@@ -28,5 +30,9 @@ public final class Person implements ASObject{
 
 	public String getName() {
 		return name;
+	}
+	
+	public String getcirlceName() {
+		return circleName;
 	}
 }

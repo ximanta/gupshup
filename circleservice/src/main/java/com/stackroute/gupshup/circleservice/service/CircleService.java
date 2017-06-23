@@ -13,11 +13,12 @@ public interface CircleService {
 	public List<Circle> findAllCircle() throws CircleCreationException;
 	public Circle findById(String id) throws CircleCreationException;
 	public void updateCircle(Circle currentCircle) throws CircleCreationException;
-	void deleteAllCircle() throws CircleCreationException;
-	boolean ifCircleExist(Circle circle) throws CircleCreationException;
+	public void deleteAllCircle() throws CircleCreationException;
+	public boolean ifCircleExist(Circle circle) throws CircleCreationException;
 	public List<User> getCircleMembersDetail(String circleId) throws CircleCreationException;
 	public Circle addCircleMember(String circleId, User user) throws CircleCreationException;
 	public Circle deleteCircleMember(String circleId, String userId) throws CircleCreationException;
-	void getActivityType(JsonNode node);
+	public void getActivityType(JsonNode node);
+	public void addMailtoMailbox(String circleId,Mail mail) throws CircleCreationException;
 	
 }
