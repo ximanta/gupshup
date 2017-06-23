@@ -23,59 +23,96 @@ public class Circle extends ResourceSupport{
 	
 	public Circle() {
 	}
-	@Id
+
+
 	public String getCircleId() {
 		return circleId;
 	}
+
+
 	public void setCircleId(String circleId) {
 		this.circleId = circleId;
 	}
-	
+
+
 	public String getCircleName() {
 		return circleName;
 	}
+
+
 	public void setCircleName(String circleName) {
 		this.circleName = circleName;
 	}
+
+
 	public String getCircleDescription() {
 		return circleDescription;
 	}
+
+
 	public void setCircleDescription(String circleDescription) {
 		this.circleDescription = circleDescription;
 	}
+
+
 	public String getCircleCreatedBy() {
 		return circleCreatedBy;
 	}
+
+
 	public void setCircleCreatedBy(String circleCreatedBy) {
 		this.circleCreatedBy = circleCreatedBy;
 	}
-	
+
+
 	public String getCircleCreatedDate() {
 		return circleCreatedDate;
 	}
+
+
 	public void setCircleCreatedDate(String circleCreatedDate) {
 		this.circleCreatedDate = circleCreatedDate;
 	}
+
+
 	public List<User> getCircleMembers() {
 		return circleMembers;
 	}
+
+
 	public void setCircleMembers(List<User> circleMembers) {
 		this.circleMembers = circleMembers;
 	}
+
+
 	public List<String> getKeywords() {
 		return keywords;
 	}
+
+
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
 	}
+
 
 	public List<Mail> getMailbox() {
 		return mailbox;
 	}
 
+
 	public void setMailbox(List<Mail> mailbox) {
 		this.mailbox = mailbox;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Circle [circleId=" + circleId + ", circleName=" + circleName + ", circleDescription="
+				+ circleDescription + ", circleCreatedBy=" + circleCreatedBy + ", circleCreatedDate="
+				+ circleCreatedDate + ", circleMembers=" + circleMembers + ", keywords=" + keywords + ", mailbox="
+				+ mailbox + "]";
+	}
+	
 	
 	
 }

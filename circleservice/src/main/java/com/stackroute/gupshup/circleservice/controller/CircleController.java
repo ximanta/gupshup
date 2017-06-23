@@ -51,33 +51,24 @@ public class CircleController {
 		return new ResponseEntity<List<Circle>>(circle, HttpStatus.FOUND);
 	}
 	
-	//---------create circle------------------------------
-	//@CrossOrigin(origins = "http://localhost:4200")
+	//-----------------------------create circle------------------------------
 	@RequestMapping(value="",method=RequestMethod.POST)
 	public ResponseEntity<Circle> saveCircle(@RequestBody Circle circle ) {
-		
-		System.out.println(circle);
 		Circle circlesave = null;
 		try {
 			if(circle.getCircleName()==null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
 			else {
-//				circle.setCircleCreatedBy("hema");
-//				circle.setCircleCreatedDate("19/06/2017");
-//				circle.setKeywords(circle.getKeywords());
 				circlesave=circleService.createCircle(circle); 
 			}
-		}
-
-		catch(CircleCreationException circleCreationException){
-
+		} catch(CircleCreationException circleCreationException){
 			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 		}
-
 		return new ResponseEntity<Circle>(circlesave, HttpStatus.CREATED);
 	}
-	//--------delete circle by id-----------------
+	
+	//------------------------------delete circle by id-----------------
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public ResponseEntity<Circle> deleteCircle(@PathVariable String id)  {
 		try {
@@ -93,8 +84,8 @@ public class CircleController {
 		return new ResponseEntity<Circle>(HttpStatus.OK);
 
 	}
+	
 	//-------------------Retrieve Single circle--------------------------------------------------------
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Circle> getCircle(@PathVariable("id") String id) {
 
@@ -114,16 +105,18 @@ public class CircleController {
 
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}   
-	//---------update circle-----------------------------
-	@RequestMapping(value = "", method = RequestMethod.PUT)
-	public ResponseEntity<Circle> updateCircle(@RequestBody Circle circle){
+	
+	//-------------------------update circle-----------------------------
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Circle> updateCircle(@PathVariable String id, @RequestBody Circle circle){
 		
 		try {
 			
-			if (circleService.findById(circle.getCircleId()) == null) {
+			if (circle.getCircleName() == null) {
 				return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
 			}
 			else {
+				
 				circleService.updateCircle(circle);
 			}
 		}

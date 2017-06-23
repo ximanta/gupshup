@@ -1,23 +1,26 @@
 package com.stackroute.gupshup.circleservice.service;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.circleservice.exception.CircleCreationException;
 import com.stackroute.gupshup.circleservice.model.Add;
 import com.stackroute.gupshup.circleservice.model.Circle;
 import com.stackroute.gupshup.circleservice.model.Create;
+import com.stackroute.gupshup.circleservice.model.Delete;
 import com.stackroute.gupshup.circleservice.model.Group;
 import com.stackroute.gupshup.circleservice.model.Join;
 import com.stackroute.gupshup.circleservice.model.Leave;
 import com.stackroute.gupshup.circleservice.model.Note;
 import com.stackroute.gupshup.circleservice.model.Person;
+import com.stackroute.gupshup.circleservice.model.Update;
 import com.stackroute.gupshup.circleservice.model.User;
 import com.stackroute.gupshup.circleservice.producer.CircleServiceProducer;
 import com.stackroute.gupshup.circleservice.repository.CircleRepository;
@@ -56,30 +59,39 @@ public class CircleServiceImpl implements CircleService {
 //		return false;
 //	}
 
-	//-------- create circle-----------
+	//-------------------------------- create circle-----------
 	public Circle createCircle(Circle circle) {
+		Circle savedCircle = null;
+		savedCircle=circleRepo.save(circle);
 		try {
-			circleRepo.save(circle);
 			if(circle.getCircleName()==null) {
 				throw new CircleCreationException("Give Circle Name");		
 			}
-//			else if(testCircleName(circle.getCircleName())==false) {
-//				throw new CircleCreationException("Give proper Circle Name");
+////			else if(testCircleName(circle.getCircleName())==false) {
+////				throw new CircleCreationException("Give proper Circle Name");
+////			}
+//			else if(!(circle.getCircleName().length()>2 && circle.getCircleName().length() <12)) {
+//				throw new CircleCreationException("Circle Name should be above 2 letters and below 12 letters");
 //			}
-			else if(circle.getCircleName().length()>2 && circle.getCircleName().length() <12) {
-				throw new CircleCreationException("Circle Name should be above 2 letters and below 12 letters");
-			}
-//			else if(circle.getCircleName().substring(0,1).contains("")) {
-//
-//			}
+////			else if(circle.getCircleName().substring(0,1).contains("")) {
+////
+////			}
 			else {
-				circleRepo.save(circle);
+				savedCircle=circleRepo.save(circle);
+//				System.out.println("savedCircle :"+savedCircle);
+				Person person = new Person(null,"Person",circle.getCircleCreatedBy());
+				Group group = new Group(null,"Circle",circle.getCircleId());
+				Create create = new Create("null","create",circle.getCircleCreatedBy()+" created "+circle.getCircleName(),person,group);
+				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(create));
+				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(create));
 			}
-		}
-		catch(CircleCreationException circlecreationException)	{
+		} catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage()+"here");
 		}
-		return circle;
+		return savedCircle;
 	}
 
 	//----------------find circle by id--------------------
@@ -124,16 +136,27 @@ public class CircleServiceImpl implements CircleService {
 		
 		try {
 			
-			if(currentCircle!=null)	{
-				currentCircle.setCircleId(currentCircle.getCircleId());
-				circleRepo.save(currentCircle);
+			if(currentCircle==null)	{
+				throw new CircleCreationException("Give Circle name");
 			}
 			else {
-				throw new CircleCreationException("Give Circle name");
+				
+				circleRepo.save(currentCircle);
+				List<User> members = getCircleMembersDetail(currentCircle.getCircleId());
+				for(int i=0;i<members.size();i++){
+				Person person = new Person(null,"Person",currentCircle.getCircleCreatedBy());
+				Group group = new Group(null,"Circle",currentCircle.getCircleId());
+				Update update = new Update("null","update",currentCircle.getCircleCreatedBy()+" updated "+currentCircle.getCircleName(),person,group);
+				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(update));
+				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(update));
+				}
 			}
 		}
 		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
+		}
+		catch(JsonProcessingException js) {
+			js.getMessage();
 		}
 
 	}
@@ -165,7 +188,10 @@ public class CircleServiceImpl implements CircleService {
 			}
 			else {
 				Circle circle = findById(circleId);
+				if(circle!=null)
+				{
 				members = circle.getCircleMembers();
+				}
 			}
 		}
 		catch(CircleCreationException circlecreationException) {
@@ -179,15 +205,29 @@ public class CircleServiceImpl implements CircleService {
 	@Override
 	public void deleteCircle(String id) throws CircleCreationException {
 		try {
-			if(id!=null) {
-				circleRepo.delete(id);
+			if(id==null) {
+				throw new CircleCreationException("Cann't delete circle");
 			}
 			else {
-				throw new CircleCreationException("Cann't delete circle");
+				Circle circle = new Circle();
+				circle = findById(id);
+				List<User> members = getCircleMembersDetail(id);
+				circleRepo.delete(id);
+				for(int i=0;i<members.size();i++){
+				Person person = new Person(null,"Person",members.get(i).getUserId());
+				Group group = new Group(null,"Circle",circle.getCircleId());
+				Delete delete = new Delete("null","delete",circle.getCircleCreatedBy()+" deleted the "+circle.getCircleName(),person,group);
+				producer.publishMessage("testcirclemailbox",new ObjectMapper().writeValueAsString(delete));
+				producer.publishMessage("testcirclerecommendation",new ObjectMapper().writeValueAsString(delete));
+				}
+				
 			}
 		}
 		catch(CircleCreationException circlecreationException)	{
 			circlecreationException.getMessage();
+		}
+		catch(JsonProcessingException js) {
+			js.getMessage();
 		}
 	}
 	
@@ -295,13 +335,22 @@ public class CircleServiceImpl implements CircleService {
 				}
 
 				if(type.equalsIgnoreCase("leave")){
-					Leave leave = objectMapper.treeToValue(node,Leave.class);
-					Group group = (Group) leave.getObject();
-					String circleId = group.getName();
-					Person person = (Person) leave.getActor(); 
-					String userId = person.getName();
-					deleteCircleMember(circleId, userId);
-				}
+
+                    Leave leave = objectMapper.treeToValue(node, Leave.class);
+                    Group group = (Group) leave.getObject();
+                    String circleId = group.getName();
+                    Person person = (Person) leave.getActor();
+                    
+                    List<User> members = getCircleMembersDetail(circleId);
+                    deleteCircleMember(circleId, person.getName());
+
+                    for(int i=0;i<members.size();i++){
+                        System.out.println(members.get(i).getUserId());
+                        Person person1 = new Person(null,"Person",members.get(i).getUserId());
+                        Leave leaveActivity = new Leave(leave.getContext(),leave.getType(),leave.getSummary(),leave.getActor(),person1);
+                        producer.publishMessage("person",objectMapper.writeValueAsString(leaveActivity));
+                    }
+                }
 
 				if(type.equalsIgnoreCase("add")){
 					Add add = objectMapper.treeToValue(node,Add.class);
@@ -313,11 +362,14 @@ public class CircleServiceImpl implements CircleService {
 					List<User> members = getCircleMembersDetail(circleId);
 //					System.out.println(members.size());
 					//System.out.println(members);
+					if(members!=null)
+					{
 					for(int i=0;i<members.size();i++){
 						//System.out.println(members.get(i).getUserName());
 						Person person = new Person(null,"Person",members.get(i).getUserId());
 						Add addActivity = new Add(add.getContext(),add.getType(),add.getSummary(),add.getActor(),add.getObject(),person);
 						producer.publishMessage("person",objectMapper.writeValueAsString(addActivity));
+					}
 					}
 				}
 
