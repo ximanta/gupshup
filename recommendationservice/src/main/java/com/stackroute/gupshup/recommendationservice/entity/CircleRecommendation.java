@@ -3,6 +3,9 @@ package com.stackroute.gupshup.recommendationservice.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -15,7 +18,12 @@ public class CircleRecommendation {
 	
 	@GraphId Long id;
 	
+	@NotNull(message="circle name cannot be null")
+	@Size(min=1, message="circle keyword cannot be empty")
 	String keyword;
+	
+	@NotNull(message="circle type cannot be null")
+	@Size(min=1, message="circle type cannot be empty")
 	String type;
 	
 	public CircleRecommendation(){ };
@@ -52,5 +60,12 @@ public class CircleRecommendation {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@Override
+	public String toString() {
+		return "CircleRecommendation [id=" + id + ", keyword=" + keyword + ", type=" + type + "]";
+	}
+	
+	
 
 }

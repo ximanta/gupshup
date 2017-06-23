@@ -1,11 +1,11 @@
 package com.stackroute.gupshup.recommendationservice.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,11 +15,26 @@ public class UserRecommendation {
 	
 	@GraphId Long id;
 	
+	@Id
+	@NotNull(message="username cannot be null")
+	@Size(min=1, message="username cannot be empty")
 	private String name;
+	
+	@NotNull(message="firstname cannot be null")
+	@Size(min=1, message="firstname cannot be empty")
 	private String firstname;
+	
+	@NotNull(message="lastname cannot be null")
+	@Size(min=1, message="lastname cannot be empty")
 	private String lastname;
+	
+	@NotNull(message="gender cannot be null")
+	@Size(min=1, message="gender cannot be empty")
 	private String gender;
+	
 	private String intrest;
+	
+	@NotNull(message="Date of Birth cannot be null")
 	private int DOB;
 	
 	public UserRecommendation(){};
@@ -99,10 +114,8 @@ public class UserRecommendation {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", firstname=" + firstname + ", lastname=" + lastname + ", gender="
-				+ gender + ", intrest=" + intrest + ", DOB=" + DOB + "]";
+		return "UserRecommendation [id=" + id + ", name=" + name + ", firstname=" + firstname + ", lastname=" + lastname
+				+ ", gender=" + gender + ", intrest=" + intrest + ", DOB=" + DOB + "]";
 	}
-	
-	
 
 }

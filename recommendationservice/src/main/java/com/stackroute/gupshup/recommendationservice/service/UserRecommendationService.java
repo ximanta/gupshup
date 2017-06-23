@@ -16,14 +16,13 @@ public class UserRecommendationService {
 	UserRecommendationRepository userRecommendationRepository;
 	
 	public Map<String, Object> createUser(UserRecommendation userRecommendation){
-		return userRecommendationRepository.createUser(
+				return userRecommendationRepository.createUser(
 				userRecommendation.getName(),
 				userRecommendation.getFirstname(),
 				userRecommendation.getLastname(),
 				userRecommendation.getGender(),
 				userRecommendation.getIntrest(),
 				userRecommendation.getDOB());
-		//System.out.println(userRepository.findAll().toString());
 	}
 	
 	public Iterable<Map<String, Object>> follows(String user1, String user2){
