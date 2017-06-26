@@ -1,4 +1,30 @@
+# default configuration
 eureka:
  client:
    serviceUrl:
      defaultZone: http://localhost:8761/eureka/
+
+activityproducer:
+  bootstrap-server: localhost:9092
+  circle-topic: circle
+  mailbox-topic: mailbox
+  user-topic: user
+  recommendation-topic: recommendation
+  
+---
+
+# production configuration
+spring:
+    profiles: production
+  
+eureka:
+ client:
+   serviceUrl:
+     defaultZone: http://172.23.239.182:8761/eureka/
+
+activityproducer:
+  bootstrap-server: 172.23.239.202:9092
+  circle-topic: circle
+  mailbox-topic: mailbox
+  user-topic: user
+  recommendation-topic: recommendation
