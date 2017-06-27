@@ -1,7 +1,28 @@
+# default configuration
 eureka:
  client:
    serviceUrl:
-     defaultZone: http://localhost:8761/eureka/
+     defaultZone: http://172.23.239.182:8761/eureka/
+     
+spring:
+  data:
+    mongodb:
+      username: superAdmin
+      password: admin123
+      authentication-database: admin
+      database: gupshup  
+      port: 27017
+     
+---
+
+# production configuration
+spring:
+    profiles: production
+    
+eureka:
+ client:
+   serviceUrl:
+     defaultZone: http://172.23.239.182:8761/eureka/
      
 spring:
   data:

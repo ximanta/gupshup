@@ -1,4 +1,6 @@
 package com.stackroute.gupshup.activityproducer.domain;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -6,10 +8,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class Leave implements Activity{
 	
 	private final String context;
+	
+	@NotNull(message="type is required")
 	private final String type;
+	
 	private final String summary;
+	
+	@NotNull(message="actor can not be null")
 	private final ASObject actor;
+	
+	@NotNull(message="object can not be null")
 	private final ASObject object;
+
 	
 	@JsonCreator
 	public Leave(
