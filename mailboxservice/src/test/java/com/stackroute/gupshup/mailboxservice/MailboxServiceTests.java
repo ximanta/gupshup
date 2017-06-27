@@ -1,4 +1,4 @@
-package com.stackroute.gupshup.gupshupMBS;
+package com.stackroute.gupshup.mailboxservice;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class GupshupMbsApplicationTests {
+public class MailboxServiceTests {
 
 	@Test
 	public void contextLoads() {
