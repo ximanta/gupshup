@@ -12,7 +12,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.service.UserService;
 
 public class UserConsumerThread extends Thread {
@@ -21,13 +20,11 @@ public class UserConsumerThread extends Thread {
 	private String consumerGroupId;
 	private KafkaConsumer<String, String> userConsumer;
 	private UserService userService;
-	private UserProducer userProducer;
-	
-	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService, UserProducer userProducer) {
+		
+	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService) {
 		this.topicName = topicName;
 		this.consumerGroupId = consumerGroupId;
 		this.userService = userService;
-		this.userProducer = userProducer;
 	}
 	
 	@Override
@@ -36,6 +33,9 @@ public class UserConsumerThread extends Thread {
 		Properties configProperties = new Properties();
 		/* setting all configurations for a consumer */
 		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
+		configProperties.put("acks", "all");
+		configProperties.put("retries", "3");
+		configProperties.put("linger.ms", 5);
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
@@ -51,9 +51,7 @@ public class UserConsumerThread extends Thread {
 			for(ConsumerRecord<String, String> record: records ) {
 				System.out.println(record.value());
 				String value = record.value();
-				/* publishing activity to Recommendation and Mailbox1 topic */
-
-				
+							
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {

@@ -244,15 +244,16 @@ public class UserServiceImpl implements UserService {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sourceNode = node.path("actor");
-		String sourceNodeName = sourceNode.path("type").asText();
-		JsonNode sourceUserNode = node.path("object");
+		sourceNode.path("name");
 		
-		User sourceUser = null;
+		JsonNode updatedUser = node.path("object");
+		
+		User updatedUserObject = null;
 		try {
-			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
+			updatedUserObject = mapper.treeToValue(updatedUser, User.class);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		updateUser(sourceUser);
+		updateUser(updatedUserObject);
 	}
 }

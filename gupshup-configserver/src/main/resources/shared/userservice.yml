@@ -12,6 +12,19 @@ spring:
       authentication-database: admin
       database: gupshup  
       port: 27017
+      
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+
+    com:
+      stackroute:
+        gupshup:
+          userservice: DEBUG
+          
+  file: logs/spring-boot-logging.log
      
 ---
 
