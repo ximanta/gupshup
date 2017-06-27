@@ -1,7 +1,0 @@
-server:
- port: 8080
- 
-activityproducer:
-  ribbon:  
-    listOfServers: localhost:8010,localhost:8011,localhost:8012
-    ServerListRefreshInterval: 15000

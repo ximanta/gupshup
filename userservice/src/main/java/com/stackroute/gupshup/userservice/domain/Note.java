@@ -1,6 +1,4 @@
-package com.stackroute.gupshup.activityproducer.domain;
-import javax.validation.constraints.NotNull;
-
+package com.stackroute.gupshup.userservice.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,13 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class Note implements ASObject {
 
 	private final String context;
-	
-	@NotNull(message="type is required")
 	private final String type;
-	
 	private final String summary;
-	
-	@NotNull(message="content can not be null")
 	private final String content;
 
 	@JsonCreator

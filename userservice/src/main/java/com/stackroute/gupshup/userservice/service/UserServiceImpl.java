@@ -9,9 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.Activity;
-
+import com.stackroute.gupshup.userservice.domain.Add;
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
+import com.stackroute.gupshup.userservice.domain.Note;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
@@ -40,7 +41,6 @@ public class UserServiceImpl implements UserService {
 	/* Registering a new user */
 	@Override
 	public User addUser(User user) {
-
 		/* code to check if a user is already registered */
 		List<User> userList = userRepository.findAll();
 		try {
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 		}
 		/* creating the object of new registered user to publish it to mailbox service */
 		Person person =new Person(null,"Person",user.getUserName());
-		Activity activity = new Create(null,"CreateUser","user registered",person,person);
+		Activity activity = new Create(null,"Create","user registered",person,person);
 		
 		/* publishing the created object to mailbox topic and recommendation topic */
 		try {
@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return userRepository.save(user);
 	}
-
 	
 	/* fetching a user by its user name */
 	@Override
@@ -91,7 +90,6 @@ public class UserServiceImpl implements UserService {
 	/* Update User profile details */
 	@Override
 	public String updateUser(User user) {
-		
 		/* code to find a user by his/her user name and then update his/her profile */
 		List<User> userList = userRepository.findAll();
 		User user1 = null;
@@ -112,7 +110,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return  updateStatus;
 	}
-
+	
 	
 	/* delete user */
 	public String deleteUser(String userName)
@@ -141,41 +139,40 @@ public class UserServiceImpl implements UserService {
 		return deleteStatus;
 	}
 	
-	
-	
 	/* deleting a user profile */
 	@Override
-	public void deleteUserActivity(JsonNode node) {
-		
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode sourceNode = node.path("actor");
-		String sourceNodeName = sourceNode.path("type").asText();
-		JsonNode sourceUserNode = node.path("object");
-		
-		User sourceUser = null;
-		try {
-			sourceUser = mapper.treeToValue(sourceUserNode, User.class);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		
-		/* creating the object of user to delete */
-		Person person = new Person(null, "Person", sourceUser.getUserName());
-		Activity activity = new Delete(null, "DeleteUser", "user deleted", person, person);
-		
-		String deleteStatus = deleteUser(sourceUser.getUserName());
-		if(deleteStatus.equalsIgnoreCase(deleteStatus)) {
-			try {
-				
-			/* publishing the user object to mailbox topic and recommendation topic */
-			userProducer.publishUserActivity("mailbox", new ObjectMapper().writeValueAsString(activity));
-			userProducer.publishUserActivity("recommendation", new ObjectMapper().writeValueAsString(activity));
-			}
-			catch (JsonProcessingException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
+    public void deleteUserActivity(JsonNode node) {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode sourceNode = node.path("actor");
+        String sourceNodeName = sourceNode.path("type").asText();
+        JsonNode sourceUserNode = node.path("object");
+        
+        User sourceUser = null;
+        try {
+            sourceUser = mapper.treeToValue(sourceUserNode, User.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        
+        /* creating the object of user to delete */
+        Person person = new Person(null, "Person", sourceUser.getUserName());
+        Activity activity = new Delete(null, "DeleteUser", "user deleted", person, person);
+        
+        String deleteStatus = deleteUser(sourceUser.getUserName());
+        if(deleteStatus.equalsIgnoreCase(deleteStatus)) {
+            try {
+                
+            /* publishing the user object to mailbox topic and recommendation topic */
+            userProducer.publishUserActivity("mailbox", new ObjectMapper().writeValueAsString(activity));
+            userProducer.publishUserActivity("recommendation", new ObjectMapper().writeValueAsString(activity));
+            }
+            catch (JsonProcessingException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }	
+
 	
 	/* method to check the type of activity  */
 	@Override
@@ -197,6 +194,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void followUser(JsonNode node) {
 		/* fetching source user name from the node tree */
+		
 		JsonNode sourceNode = node.path("actor");
 		String sourceUserName = sourceNode.path("name").asText();
 		
@@ -221,11 +219,30 @@ public class UserServiceImpl implements UserService {
 			sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 			userRepository.save(sourceUser);
 		}
+		Person person1 =new Person(null,"Person",sourceUserName);
+		Person person2 =new Person(null,"Person",targetUserName);
+		Note note = new Note(null,"Note",sourceUserName+" followed "+targetUserName,sourceUserName+" followed "+targetUserName);
+		Activity activity = new Add(null,"Add","user followed another user",person1,note,person2);
+		try {
+			userProducer.publishUserActivity("mailbox", new ObjectMapper().writeValueAsString(activity));
+			userProducer.publishUserActivity("recommendation", new ObjectMapper().writeValueAsString(activity));
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	/*  update user profile */
 	public void updateUserActivity(JsonNode node)
 	{
+		try {
+			userProducer.publishUserActivity("mailbox", new ObjectMapper().writeValueAsString(node));
+			userProducer.publishUserActivity("recommendation", new ObjectMapper().writeValueAsString(node));
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode sourceNode = node.path("actor");
 		String sourceNodeName = sourceNode.path("type").asText();

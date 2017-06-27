@@ -1,36 +1,30 @@
-package com.stackroute.gupshup.activityproducer.domain;
-import javax.validation.constraints.NotNull;
-
+package com.stackroute.gupshup.userservice.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-public class Dislike implements Activity{
+public class Add implements Activity {
 
 	private final String context;
-	
-	@NotNull(message="type is required")
 	private final String type;
-	
 	private final String summary;
-	
-	@NotNull(message="actor can not be null")
 	private final ASObject actor;
-	
-	@NotNull(message="object can not be null")
+	private final ASObject target;
 	private final ASObject object;
-	
+
 	@JsonCreator
-	public Dislike(
+	public Add(
 			@JsonProperty("@context") String context,
 			@JsonProperty("type") String type,
 			@JsonProperty("summary") String summary,
 			@JsonDeserialize(as=Person.class) @JsonProperty("actor") ASObject actor,
-			@JsonDeserialize(as=Note.class) @JsonProperty("object") ASObject object) {
+			@JsonDeserialize(as=Note.class) @JsonProperty("object") ASObject object,
+			@JsonDeserialize(as=Person.class) @JsonProperty("target") ASObject target) {
 		this.context = context;
 		this.type = type;
 		this.summary = summary;
 		this.actor = actor;
+		this.target = target;
 		this.object = object;
 	}
 
@@ -50,10 +44,12 @@ public class Dislike implements Activity{
 		return actor;
 	}
 
+	public ASObject getTarget() {
+		return target;
+	}
+
 	public ASObject getObject() {
 		return object;
 	}
-	
-	
-	
+
 }

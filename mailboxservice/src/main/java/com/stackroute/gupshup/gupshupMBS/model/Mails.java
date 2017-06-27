@@ -1,9 +1,5 @@
 package com.stackroute.gupshup.gupshupMBS.model;
 
-import java.util.Date;
-
-import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize

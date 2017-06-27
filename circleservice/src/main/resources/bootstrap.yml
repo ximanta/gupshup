@@ -1,17 +1,8 @@
-#server:
-#  port: 8083
-#  
-#spring:
-# data:
-#  mongodb:
-#    username: superAdmin
-#    password: admin123
-#    authorization: admin
-#    database: gupshup
-
 spring:
  application:
   name: circleservice
+ profiles:
+    active: native
  cloud:
   config:
     uri: http://localhost:8888
