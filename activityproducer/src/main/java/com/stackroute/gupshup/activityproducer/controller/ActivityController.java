@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -33,9 +35,9 @@ import io.swagger.annotations.ApiOperation;
 //-------------------------------------Activity Controller-----------------------------
 @RestController
 @RequestMapping("/activity/")
-@Api(value="activity")
+@Api(value="REST Controller that receives activities")
 public class ActivityController {
-
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	//---------------------------------autowired activityProducer service---------------
 	@Autowired
 	ActivityProducer activityProducer;
@@ -60,7 +62,7 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(join));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -83,7 +85,8 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(leave));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
+			
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -106,7 +109,7 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(like));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -129,7 +132,7 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(dislike));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -152,7 +155,7 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.user-topic"),new ObjectMapper().writeValueAsString(follow));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -175,7 +178,7 @@ public class ActivityController {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.mailbox-topic"),new ObjectMapper().writeValueAsString(create));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
-			e.printStackTrace();
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -197,8 +200,8 @@ public class ActivityController {
 		try {
 			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(add));
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 			message.put("error",e.getMessage());
+			logger.error(e.toString());
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
