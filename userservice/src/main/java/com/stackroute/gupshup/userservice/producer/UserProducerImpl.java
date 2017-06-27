@@ -6,17 +6,22 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserProducerImpl implements UserProducer {
+	
+	@Value("${kafka.bootstarp-servers}")
+	private String bootstarpServers;
+	
 	
 	/* publishing an activity to a topic */
 	public void publishUserActivity(String topicName, String message)
 	{
 		Properties configProperties = new Properties();
 		/* setting all the configurations for a producer */
-		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
+		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstarpServers);
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		

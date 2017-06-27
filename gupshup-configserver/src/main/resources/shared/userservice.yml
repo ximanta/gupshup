@@ -11,4 +11,9 @@ spring:
       authentication-database: admin
       database: gupshup  
       port: 27017
+      
+kafka:
+  bootstrap.servers: 172.23.239.202:9092
+
+
      

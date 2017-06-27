@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 //import org.springframework.boot.autoconfigure.web.WebMvcProperties.LocaleResolver;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -27,13 +28,14 @@ import com.stackroute.gupshup.userservice.consumer.UserConsumer;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-//@EnableMongoRepositories
+@EnableMongoRepositories
 @EnableWebMvc
 public class UserserviceApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(UserserviceApplication.class, args);
-		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("testuserkafka");
+		Environment environment = applicationContext.getEnvironment();
+		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("user");
 	}
 	
 	@Bean
