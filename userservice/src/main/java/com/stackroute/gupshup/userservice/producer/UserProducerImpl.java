@@ -21,14 +21,12 @@ public class UserProducerImpl implements UserProducer {
 	{
 		Properties configProperties = new Properties();
 		/* setting all the configurations for a producer */
-
-		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
+	
 		//configProperties.put("acks", "all");
 		//configProperties.put("retries", "3");
 		//configProperties.put("linger.ms", 5);
 
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userproducer.bootstrap-servers"));
-
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		
