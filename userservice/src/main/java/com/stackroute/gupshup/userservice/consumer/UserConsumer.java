@@ -22,9 +22,6 @@ public class UserConsumer {
 		userConsumerRunnable.start();
 
 		userConsumerRunnable.getUserConsumer().wakeup();
-
-		System.out.println("stopping user consumer");
-
 		try {
 			userConsumerRunnable.join();
 		} catch (Exception e) {

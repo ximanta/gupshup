@@ -8,7 +8,9 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,8 +26,8 @@ public class UserConsumerThread extends Thread {
 	private UserService userService;
 	private UserProducer userProducer;
 	
-	@Value("${kafka.bootstarp-servers}")
-	private String bootstarpServers;
+	@Autowired
+	private Environment environment;
 	
 	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService, UserProducer userProducer) {
 		this.topicName = topicName;
@@ -36,28 +38,28 @@ public class UserConsumerThread extends Thread {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+
 		Properties configProperties = new Properties();
 		/* setting all configurations for a consumer */
-		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstarpServers);
+		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userconsumer.bootstrap-servers"));
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
-		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
+		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("userconsumer.consumer-groupid"));
+		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("userconsumer.clientid"));
 		
 		userConsumer = new KafkaConsumer<String, String>(configProperties);
 		/* subscribing a topic */
-		userConsumer.subscribe(Arrays.asList(topicName));
+		userConsumer.subscribe(Arrays.asList(environment.getProperty("userconsumer.user-topic")));
 		
 		while(true) {
 			ConsumerRecords<String, String> records = userConsumer.poll(100);
 			
 			for(ConsumerRecord<String, String> record: records ) {
 				String value = record.value();
+				
 				/* publishing activity to Recommendation and Mailbox1 topic */
-
-				userProducer.publishUserActivity("mailbox", value);
-				userProducer.publishUserActivity("recommendation", value);
+				userProducer.publishUserActivity(environment.getProperty("userproducer.mailbox-topic"), value);
+				userProducer.publishUserActivity(environment.getProperty("userproducer.recommendation-topic"), value);
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {
