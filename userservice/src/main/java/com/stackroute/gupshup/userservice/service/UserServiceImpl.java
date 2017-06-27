@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
         
         ObjectMapper mapper = new ObjectMapper();
         JsonNode sourceNode = node.path("actor");
-        String sourceNodeName = sourceNode.path("type").asText();
+        sourceNode.path("name").asText();
         JsonNode sourceUserNode = node.path("object");
         
         User sourceUser = null;
