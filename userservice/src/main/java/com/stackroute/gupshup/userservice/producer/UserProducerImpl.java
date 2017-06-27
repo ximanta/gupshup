@@ -7,34 +7,28 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserProducerImpl implements UserProducer {
-<<<<<<< HEAD
-		
-=======
-	
+
 	@Autowired
 	private Environment environment;
-	
-	
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
+
 	/* publishing an activity to a topic */
 	public void publishUserActivity(String topicName, String message)
 	{
 		Properties configProperties = new Properties();
 		/* setting all the configurations for a producer */
-<<<<<<< HEAD
+
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
 		//configProperties.put("acks", "all");
 		//configProperties.put("retries", "3");
 		//configProperties.put("linger.ms", 5);
-=======
+
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userproducer.bootstrap-servers"));
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
+
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		
