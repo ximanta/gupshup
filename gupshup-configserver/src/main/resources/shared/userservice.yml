@@ -13,6 +13,7 @@ spring:
       database: gupshup  
       port: 27017
       
+<<<<<<< HEAD
 logging:
   level:
     org:
@@ -25,6 +26,19 @@ logging:
           userservice: DEBUG
           
   file: logs/spring-boot-logging.log
+=======
+userproducer:
+  bootstrap-servers: 172.23.239.202:9092
+  mailbox-topic: mailbox
+  recommendation-topic: recommendation
+  
+  
+userconsumer:
+  bootstrap-servers: 172.23.239.202:9092
+  consumer-groupid: test-consumer-group
+  clientid: simple
+  user-topic: user
+>>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
      
 ---
 
@@ -45,4 +59,17 @@ spring:
       authentication-database: admin
       database: gupshup  
       port: 27017
+     
+userproducer:
+  bootstrap-servers: 172.23.239.202:9092
+  mailbox-topic: mailbox
+  recommendation-topic: recommendation
+  
+  
+userconsumer:
+  bootstrap-servers: 172.23.239.202:9092
+  consumer-groupid: test-consumer-group
+  clientid: simple
+  user-topic: user
+
      
