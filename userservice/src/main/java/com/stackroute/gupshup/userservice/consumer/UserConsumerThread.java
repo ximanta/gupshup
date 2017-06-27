@@ -53,8 +53,7 @@ public class UserConsumerThread extends Thread {
 				String value = record.value();
 				/* publishing activity to Recommendation and Mailbox1 topic */
 
-				userProducer.publishUserActivity("TestMailbox", value);
-				userProducer.publishUserActivity("TestRecommendation", value);
+				
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {

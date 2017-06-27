@@ -12,4 +12,5 @@ public interface UserService {
 	public void checkActivityType(JsonNode node);
 	public void followUser(JsonNode node);
 	public void updateUserActivity(JsonNode node);
+	public void deleteUserActivity(JsonNode node);
 }

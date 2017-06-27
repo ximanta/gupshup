@@ -33,7 +33,7 @@ public class UserserviceApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(UserserviceApplication.class, args);
-		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("testuserkafka");
+		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("user");
 	}
 	
 	@Bean
