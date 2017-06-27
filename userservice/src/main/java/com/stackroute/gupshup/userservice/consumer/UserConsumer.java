@@ -18,10 +18,7 @@ public class UserConsumer {
 		userConsumerRunnable.start();
 
 		userConsumerRunnable.getUserConsumer().wakeup();
-<<<<<<< HEAD
 
-=======
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
 		try {
 			userConsumerRunnable.join();
 		} catch (Exception e) {

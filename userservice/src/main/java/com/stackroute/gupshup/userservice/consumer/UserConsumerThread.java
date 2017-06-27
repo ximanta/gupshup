@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,17 +22,12 @@ public class UserConsumerThread extends Thread {
 	private String consumerGroupId;
 	private KafkaConsumer<String, String> userConsumer;
 	private UserService userService;
-<<<<<<< HEAD
-		
-	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService) {
-=======
-	private UserProducer userProducer;
 	
 	@Autowired
 	private Environment environment;
 	
-	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService, UserProducer userProducer) {
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
+	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService) {
+
 		this.topicName = topicName;
 		this.consumerGroupId = consumerGroupId;
 		this.userService = userService;
@@ -44,14 +38,12 @@ public class UserConsumerThread extends Thread {
 
 		Properties configProperties = new Properties();
 		/* setting all configurations for a consumer */
-<<<<<<< HEAD
-		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.202:9092");
-		configProperties.put("acks", "all");
-		configProperties.put("retries", "3");
-		configProperties.put("linger.ms", 5);
-=======
+		
+		//configProperties.put("acks", "all");
+		//configProperties.put("retries", "3");
+		//configProperties.put("linger.ms", 5);
+
 		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userconsumer.bootstrap-servers"));
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("userconsumer.consumer-groupid"));
@@ -66,14 +58,9 @@ public class UserConsumerThread extends Thread {
 			
 			for(ConsumerRecord<String, String> record: records ) {
 				String value = record.value();
-<<<<<<< HEAD
-							
-=======
 				
 				/* publishing activity to Recommendation and Mailbox1 topic */
-				userProducer.publishUserActivity(environment.getProperty("userproducer.mailbox-topic"), value);
-				userProducer.publishUserActivity(environment.getProperty("userproducer.recommendation-topic"), value);
->>>>>>> 5a0a0455d3c4a2c72901561988a71b12257b539b
+
 				ObjectMapper mapper = new ObjectMapper();
 				
 				try {
