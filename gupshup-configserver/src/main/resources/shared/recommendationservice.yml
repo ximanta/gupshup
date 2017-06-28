@@ -15,17 +15,17 @@ spring:
 
 # production configuration
 spring:
-    profiles: production
+ profiles: production
+ data:
+    neo4j:
+      port: 7474
+      username: neo4j
+      password: pass
     
 eureka:
  client:
    serviceUrl:
      defaultZone: http://172.23.239.182:8761/eureka/
      
-spring:
-  data:
-    neo4j:
-      port: 7474
-      username: neo4j
-      password: pass
+  
        
