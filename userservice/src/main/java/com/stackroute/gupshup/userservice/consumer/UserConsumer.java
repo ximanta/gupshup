@@ -18,7 +18,7 @@ public class UserConsumer {
 	/* subscribing an activity */
 	public void subscribeUserActivity(String topic) {
 
-		UserConsumerThread userConsumerRunnable = new UserConsumerThread(environment.getProperty("userconsumer.user-topic"), environment.getProperty("userconsumer.user-topic"), service, environment);
+		UserConsumerThread userConsumerRunnable = new UserConsumerThread(topic, topic, service, environment);
 		userConsumerRunnable.start();
 
 		userConsumerRunnable.getUserConsumer().wakeup();
