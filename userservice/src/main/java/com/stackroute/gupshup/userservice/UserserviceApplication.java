@@ -30,7 +30,7 @@ public class UserserviceApplication extends WebMvcConfigurerAdapter {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(UserserviceApplication.class, args);
 		Environment environment = applicationContext.getEnvironment();
-		applicationContext.getBean(UserConsumer.class).subscribeUserActivity("user");
+		applicationContext.getBean(UserConsumer.class).subscribeUserActivity(environment.getProperty("userconsumer.user-topic"));
 	}
 	
 	@Bean

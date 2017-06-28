@@ -2,7 +2,7 @@ spring:
   application:
     name: activityproducer
   profiles:
-    active: native
+    active: production
   cloud:
     config:
       uri: http://localhost:8888

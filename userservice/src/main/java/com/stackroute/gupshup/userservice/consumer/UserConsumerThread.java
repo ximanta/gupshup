@@ -8,7 +8,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,15 +21,14 @@ public class UserConsumerThread extends Thread {
 	private String consumerGroupId;
 	private KafkaConsumer<String, String> userConsumer;
 	private UserService userService;
-	
-	@Autowired
 	private Environment environment;
 	
-	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService) {
+	public UserConsumerThread(String topicName, String consumerGroupId,UserService userService, Environment environment) {
 
 		this.topicName = topicName;
 		this.consumerGroupId = consumerGroupId;
 		this.userService = userService;
+		this.environment = environment;
 	}
 	
 	@Override
@@ -46,12 +44,12 @@ public class UserConsumerThread extends Thread {
 		configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userconsumer.bootstrap-servers"));
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("userconsumer.consumer-groupid"));
+		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty(consumerGroupId));
 		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("userconsumer.clientid"));
 		
 		userConsumer = new KafkaConsumer<String, String>(configProperties);
 		/* subscribing a topic */
-		userConsumer.subscribe(Arrays.asList(environment.getProperty("userconsumer.user-topic")));
+		userConsumer.subscribe(Arrays.asList(environment.getProperty(topicName)));
 		
 		while(true) {
 			ConsumerRecords<String, String> records = userConsumer.poll(100);

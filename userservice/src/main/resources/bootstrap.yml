@@ -2,7 +2,7 @@ spring:
   application:
     name: userservice
   profiles:
-    active: native
+    active: production
   cloud:
     config:
       uri: http://172.23.239.202:8888
