@@ -2,7 +2,7 @@
 eureka:
  client:
    serviceUrl:
-     defaultZone: http://172.23.239.182:8761/eureka/
+     defaultZone: http://localhost:8761/eureka/
      
 spring:
   data:
@@ -32,7 +32,6 @@ userproducer:
   mailbox-topic: mailbox
   recommendation-topic: recommendation
   
-  
 userconsumer:
   bootstrap-servers: 172.23.239.202:9092
   consumer-groupid: test-consumer-group
@@ -45,19 +44,18 @@ userconsumer:
 spring:
     profiles: production
     
-eureka:
- client:
-   serviceUrl:
-     defaultZone: http://172.23.239.182:8761/eureka/
-     
-spring:
-  data:
+    data:
     mongodb:
       username: superAdmin
       password: admin123
       authentication-database: admin
       database: gupshup  
       port: 27017
+    
+eureka:
+ client:
+   serviceUrl:
+     defaultZone: http://172.23.239.182:8761/eureka/
       
 logging:
   level:

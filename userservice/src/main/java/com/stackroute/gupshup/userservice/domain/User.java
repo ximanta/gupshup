@@ -17,8 +17,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class User extends ResourceSupport {
 	
 	@Id
-	private ObjectId _id;
-
 	@NotNull(message = "error.userName.notnull")
 	private String userName;
 	
@@ -115,17 +113,11 @@ public class User extends ResourceSupport {
 	public void setFollowing(List<User> following) {
 		this.following = following;
 	}
-	public ObjectId get_id() {
-		return _id;
-	}
-	public void set_id(ObjectId _id) {
-		this._id = _id;
-	}
 	@Override
 	public String toString() {
-		return "User [_id=" + _id + ", userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", password=" + password + ", gender=" + gender + ", dob=" + dob + ", emailId=" + emailId
-				+ ", contactNo=" + contactNo + ", profilePhoto=" + profilePhoto + ", followingCount=" + followingCount
-				+ ", following=" + following + "]";
+		return "User [userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName + ", password="
+				+ password + ", gender=" + gender + ", dob=" + dob + ", emailId=" + emailId + ", contactNo=" + contactNo
+				+ ", profilePhoto=" + profilePhoto + ", followingCount=" + followingCount + ", following=" + following
+				+ "]";
 	}
 }

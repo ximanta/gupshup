@@ -71,7 +71,7 @@ public class UserController {
 	    	try {
 		    	User newUser = userService.addUser(user);
 		    	
-		    	if(newUser.get_id() == null) {
+		    	if(newUser.getUserName() == null) {
 		    		throw new UserNotCreatedException("User already registered");
 		    	} else {
 		    		User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
@@ -131,7 +131,7 @@ public class UserController {
 	    		}
 	    		else {
 	    			if((userService.updateUser(user)).equalsIgnoreCase("updated")) {
-	    				String successMessage = messageSource.getMessage ("message.user.success.userupdate", null, locale );
+	    				String successMessage = messageSource.getMessage ("message.user.success.userupdate", null, locale );		
 		    	        return new ResponseEntity<>(successMessage, HttpStatus.OK);
 	    			}
 	    			else {

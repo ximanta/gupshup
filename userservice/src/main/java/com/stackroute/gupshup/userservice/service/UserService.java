@@ -10,7 +10,7 @@ public interface UserService {
 	public String updateUser(User user);
 	public String deleteUser(String userName);
 	public void checkActivityType(JsonNode node);
-	public void followUser(JsonNode node);
+	public String followUser(JsonNode node);
 	public void updateUserActivity(JsonNode node);
 	public void deleteUserActivity(JsonNode node);
 }
