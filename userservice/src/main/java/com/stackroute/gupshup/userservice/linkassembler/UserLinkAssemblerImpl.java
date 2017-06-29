@@ -17,10 +17,10 @@ public class UserLinkAssemblerImpl implements UserLinkAssembler {
 		/*Link selfLink = linkTo(UserController.class).slash(user.get_id()).withSelfRel();
 		user.add(selfLink);
 		*/
-		Link updateLink = linkTo(UserController.class).slash(user.get_id()).withRel("updateProfile");
+		Link updateLink = linkTo(UserController.class).slash(user.getUserName()).withRel("updateProfile");
 		user.add(updateLink);
 		
-		Link deleteLink = linkTo(UserController.class).slash(user.get_id()).withRel("deleteProfile");
+		Link deleteLink = linkTo(UserController.class).slash(user.getUserName()).withRel("deleteProfile");
 		user.add(deleteLink);
 		
 		return user;
@@ -30,7 +30,7 @@ public class UserLinkAssemblerImpl implements UserLinkAssembler {
 	@Override
 	public User followUserLinks(User user) {
 		
-		Link followLink = linkTo(UserController.class).slash(user.get_id()).withRel("Follow");
+		Link followLink = linkTo(UserController.class).slash(user.getUserName()).withRel("Follow");
 		user.add(followLink);
 		
 		return user;

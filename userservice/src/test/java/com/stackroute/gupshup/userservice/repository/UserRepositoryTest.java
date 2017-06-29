@@ -1,4 +1,4 @@
-package com.stackroute.gupshup.userservice.repository;
+/*package com.stackroute.gupshup.userservice.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -63,44 +63,44 @@ public class UserRepositoryTest {
     }
     
     
-    /*Test data retrieval*/
+    Test data retrieval
     @Test
     public void testDataFetch(){
-        /*ACT*/
+        ACT
         User user1 = userRepository.findOne("randeep18");
-        /*Assert*/
+        Assert
         assertNotNull(user1);
         assertEquals("Randeep", user1.getFirstName());
     }
     
     
-    /*Test update*/
+    Test update
     @Test
     public void testDataUpdate(){
-       /*Act*/
+       Act
         User user2 = userRepository.findOne("charu18");
         user2.setContactNo("9988776655");;
         userRepository.save(user2);
         User tempUser= userRepository.findOne("charu18");
-        /*Assert*/
+        Assert
         assertNotNull(tempUser);
         assertEquals("9988776655", tempUser.getContactNo());
     }
 
-    /*Test delete*/
-//    @Test
-//    public void testDataDelete(){
-//       /*Act*/
-//        User user2 = userRepository.findOne("randeep18");
-//        userRepository.delete(user2);
-//        User tempUser = userRepository.findOne("randeep18");
-        /*Assert*/
-//        assertNull(tempUser);
-//      }
+    Test delete
+    @Test
+    public void testDataDelete(){
+       /*Act
+        User user2 = userRepository.findOne("randeep18");
+        userRepository.delete(user2);
+        User tempUser = userRepository.findOne("randeep18");
+        Assert
+        assertNull(tempUser);
+      }
 
-//    @After
-//    public void tearDown() throws Exception {
-//        this.userRepository.deleteAll();
-//    }
+    @After
+    public void tearDown() throws Exception {
+        this.userRepository.deleteAll();
+    }
 
-}
+}*/

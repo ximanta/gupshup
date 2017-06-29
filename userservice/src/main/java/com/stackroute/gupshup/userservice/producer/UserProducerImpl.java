@@ -15,6 +15,8 @@ public class UserProducerImpl implements UserProducer {
 
 	@Autowired
 	private Environment environment;
+	
+	Producer<String, String> userProducer;
 
 	/* publishing an activity to a topic */
 	public void publishUserActivity(String topicName, String message)
@@ -30,14 +32,13 @@ public class UserProducerImpl implements UserProducer {
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		
-		Producer<String, String> userProducer = new KafkaProducer<>(configProperties);
+		userProducer = new KafkaProducer<>(configProperties);
         ProducerRecord<String, String> record = new ProducerRecord<String, String>(topicName, message);
-        userProducer.send(record);
-        userProducer.close();
+        userProducer.send(record, new UserProducerCallback());
 	}
 	
-	/*@Override
+	@Override
     public void close() {
 		userProducer.close();
-    }*/
+    }
 }
