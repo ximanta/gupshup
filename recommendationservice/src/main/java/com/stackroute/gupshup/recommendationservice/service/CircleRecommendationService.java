@@ -9,7 +9,9 @@ import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
 public interface CircleRecommendationService {
 	
 	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation);
-	public Iterable<Map<String, Object>> created(String user, String circle);
+	public String deleteCircle(String circleId);
+	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation);
+	//public Iterable<Map<String, Object>> created(String user, String circle);
 	public Iterable<Map<String, Object>> subscribed(String user, String circle);
 	public Iterable<List<String>> subscribeRecommendation(String user);
 	public void getActiviType(JsonNode node);

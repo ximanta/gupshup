@@ -31,6 +31,25 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 	
 	@Override
+	public String deleteUser(String user){
+		userRecommendationRepository.deleteUserCreatedCircles(user);
+		userRecommendationRepository.deleteUser(user);
+		return "user deleted";
+	}
+	
+	@Override
+	public Map<String, Object> updateUser(UserRecommendation userRecommendation){
+		System.out.println(userRecommendation);
+		return userRecommendationRepository.updateUser(
+				userRecommendation.getName(),
+				userRecommendation.getFirstname(),
+				userRecommendation.getLastname(),
+				userRecommendation.getGender(),
+				userRecommendation.getIntrest(),
+				userRecommendation.getDOB());
+	}
+	
+	@Override
 	public Iterable<Map<String, Object>> follows(String user1, String user2){
 		System.out.println("service "+user1+" "+user2);
 		return userRecommendationRepository.follows(user1, user2);

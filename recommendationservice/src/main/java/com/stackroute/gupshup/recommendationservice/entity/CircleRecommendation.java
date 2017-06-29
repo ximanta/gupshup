@@ -26,17 +26,23 @@ public class CircleRecommendation {
 	@Size(min=1, message="circle keyword cannot be empty")
 	String keyword;
 	
+	@NotNull(message="username cannot be null")
+	@Size(min=1, message="username cannot be empty")
+	String createdBy;
+	
 	public CircleRecommendation(){ };
 	
 	@JsonCreator
 	public CircleRecommendation(
 			@JsonProperty("circleId") String circleId,
 			@JsonProperty("circleName") String circleName,
-			@JsonProperty("keyword") String keyword
+			@JsonProperty("keyword") String keyword,
+			@JsonProperty("createdBy") String createdBy
 			){
 		this.circleId = circleId;
 		this.circleName = circleName;
 		this.keyword = keyword;
+		this.createdBy = createdBy;
 	}
 	
 	public Long getId() {
@@ -66,15 +72,23 @@ public class CircleRecommendation {
 	public String getCircleName() {
 		return circleName;
 	}
-
-	public void setType(String circleName) {
+	
+	public void setCircleName(String circleName) {
 		this.circleName = circleName;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	@Override
 	public String toString() {
 		return "CircleRecommendation [id=" + id + ", circleId=" + circleId + ", circleName=" + circleName + ", keyword="
-				+ keyword + "]";
+				+ keyword + ", createdBy=" + createdBy + "]";
 	}
 
 }

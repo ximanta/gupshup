@@ -9,6 +9,8 @@ import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 public interface UserRecommendationService {
 	
 	public Map<String, Object> createUser(UserRecommendation userRecommendation);
+	public String deleteUser(String user);
+	public Map<String, Object> updateUser(UserRecommendation userRecommendation);
 	public Iterable<Map<String, Object>> follows(String user1, String user2);
 	public Iterable<List<String>> followFriendOfFriend(String user);
 	public void getActivityType(JsonNode node);

@@ -24,16 +24,34 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation){
 		
 		System.out.println("circle created");
-		return circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(),circleRecommendation.getCircleName());
+		Map<String, Object> circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		circleRecommendationRepository.created(circleRecommendation.getCreatedBy(), circleRecommendation.getCircleId());
+		return circle;
 	}
 	
 	@Override
+	public String deleteCircle(String circleId)
+	{
+		circleRecommendationRepository.deleteCircle(circleId);
+		return "circle deleted";
+	}
+	
+	@Override
+	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation){
+		
+		System.out.println("circle created");
+		System.out.println(circleRecommendation);
+		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+	}
+	
+	
+	/*@Override
 	public Iterable<Map<String, Object>> created(String user, String circleId){
 		
 		System.out.println("service:"+user+" "+circleId);
 		System.out.println("created relationship");
 		return circleRecommendationRepository.created(user, circleId);
-	}
+	}*/
 	
 	@Override
 	public Iterable<Map<String, Object>> subscribed(String user, String circleId){
@@ -63,22 +81,22 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		
 			String user = actor.path("name").asText();
 			String circleId = objectType.path("name").asText();
+			String keyword = objectType.path("keyword").asText();
 		
-			if(user=="" || circleId=="")
+			if(user=="" || circleId=="" || keyword=="")
 			{
-				System.out.println("Create: userame or circlename Field is empty");
+				System.out.println("Create: userame, circlename or keyword field is empty");
 			}
 			else
 			{
 				System.out.println("create circle");
 				CircleRecommendation circleRecommendation = new CircleRecommendation();
 				
-				//circleRecommendation.setCircleId(circleId);
+				circleRecommendation.setCircleId(circleId);
 				circleRecommendation.setKeyword(circleId);
-				circleRecommendation.setType("public");
 				
-				circleRecommendationService.createCircle(circleRecommendation);
-				circleRecommendationService.created(user, circleId);
+				//circleRecommendationService.createCircle(circleRecommendation);
+				//circleRecommendationService.created(user, circleId);
 			}
 		}
 		
