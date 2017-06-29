@@ -1,6 +1,5 @@
 package com.stackroute.gupshup.userservice.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +9,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
 import com.stackroute.gupshup.userservice.domain.Activity;
 import com.stackroute.gupshup.userservice.domain.Add;
 import com.stackroute.gupshup.userservice.domain.Create;
@@ -26,7 +16,7 @@ import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Note;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
-import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
+
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
 
 import com.stackroute.gupshup.userservice.producer.UserProducer;
@@ -129,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	/* deleting a user profile */
 	@Override
     public void deleteUserActivity(JsonNode node) {
-        ObjectMapper mapper = new ObjectMapper();
+       
         JsonNode sourceNode = node.path("actor");
         sourceNode.path("name").asText();
         
