@@ -30,6 +30,18 @@ public class RecommendationController {
 	@Autowired
 	CircleRecommendationService circleRecommendationService;
 	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public ResponseEntity<Iterable<List<String>>> followFriendOfFriend(@PathVariable String id)
+	{
+		return new ResponseEntity<Iterable<List<String>>>(userRecommendationService.followFriendOfFriend(id), HttpStatus.FOUND );
+	}
+	
+	@RequestMapping(value="/circle/{id}", method=RequestMethod.GET)
+	public ResponseEntity<Iterable<List<String>>> subscribeRecommendation(@PathVariable String id){
+		
+		return new ResponseEntity<Iterable<List<String>>>(circleRecommendationService.subscribeRecommendation(id), HttpStatus.FOUND);
+	}
+	
 	@RequestMapping(value="/createuser", method=RequestMethod.POST)
 	public ResponseEntity createUser(@Valid @RequestBody UserRecommendation userRecommendation, BindingResult bindingResult){
 		if(bindingResult.hasErrors())

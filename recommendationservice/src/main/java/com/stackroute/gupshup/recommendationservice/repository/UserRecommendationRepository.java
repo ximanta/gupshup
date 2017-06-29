@@ -18,6 +18,9 @@ Map<String, Object> createUser(String name, String firstname, String lastname, S
 @Query("match (a:person), (b:person) where a.name={0} and b.name={1} create (a)-[:follows]->(b) return a,b")
 Iterable<Map<String, Object>> follows(String name1, String name2);
 
+@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return morepeople.name")
+Iterable<List<String>> followFriendOfFriend(String user);
+
 List<UserRecommendation> findByName(String name);
 }
  

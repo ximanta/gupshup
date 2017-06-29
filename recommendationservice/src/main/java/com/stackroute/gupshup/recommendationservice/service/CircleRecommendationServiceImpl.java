@@ -1,12 +1,14 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
+import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
 
 @Service
@@ -15,54 +17,87 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	@Autowired
 	CircleRecommendationRepository circleRecommendationRepository;
 	
+	@Autowired
+	CircleRecommendationService circleRecommendationService;
+	
 	@Override
 	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation){
 		
-		return circleRecommendationRepository.createCircle(circleRecommendation.getKeyword(), circleRecommendation.getType());
+		System.out.println("circle created");
+		return circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(),circleRecommendation.getCircleName());
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> created(String user, String circle){
+	public Iterable<Map<String, Object>> created(String user, String circleId){
 		
-		System.out.println("service:"+user+" "+circle);
-		return circleRecommendationRepository.created(user, circle);
+		System.out.println("service:"+user+" "+circleId);
+		System.out.println("created relationship");
+		return circleRecommendationRepository.created(user, circleId);
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> subscribed(String user, String circle){
-		return circleRecommendationRepository.subscribed(user, circle);
+	public Iterable<Map<String, Object>> subscribed(String user, String circleId){
+		System.out.println("user subscribed");
+		return circleRecommendationRepository.subscribed(user, circleId);
 	}
-
+	
+	@Override
+	public Iterable<List<String>> subscribeRecommendation(String user){
+		
+		return circleRecommendationRepository.subscribeRecommendation(user);
+	}
+	
+	@Override
 	public void getActiviType(JsonNode node){
 		
-		CircleRecommendationService circleRecommendationService = null;
-		
-		System.out.println("entering activity");
+		System.out.println("circle: entering activity");
 		String activityType = node.path("type").asText();
-		System.out.println("activity:"+activityType);
+		System.out.println("circle: activity:"+activityType);
+		JsonNode actor = node.path("actor");
+		String actorType = actor.path("type").asText();
+		JsonNode objectType = node.path("object");
+		String objType = objectType.path("type").asText();
 		
-		if(activityType.equalsIgnoreCase("CreateCircle"))
+		if(activityType.equalsIgnoreCase("Create") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
-			System.out.println("entering create circle");
-			JsonNode actor = node.path("actor");
+		
 			String user = actor.path("name").asText();
-			JsonNode target = node.path("target");
-			String keyword = target.path("circleName").asText();
-			
-			if(user==null||keyword==null)
+			String circleId = objectType.path("name").asText();
+		
+			if(user=="" || circleId=="")
 			{
-				System.out.println("name fields are either null or not specified correctly : MESSAGE CIRCLE");
+				System.out.println("Create: userame or circlename Field is empty");
 			}
-			
-			else{
+			else
+			{
+				System.out.println("create circle");
+				CircleRecommendation circleRecommendation = new CircleRecommendation();
 				
-				CircleRecommendation circleRecommendation = null;
-				circleRecommendation.setKeyword(keyword);
-				circleRecommendation.setType(null);
+				//circleRecommendation.setCircleId(circleId);
+				circleRecommendation.setKeyword(circleId);
+				circleRecommendation.setType("public");
+				
 				circleRecommendationService.createCircle(circleRecommendation);
-				circleRecommendationService.created(user, keyword);
+				circleRecommendationService.created(user, circleId);
 			}
 		}
+		
+		if(activityType.equalsIgnoreCase("Join") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("name").asText();
+		
+			if(user=="" || circleId=="")
+			{
+				System.out.println("Join: userame or circlename Field is empty");
+			}
+			else
+			{
+				circleRecommendationService.subscribed(user, circleId);
+			}
+		}
+		
 		
 	}
 }

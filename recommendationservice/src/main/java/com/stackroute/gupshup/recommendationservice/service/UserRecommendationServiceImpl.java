@@ -37,34 +37,64 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 	
 	@Override
-	public void getActivityType(JsonNode node){
-		System.out.println("entering activity");
+	public Iterable<List<String>> followFriendOfFriend(String user){
+		
+		return userRecommendationRepository.followFriendOfFriend(user);
+	}
+	
+	@Override
+	public void getActivityType(JsonNode node)
+	{
+		System.out.println("user: entering activity");
 		String activityType = node.path("type").asText();
-		System.out.println("activity:"+activityType);
-		
-		if(activityType.equalsIgnoreCase("CreateUser"))
-		{
+		System.out.println("user: activity:"+activityType);
 		JsonNode actor = node.path("actor");
-		String user = actor.path("name").asText();
+		String actorType = actor.path("type").asText();
+		JsonNode objectType = node.path("object");
+		String objType = objectType.path("type").asText();
+		
+		if(activityType.equalsIgnoreCase("Create") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Person"))
+		{
+		
+			String user = actor.path("name").asText();
 		
 		
-		if(user=="")
-		{
-			System.out.println("Name Field is empty ");
-		}
-		else
-		{
-			UserRecommendation userRecommendation = new UserRecommendation();
-			userRecommendation.setDOB(0);
-			userRecommendation.setFirstname("charu");
-			userRecommendation.setGender("female");
-			userRecommendation.setIntrest("gallery");
-			userRecommendation.setLastname("bhatt");
-			userRecommendation.setName(user);
+			if(user=="")
+			{
+				System.out.println("Create: Name Field is empty");
+			}
+			else
+			{
+				System.out.println("create user");
+				UserRecommendation userRecommendation = new UserRecommendation();
+				userRecommendation.setDOB(0);
+				userRecommendation.setFirstname("randeep");
+				userRecommendation.setGender("female");
+				userRecommendation.setIntrest("gallery");
+				userRecommendation.setLastname("kaur");
+				userRecommendation.setName(user);
 			
-			userRecommendationService.createUser(userRecommendation);
+				//userRecommendationService.createUser(userRecommendation);
+			}
 		}
+		
+		if(activityType.equalsIgnoreCase("Follow") && actorType.equalsIgnoreCase("Person"))
+		{
+		
+			String user1 = actor.path("name").asText();
+			String user2 = objectType.path("name").asText();
+		
+			if(user1==""||user2=="")
+			{
+				System.out.println("Follow: Name Field is empty");
+			}
+			else
+			{
+				userRecommendationService.follows(user1, user2);
+			}
 		}
+		
+		
 	}
 	
 }
