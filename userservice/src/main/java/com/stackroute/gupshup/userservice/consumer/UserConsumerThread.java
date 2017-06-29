@@ -49,7 +49,7 @@ public class UserConsumerThread extends Thread {
 		
 		userConsumer = new KafkaConsumer<String, String>(configProperties);
 		/* subscribing a topic */
-		userConsumer.subscribe(Arrays.asList(environment.getProperty(topicName)));
+		userConsumer.subscribe(Arrays.asList(topicName));
 		
 		while(true) {
 			ConsumerRecords<String, String> records = userConsumer.poll(100);
