@@ -30,7 +30,5 @@ public interface CircleRecommendationRepository extends GraphRepository<CircleRe
 	
 	@Query("match (a:person {name:{0}})-[:follows]->(people),(people)-[:created |:subscribed]->(things) where not (a)-[:subscribed |:created]->(things) return things.keyword")
 	Iterable<List<String>> subscribeRecommendation(String user);
-//	List<CircleRecommendation> findByName(String name);
-
 
 }

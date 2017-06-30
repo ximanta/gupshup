@@ -39,7 +39,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	@Override
 	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation){
 		
-		System.out.println("circle created");
+		System.out.println("circle updated");
 		System.out.println(circleRecommendation);
 		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
 	}
@@ -80,12 +80,15 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		{
 		
 			String user = actor.path("name").asText();
-			String circleId = objectType.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+			String circleName = objectType.path("circleName").asText();
 			String keyword = objectType.path("keyword").asText();
+			String createdBy = objectType.path("createdBy").asText();
 		
-			if(user=="" || circleId=="" || keyword=="")
+			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
 			{
 				System.out.println("Create: userame, circlename or keyword field is empty");
+				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
 			}
 			else
 			{
@@ -93,9 +96,11 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 				CircleRecommendation circleRecommendation = new CircleRecommendation();
 				
 				circleRecommendation.setCircleId(circleId);
-				circleRecommendation.setKeyword(circleId);
+				circleRecommendation.setCircleName(circleName);
+				circleRecommendation.setKeyword(keyword);
+				circleRecommendation.setCreatedBy(createdBy);
 				
-				//circleRecommendationService.createCircle(circleRecommendation);
+				circleRecommendationService.createCircle(circleRecommendation);
 				//circleRecommendationService.created(user, circleId);
 			}
 		}
@@ -104,7 +109,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		{
 		
 			String user = actor.path("name").asText();
-			String circleId = objectType.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
 		
 			if(user=="" || circleId=="")
 			{
@@ -113,6 +118,50 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			else
 			{
 				circleRecommendationService.subscribed(user, circleId);
+			}
+		}
+		
+		if(activityType.equalsIgnoreCase("Update") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+			String circleName = objectType.path("circleName").asText();
+			String keyword = objectType.path("keyword").asText();
+			String createdBy = objectType.path("createdBy").asText();
+		
+			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
+			{
+				System.out.println("Update: userame, circlename or keyword field is empty");
+				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
+			}
+			else
+			{
+				System.out.println("update circle");
+				CircleRecommendation circleRecommendation = new CircleRecommendation();
+				
+				circleRecommendation.setCircleId(circleId);
+				circleRecommendation.setCircleName(circleName);
+				circleRecommendation.setKeyword(keyword);
+				circleRecommendation.setCreatedBy(createdBy);
+				
+				circleRecommendationService.updateCircle(circleRecommendation);
+			}
+		}
+		
+		if(activityType.equalsIgnoreCase("Delete") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+		
+			if(user=="" || circleId=="")
+			{
+				System.out.println("Delete: userame or circlename Field is empty");
+			}
+			else
+			{
+				circleRecommendationService.deleteCircle(circleId);
 			}
 		}
 		
