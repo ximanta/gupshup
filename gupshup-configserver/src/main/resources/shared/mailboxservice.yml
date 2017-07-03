@@ -7,10 +7,10 @@ eureka:
 spring:
   data:
     mongodb:
-      username: superAdmin
-      password: admin123
+      username: vijay
+      password: vijay1994
       authentication-database: admin
-      database: gupshup  
+      database: admin  
       port: 27017
      
 ---
@@ -18,18 +18,18 @@ spring:
 # production configuration
 spring:
     profiles: production
-    
+    data:
+    mongodb:
+      username: vijay
+      password: vijay1994
+      authentication-database: admin
+      database: admin  
+      port: 27017
+     
 eureka:
  client:
    serviceUrl:
      defaultZone: http://172.23.239.182:8761/eureka/
      
 spring:
-  data:
-    mongodb:
-      username: superAdmin
-      password: admin123
-      authentication-database: admin
-      database: gupshup  
-      port: 27017
-     
+  

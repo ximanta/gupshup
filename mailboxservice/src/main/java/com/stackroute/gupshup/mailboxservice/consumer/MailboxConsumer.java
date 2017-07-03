@@ -30,7 +30,8 @@ public class MailboxConsumer {
 		mailboxConsumerRunnable.getUserConsumer().wakeup();
 		System.out.println("stopping user consumer");
 
-		try {
+		try 
+		{
 			mailboxConsumerRunnable.join();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +61,7 @@ class MailboxConsumerThread extends Thread
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
-		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
+		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple3");
 
 		mailboxConsumer = new KafkaConsumer<String, String>(configProperties);
 		mailboxConsumer.subscribe(Arrays.asList(topicName));

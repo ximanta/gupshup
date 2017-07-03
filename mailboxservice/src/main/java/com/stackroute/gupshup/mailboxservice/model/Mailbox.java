@@ -1,6 +1,9 @@
 package com.stackroute.gupshup.mailboxservice.model;
 
-import java.util.List;
+
+
+import java.util.Date;
+//import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,12 +16,29 @@ public class Mailbox extends ResourceSupport {
 	
 	@Id
 	private String mailboxID;
-	
 	@NotNull(message="username can not be null")
 	private String username;
+	private Date mailboxCreatedDate;
+	private long mailCount;
 	
-	private List<Mails> inbox;
-	private List<Mails> outbox;
+//	private List<Mails> inbox;
+//	private List<Mails> outbox;
+
+	public long getMailCount() {
+		return mailCount;
+	}
+
+	public void setMailCount(long mailCount) {
+		this.mailCount = mailCount;
+	}
+
+	public Date getMailboxCreatedDate() {
+		return mailboxCreatedDate;
+	}
+
+	public void setMailboxCreatedDate(Date mailboxCreatedDate) {
+		this.mailboxCreatedDate = mailboxCreatedDate;
+	}
 
 	public String getMailboxID() {
 		return mailboxID;
@@ -35,21 +55,6 @@ public class Mailbox extends ResourceSupport {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	public List<Mails> getInbox() {
-		return inbox;
-	}
-	
-	public void setInbox(List<Mails> inbox) {
-		this.inbox = inbox;
-	}
-	
-	public List<Mails> getOutbox() {
-		return outbox;
-	}
-	
-	public void setOutbox(List<Mails> outbox) {
-		this.outbox = outbox;
-	}
+
 	
 }

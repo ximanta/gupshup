@@ -1,16 +1,31 @@
 package com.stackroute.gupshup.mailboxservice.model;
 
+
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="mail")
 public class Mails
 {
+	@Id
 	private String mailID;
+	private String mailboxID;
 	private String to;
     private String from;
     private String message;
     private String circleName;
 	private Date timeCreated;
 	
+	
+	public String getMailboxID() {
+		return mailboxID;
+	}
+
+	public void setMailboxID(String mailboxID) {
+		this.mailboxID = mailboxID;
+	}
 	public String getMailID() {
 		return mailID;
 	}

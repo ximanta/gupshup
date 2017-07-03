@@ -16,6 +16,6 @@ public class MailboxService {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(MailboxService.class, args);
         MailboxConsumer mailBoxConsumer=applicationContext.getBean(MailboxConsumer.class);
-        mailBoxConsumer.subscribeUserActivity("mailbox");
+        mailBoxConsumer.subscribeUserActivity("mailbox4");
 	}
 }

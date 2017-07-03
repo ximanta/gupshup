@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="/home/user/new_Work/final_code"/>
 			<item value="/home/user/pdWorkspace/gupshup/gupshup-apigateway"/>
 			<item value="/home/user/pdWorkspace/gupshup/gupshup-configurationserver"/>
 			<item value="/home/user/pdWorkspace/gupshup/circleservice"/>
