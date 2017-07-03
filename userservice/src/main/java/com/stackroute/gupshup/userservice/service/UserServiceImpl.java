@@ -13,6 +13,7 @@ import com.stackroute.gupshup.userservice.domain.Activity;
 import com.stackroute.gupshup.userservice.domain.Add;
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
+import com.stackroute.gupshup.userservice.domain.Follow;
 import com.stackroute.gupshup.userservice.domain.Note;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
 		if(newUser == null) {
 			/* creating the object of new registered user to publish it to mailbox service */
 			Person person =new Person(null,"Person",user.getUserName());
-			Activity activity = new Create(null,"Create","user registered",person,person);
+			Activity activity = new Create(null,"CreateUser","user registered",person,person);
 		
 			/* publishing the created object to mailbox topic and recommendation topic */
 			try {
@@ -191,8 +192,8 @@ public class UserServiceImpl implements UserService {
 			}
 			Person person1 =new Person(null,"Person",sourceUserName);
 			Person person2 =new Person(null,"Person",targetUserName);
-			Note note = new Note(null,"Note",sourceUserName+" followed "+targetUserName,sourceUserName+" followed "+targetUserName);
-			Activity activity = new Add(null,"Add","user followed another user",person1,note,person2);
+			
+			Activity activity = new  Follow(null, "Follow", sourceUserName+" followed "+targetUserName, person1, person2);
 			try {
 				userProducer.publishUserActivity(environment.getProperty("userproducer.mailbox-topic"), new ObjectMapper().writeValueAsString(activity));
 				userProducer.publishUserActivity(environment.getProperty("userproducer.recommendation-topic"), new ObjectMapper().writeValueAsString(activity));
