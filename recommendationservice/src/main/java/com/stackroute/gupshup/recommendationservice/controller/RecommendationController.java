@@ -33,7 +33,7 @@ public class RecommendationController {
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<Iterable<List<String>>> followFriendOfFriend(@PathVariable String id)
 	{
-		return new ResponseEntity<Iterable<List<String>>>(userRecommendationService.followFriendOfFriend(id), HttpStatus.FOUND );
+		return new ResponseEntity<Iterable<List<String>>>(userRecommendationService.followRecommendation(id), HttpStatus.FOUND );
 	}
 	
 	

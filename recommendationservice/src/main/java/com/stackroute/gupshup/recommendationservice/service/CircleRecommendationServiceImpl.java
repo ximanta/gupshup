@@ -60,6 +60,13 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	}
 	
 	@Override
+	public String leaveCircle(String name, String circleId){
+		circleRecommendationRepository.leaveCircle(name, circleId);
+		return name+" left "+ circleId;
+		
+	}
+	
+	@Override
 	public Iterable<List<String>> subscribeRecommendation(String user){
 		
 		return circleRecommendationRepository.subscribeRecommendation(user);
@@ -118,6 +125,22 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			else
 			{
 				circleRecommendationService.subscribed(user, circleId);
+			}
+		}
+		
+		if(activityType.equalsIgnoreCase("Leave") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String name = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+		
+			if(name=="" || circleId=="")
+			{
+				System.out.println("Join: userame or circlename Field is empty");
+			}
+			else
+			{
+				circleRecommendationService.leaveCircle(name, circleId);
 			}
 		}
 		

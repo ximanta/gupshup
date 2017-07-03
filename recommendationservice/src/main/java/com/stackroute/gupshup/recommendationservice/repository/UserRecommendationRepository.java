@@ -30,6 +30,12 @@ Iterable<Map<String, Object>> follows(String name1, String name2);
 @Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return morepeople.name")
 Iterable<List<String>> followFriendOfFriend(String user);
 
+@Query("match (n:person {name:{0}}),(n)-[:created|:subscribed]->(things)<-[:created|:subscribed]-(people:person) where not (n)-[:follows]->(people) return distinct people.name")
+Iterable<List<String>> followSameCirclePeople(String user);
+
+@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return morepeople.name")
+Iterable<List<String>> followPeople(String user);
+
 List<UserRecommendation> findByName(String name);
 }
  

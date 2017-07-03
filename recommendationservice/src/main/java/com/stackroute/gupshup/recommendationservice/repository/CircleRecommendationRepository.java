@@ -28,7 +28,10 @@ public interface CircleRecommendationRepository extends GraphRepository<CircleRe
 	@Query("match (a:person), (b:circle) where a.name={0} and b.circleId={1} create (a)-[:subscribed]->(b) return a,b")
 	Iterable<Map<String, Object>> subscribed(String name1, String circleId);
 	
-	@Query("match (a:person {name:{0}})-[:follows]->(people),(people)-[:created |:subscribed]->(things) where not (a)-[:subscribed |:created]->(things) return things.keyword")
+	@Query("match (a:person {name:{0}})-[:follows]->(people),(people)-[:created |:subscribed]->(things) where not (a)-[:subscribed |:created]->(things) return distinct things.keyword")
 	Iterable<List<String>> subscribeRecommendation(String user);
+	
+	@Query("match (a:person)-[r:subscribed]->(b:circle) where a.name={0} and b.circleId={1} delete r")
+	void leaveCircle(String name, String circleId);
 
 }

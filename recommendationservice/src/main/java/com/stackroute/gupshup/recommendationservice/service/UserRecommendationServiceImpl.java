@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +59,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 	
 	@Override
-	public Iterable<List<String>> followFriendOfFriend(String user){
-		
-		return userRecommendationRepository.followFriendOfFriend(user);
+	public Iterable<List<String>> followRecommendation(String user){
+		return userRecommendationRepository.followPeople(user);
 	}
 	
 	@Override

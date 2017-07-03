@@ -13,6 +13,7 @@ public interface CircleRecommendationService {
 	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation);
 	//public Iterable<Map<String, Object>> created(String user, String circle);
 	public Iterable<Map<String, Object>> subscribed(String user, String circle);
+	public String leaveCircle(String name, String circleId);
 	public Iterable<List<String>> subscribeRecommendation(String user);
 	public void getActiviType(JsonNode node);
 }
