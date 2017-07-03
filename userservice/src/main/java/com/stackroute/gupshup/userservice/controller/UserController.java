@@ -128,7 +128,7 @@ public class UserController {
 	    		}
 	    		else {
 	    			if((userService.updateUser(user)).equalsIgnoreCase("updated")) {
-	    				String successMessage = messageSource.getMessage ("error.user.success.userupdate", null, locale );
+	    				String successMessage = messageSource.getMessage ("message.user.success.userupdate", null, locale );		
 		    	        return new ResponseEntity<>(successMessage, HttpStatus.OK);
 	    			}
 	    			else {
@@ -156,7 +156,7 @@ public class UserController {
 			   }
 			   else {
 				   if((userService.deleteUser(userName)).equalsIgnoreCase("deleted")) {
-					   String successMessage = messageSource.getMessage ("error.user.success.userdelete", null, locale );
+					   String successMessage = messageSource.getMessage ("message.user.success.userdelete", null, locale );
 					   return new ResponseEntity<>(successMessage, HttpStatus.OK);
 				   }
 				   else {

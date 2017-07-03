@@ -1,12 +1,14 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
+import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
 
 @Service
@@ -15,54 +17,154 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	@Autowired
 	CircleRecommendationRepository circleRecommendationRepository;
 	
+	@Autowired
+	CircleRecommendationService circleRecommendationService;
+	
 	@Override
 	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation){
 		
-		return circleRecommendationRepository.createCircle(circleRecommendation.getKeyword(), circleRecommendation.getType());
+		System.out.println("circle created");
+		Map<String, Object> circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		circleRecommendationRepository.created(circleRecommendation.getCreatedBy(), circleRecommendation.getCircleId());
+		return circle;
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> created(String user, String circle){
+	public String deleteCircle(String circleId)
+	{
+		circleRecommendationRepository.deleteCircle(circleId);
+		return "circle deleted";
+	}
+	
+	@Override
+	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation){
 		
-		System.out.println("service:"+user+" "+circle);
-		return circleRecommendationRepository.created(user, circle);
+		System.out.println("circle updated");
+		System.out.println(circleRecommendation);
+		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+	}
+	
+	
+	/*@Override
+	public Iterable<Map<String, Object>> created(String user, String circleId){
+		
+		System.out.println("service:"+user+" "+circleId);
+		System.out.println("created relationship");
+		return circleRecommendationRepository.created(user, circleId);
+	}*/
+	
+	@Override
+	public Iterable<Map<String, Object>> subscribed(String user, String circleId){
+		System.out.println("user subscribed");
+		return circleRecommendationRepository.subscribed(user, circleId);
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> subscribed(String user, String circle){
-		return circleRecommendationRepository.subscribed(user, circle);
+	public Iterable<List<String>> subscribeRecommendation(String user){
+		
+		return circleRecommendationRepository.subscribeRecommendation(user);
 	}
-
+	
+	@Override
 	public void getActiviType(JsonNode node){
 		
-		CircleRecommendationService circleRecommendationService = null;
-		
-		System.out.println("entering activity");
+		System.out.println("circle: entering activity");
 		String activityType = node.path("type").asText();
-		System.out.println("activity:"+activityType);
+		System.out.println("circle: activity:"+activityType);
+		JsonNode actor = node.path("actor");
+		String actorType = actor.path("type").asText();
+		JsonNode objectType = node.path("object");
+		String objType = objectType.path("type").asText();
 		
-		if(activityType.equalsIgnoreCase("CreateCircle"))
+		if(activityType.equalsIgnoreCase("Create") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
-			System.out.println("entering create circle");
-			JsonNode actor = node.path("actor");
+		
 			String user = actor.path("name").asText();
-			JsonNode target = node.path("target");
-			String keyword = target.path("circleName").asText();
-			
-			if(user==null||keyword==null)
+			String circleId = objectType.path("circleId").asText();
+			String circleName = objectType.path("circleName").asText();
+			String keyword = objectType.path("keyword").asText();
+			String createdBy = objectType.path("createdBy").asText();
+		
+			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
 			{
-				System.out.println("name fields are either null or not specified correctly : MESSAGE CIRCLE");
+				System.out.println("Create: userame, circlename or keyword field is empty");
+				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
 			}
-			
-			else{
+			else
+			{
+				System.out.println("create circle");
+				CircleRecommendation circleRecommendation = new CircleRecommendation();
 				
-				CircleRecommendation circleRecommendation = null;
+				circleRecommendation.setCircleId(circleId);
+				circleRecommendation.setCircleName(circleName);
 				circleRecommendation.setKeyword(keyword);
-				circleRecommendation.setType(null);
+				circleRecommendation.setCreatedBy(createdBy);
+				
 				circleRecommendationService.createCircle(circleRecommendation);
-				circleRecommendationService.created(user, keyword);
+				//circleRecommendationService.created(user, circleId);
 			}
 		}
+		
+		if(activityType.equalsIgnoreCase("Join") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+		
+			if(user=="" || circleId=="")
+			{
+				System.out.println("Join: userame or circlename Field is empty");
+			}
+			else
+			{
+				circleRecommendationService.subscribed(user, circleId);
+			}
+		}
+		
+		if(activityType.equalsIgnoreCase("Update") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+			String circleName = objectType.path("circleName").asText();
+			String keyword = objectType.path("keyword").asText();
+			String createdBy = objectType.path("createdBy").asText();
+		
+			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
+			{
+				System.out.println("Update: userame, circlename or keyword field is empty");
+				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
+			}
+			else
+			{
+				System.out.println("update circle");
+				CircleRecommendation circleRecommendation = new CircleRecommendation();
+				
+				circleRecommendation.setCircleId(circleId);
+				circleRecommendation.setCircleName(circleName);
+				circleRecommendation.setKeyword(keyword);
+				circleRecommendation.setCreatedBy(createdBy);
+				
+				circleRecommendationService.updateCircle(circleRecommendation);
+			}
+		}
+		
+		if(activityType.equalsIgnoreCase("Delete") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
+		{
+		
+			String user = actor.path("name").asText();
+			String circleId = objectType.path("circleId").asText();
+		
+			if(user=="" || circleId=="")
+			{
+				System.out.println("Delete: userame or circlename Field is empty");
+			}
+			else
+			{
+				circleRecommendationService.deleteCircle(circleId);
+			}
+		}
+		
 		
 	}
 }
