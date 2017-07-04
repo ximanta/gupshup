@@ -54,6 +54,5 @@ public class Join implements Activity{
 	public ASObject getObject() {
 		return object;
 	}
-	
 
 }

@@ -11,6 +11,14 @@ spring:
     password: admin123
     authentication-database: admin
     database: gupshup
+    
+circleservice:
+   bootstrap-server: localhost:9092
+   topic:
+    circle: circle
+    mailbox: mailbox
+    user: user
+    recommendation: recommendation
 
 ---
 
@@ -30,3 +38,11 @@ spring:
     password: admin123
     authentication-database: admin
     database: gupshup
+
+circleservice:
+   bootstrap-server: localhost:9092
+   topic:
+    circle: circle
+    mailbox: mailbox
+    user: user
+    recommendation: recommendation
