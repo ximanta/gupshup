@@ -1,6 +1,6 @@
 package com.stackroute.gupshup.circleservice.model;
 
-//import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,17 +10,16 @@ public class Follow implements Activity{
 
 	private final String context;
 	
-	//@NotNull(message="type is required")
+	@NotNull(message="type is required")
 	private final String type;
 	
 	private final String summary;
 	
-	//@NotNull(message="actor can not be null")
+	@NotNull(message="actor can not be null")
 	private final ASObject actor;
 	
-	//@NotNull(message="object can not be null")
+	@NotNull(message="object can not be null")
 	private final ASObject object;
-	
 	
 	@JsonCreator
 	public Follow(

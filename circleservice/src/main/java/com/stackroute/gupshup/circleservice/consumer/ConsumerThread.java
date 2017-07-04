@@ -10,7 +10,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +26,7 @@ class ConsumerThread extends Thread
 	private CircleService circleService;
 	private Environment environment;
 
-	//----------------------------------logger implementation----------------------------------
+	//----------------------------------Logger implementation----------------------------------
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public ConsumerThread(String topicName, String groupId, CircleService circleService, Environment environment){
@@ -69,8 +68,8 @@ class ConsumerThread extends Thread
 				}
 			}
 		}
-
 	}
+	
 	public KafkaConsumer<String,String> getKafkaConsumer()
 	{
 		return this.kafkaConsumer;

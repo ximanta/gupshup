@@ -14,13 +14,11 @@ import com.stackroute.gupshup.circleservice.consumer.CircleServiceConsumer;
 @EnableMongoRepositories
 public class CircleServiceApplication {
 
-	//------------------------------------Environment auto wired -------------------------------------------
-	
 	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(CircleServiceApplication.class, args);
 		CircleServiceConsumer circleServiceConsumer = applicationContext.getBean(CircleServiceConsumer.class);
 		Environment environment = applicationContext.getEnvironment();
-		circleServiceConsumer.consumeActivity(environment.getProperty("circleservice.circle-topic"));
+		circleServiceConsumer.consumeActivity(environment.getProperty("circleservice.topic.circle"));
 	}
 	
 }

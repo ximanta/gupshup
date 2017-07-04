@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.circleservice.model;
 
+import java.util.Date;
 
 public class Mail
 {
@@ -7,7 +8,7 @@ public class Mail
 	private String To;
 	private String From;
 	private String message;
-	private String timeCreated;
+	private Date timeCreated;
 	
 	public Mail() {
 	}
@@ -44,13 +45,12 @@ public class Mail
 		this.message = message;
 	}
 
-	public String getTimeCreated() {
+	public Date getTimeCreated() {
 		return timeCreated;
 	}
 
-	public void setTimeCreated(String timeCreated) {
+	public void setTimeCreated(Date timeCreated) {
 		this.timeCreated = timeCreated;
 	}
-
 	
 }

@@ -1,4 +1,6 @@
 package com.stackroute.gupshup.circleservice.service;
+
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,19 +33,19 @@ import com.stackroute.gupshup.circleservice.repository.CircleRepository;
 public class CircleServiceImpl implements CircleService {
 
 
-	//--------------------auto wired circle repository-------------------------
+	//----------------------------Autowired circle repository-------------------------
 	@Autowired
 	private CircleRepository circleRepo;
 
-	//--------------------auto wired circle service producer---------------------------------
+	//----------------------------Autowired circle service producer---------------------------------
 	@Autowired
 	private CircleServiceProducer producer;
 
-	//----------------------------------Environment auto wired-----------------------------------
+	//----------------------------Autowired Environment-----------------------------------
 	@Autowired
 	private Environment environment;
 
-	//--------------------find all circle-----------
+	//----------------------------Find all circle-----------
 	@Override
 	public List<Circle> findAllCircles() throws CircleException {
 		List<Circle> circlelist = circleRepo.findAll();
@@ -52,7 +54,7 @@ public class CircleServiceImpl implements CircleService {
 		return circlelist;
 	}
 
-	//---------------------create circle----------------------------------
+	//----------------------------Create circle----------------------------------
 	public Circle createCircle(Circle circle) throws CircleException, JsonProcessingException{
 		Circle savedCircle = circleRepo.save(circle);
 
@@ -62,28 +64,27 @@ public class CircleServiceImpl implements CircleService {
 			Date date = new Date();
 			circle.setCircleCreatedDate(date.toString());
 			savedCircle=circleRepo.save(circle);
+
 			// TODO : get user details from user service
 			User user = new  User();
-			user.setUserName(savedCircle.getCircleCreatedBy());
-
+			user.setUsername(savedCircle.getCircleCreatedBy());
 			addCircleMember(savedCircle.getCircleId(),user);
-			Person person = new Person(null,"Person",circle.getCircleCreatedBy(),circle.getCircleId());
-			Group group = new Group(null,"Circle",circle.getCircleId());
-			String message = circle.getCircleCreatedBy()+" created "+circle.getCircleName();
-			Note note = new Note(null,"Note",message,message);
-			Add add = new Add(null, "Add", message, person, note, person);
-			producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),new ObjectMapper().writeValueAsString(add));
+
+			Person person = new Person(null,savedCircle.getCircleCreatedBy(),"Person",null, null);
+			Group group = new Group(null,savedCircle.getCircleId(),"Circle",savedCircle.getCircleName());
+			String message = savedCircle.getCircleCreatedBy()+" created "+savedCircle.getCircleName();
+
 			Create create = new Create(null,"Create", message, person, group);
-			producer.publishMessage(environment.getProperty("circleservice.recommendation-topic"),new ObjectMapper().writeValueAsString(create));
+			producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),new ObjectMapper().writeValueAsString(create));
+			producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),new ObjectMapper().writeValueAsString(create));
 		}
 		return savedCircle;
 	}
 
-	//----------------find circle by id--------------------
+	//----------------------------Find circle by id--------------------
 	@Override
 	public Circle findById(String id) throws CircleException {
 		Circle circle = null;
-
 		if(id!=null) 
 			circle = circleRepo.findOne(id);
 		else {
@@ -93,26 +94,31 @@ public class CircleServiceImpl implements CircleService {
 	}
 
 
-	//-----------------update circle-------------------------
+	//-----------------------------Update circle-------------------------
 	@Override
-	public void updateCircle(Circle currentCircle) throws CircleException ,JsonProcessingException{
-		if(currentCircle==null)	{
+	public void updateCircle(Circle circle) throws CircleException ,JsonProcessingException{
+		if(circle == null || circle.getCircleId() == null)	{
 			throw new CircleException("Give Circle name");
 		}
 		else {
-			circleRepo.save(currentCircle);
-			List<User> members = getCircleMembers(currentCircle.getCircleId());
+			Circle updatedCircle = circleRepo.save(circle);
+			List<User> members = getCircleMembers(updatedCircle.getCircleId());
 			for(int i=0;i<members.size();i++){
-				Person person = new Person(null,environment.getProperty("circleservice.c-person"),currentCircle.getCircleCreatedBy(),currentCircle.getCircleId());
-				Group group = new Group(null,"Circle",currentCircle.getCircleId());
-				Update update = new Update("null","update",currentCircle.getCircleCreatedBy()+" updated "+currentCircle.getCircleName(),person,group);
-				producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),new ObjectMapper().writeValueAsString(update));
-				producer.publishMessage(environment.getProperty("circleservice.recommendation-topic"),new ObjectMapper().writeValueAsString(update));
+				User user = new  User();
+				user.setUsername(updatedCircle.getCircleCreatedBy());
+
+				Person person = new Person(null,updatedCircle.getCircleCreatedBy(),"Person",null, null);
+				Group group = new Group(null,updatedCircle.getCircleId(),"Circle",updatedCircle.getCircleName());
+				String message = updatedCircle.getCircleCreatedBy()+" updated "+updatedCircle.getCircleName();
+
+				Update update = new Update("null","update",message,person,group);
+				producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),new ObjectMapper().writeValueAsString(update));
+				producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),new ObjectMapper().writeValueAsString(update));
 			}
 		}
 	}
 
-	//------------------delete all circles------------------------
+	//------------------------------Delete all circles------------------------
 	@Override
 	public void deleteAllCircle() throws CircleException {
 		if(circleRepo.findAll()!=null) {
@@ -123,7 +129,7 @@ public class CircleServiceImpl implements CircleService {
 		}
 	}
 
-	//-------------------list all circle member-----------
+	//-------------------------------List all circle member-----------
 	@Override
 	public List<User> getCircleMembers(String circleId) throws CircleException {
 		List<User> members=null;
@@ -152,17 +158,15 @@ public class CircleServiceImpl implements CircleService {
 			Circle circle = findById(id);
 			List<User> members = getCircleMembers(id);
 			circleRepo.delete(id);
-			for(int i=0;i<members.size();i++){
-				Person person = new Person(null,"Person",members.get(i).getUserName(),circle.getCircleId());
-				Group group = new Group(null,"Circle",circle.getCircleId());
 
+			for(int i=0;i<members.size();i++){
+				Person person = new Person(null,circle.getCircleCreatedBy(),"Person",null, null);
+				Group group = new Group(null,circle.getCircleId(),"Circle",circle.getCircleName());
 				String message = circle.getCircleCreatedBy()+" deleted "+circle.getCircleName();
-				Note note = new Note(null,"Note",message,message);
-				Add add = new Add(null, "Add", message, person, note, person);
-				producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),new ObjectMapper().writeValueAsString(add));
 
 				Delete delete = new Delete("null","Delete", message, person, group);
-				producer.publishMessage(environment.getProperty("circleservice.recommendation-topic"),new ObjectMapper().writeValueAsString(delete));
+				producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),new ObjectMapper().writeValueAsString(delete));
+				producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),new ObjectMapper().writeValueAsString(delete));
 			}
 
 		}
@@ -171,7 +175,6 @@ public class CircleServiceImpl implements CircleService {
 	//----------------------add mail to the mailbox-----------
 	@Override
 	public void addMailtoMailbox(String circleId,Mail mail) throws CircleException {
-
 		if(circleId != null) {
 			Circle circle = findById(circleId);
 			if(circle != null){
@@ -189,7 +192,6 @@ public class CircleServiceImpl implements CircleService {
 		else {
 			throw new CircleException("Circle not found");
 		}
-
 	}
 
 
@@ -210,7 +212,7 @@ public class CircleServiceImpl implements CircleService {
 				boolean flag = false;
 
 				for(User u:members){
-					if(u.getUserName().equals(user.getUserName())){
+					if(u.getUsername().equals(user.getUsername())){
 						flag  = true;
 						break;
 					}
@@ -239,7 +241,7 @@ public class CircleServiceImpl implements CircleService {
 			circle = circleRepo.findOne(circleId);
 			members=circle.getCircleMembers();
 			for(int i=0;i< members.size();i++) {
-				if(members.get(i).getUserName() == userName) {
+				if(members.get(i).getUsername() == userName) {
 					index = i; break;
 				}
 			}
@@ -255,63 +257,68 @@ public class CircleServiceImpl implements CircleService {
 	public void getActivityType(JsonNode node) throws CircleException,JsonProcessingException{
 		String type = node.path("type").asText();
 		ObjectMapper objectMapper = new ObjectMapper();
+
 		if(type!=null) {
-			//---------------------join--------------------------------
+			//---------------------Join--------------------------------
 			if(type.equalsIgnoreCase("join")){
 				Join join = objectMapper.treeToValue(node, Join.class);
 				Group group = (Group) join.getObject();
-				String circleId = group.getName();
 				Person person = (Person) join.getActor();
+				String profilePicture = person.getImage();
 
-				// TODO : add user details from  user service
+				String circleId = group.getName();
 				User user = new User();
-				user.setUserName(person.getName());
+				user.setUsername(person.getId());
+				user.setFullname(person.getName());
+				user.setProfilePicture(profilePicture);
 
 				Circle circle = addCircleMember(circleId, user);
 
 				if(circle != null){
+					String message = user.getFullname()+" has joined "+circle.getCircleName();
 					Mail mail=new Mail();
 					mail.setTo(circleId);
-					mail.setFrom(user.getUserName());
-					mail.setMailID(new Date().toString());
-					mail.setTimeCreated(new Date().toString());
-					mail.setMessage(person.getName()+" has joined "+circle.getCircleName());
+					mail.setFrom(user.getUsername());
+					mail.setMailID(circleId+new Date().toString());
+					mail.setTimeCreated(new Date());
+					mail.setMessage(message);
 					addMailtoMailbox(circleId, mail);
 
 					List<User> members = getCircleMembers(circleId);
 
 					if(members!=null) {
 						for(int i=0;i<members.size();i++) {
-							System.out.println(members.get(i).getUserName());
-							Group person1 = new Group(circleId,"Group",members.get(i).getUserName());
-							System.out.println(person1.getName());
-							Note note = new Note(join.getContext(),"Note",null,person.getName()+"has joined"+circle.getCircleName());
-							Add addActivity = new Add(join.getContext(),"Add",join.getSummary(),join.getActor(),note,person1);
-							producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),objectMapper.writeValueAsString(addActivity));
-							producer.publishMessage(environment.getProperty("circleservice.recommendation-topic"),objectMapper.writeValueAsString(addActivity));
+							User user2 = members.get(i);
+							Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
+							Join join2 = new Join(join.getContext(),join.getType(),message,person2,group);
+							producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(join2));
+							producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),objectMapper.writeValueAsString(join2));
 						}
 					}
 				}
 			}
 
-			//--------------------------leave-------------------------------------
+			//--------------------------Leave-------------------------------------
 			if(type.equalsIgnoreCase("leave")){
 
 				Leave leave = objectMapper.treeToValue(node, Leave.class);
 				Group group = (Group) leave.getObject();
-				String circleId = group.getName();
 				Person person = (Person) leave.getActor();
-
-				List<User> members = getCircleMembers(circleId);
-				deleteCircleMember(circleId, person.getName());
-
-				for(int i=0;i<members.size();i++){
-					System.out.println(members.get(i).getUserName());
-					Person person1 = new Person(null,"Person",members.get(i).getUserName(),circleId);
-					Note note = new Note(leave.getContext(),"Note",null,person1.getName()+"has left"+group.getContext());
-					Add leaveActivity = new Add(leave.getContext(),"Add",leave.getSummary(),leave.getActor(),note,person1);
-					producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),objectMapper.writeValueAsString(leaveActivity));
-					producer.publishMessage(environment.getProperty("circleservice.recommendation-topic"),objectMapper.writeValueAsString(leaveActivity));
+				String circleId = group.getName();
+				Circle circle = findById(circleId);
+				if(circle != null){
+					String message = person.getName()+" had left "+circle.getCircleName();
+					List<User> members = getCircleMembers(circleId);
+					if(members!=null && members.size()>0){
+						deleteCircleMember(circleId, person.getName());
+						for(int i=0;i<members.size();i++){
+							User user2 = members.get(i);
+							Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
+							Leave leave2 = new Leave(leave.getContext(),leave.getType(),message,person2,group);
+							producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(leave2));
+							producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),objectMapper.writeValueAsString(leave2));
+						}
+					}
 				}
 			}
 
@@ -326,10 +333,9 @@ public class CircleServiceImpl implements CircleService {
 				Mail mail=new Mail();
 				mail.setTo(circleId);
 				mail.setFrom(person.getName());
-				mail.setMailID(new Date().toString());
-				mail.setTimeCreated(new Date().toString());
+				mail.setMailID(circleId+new Date().toString());
+				mail.setTimeCreated(new Date());
 				mail.setMessage(note.getContent());
-				System.out.println(note.getContent());
 
 				addMailtoMailbox(circleId, mail);
 
@@ -337,10 +343,10 @@ public class CircleServiceImpl implements CircleService {
 
 				if(members!=null)
 				{
-					for(int i=0;i<members.size();i++){
-						Person person2 = new Person(null,"Person",members.get(i).getUserName(),circleId);
-						Add addActivity = new Add(add.getContext(),add.getType(),add.getSummary(),add.getActor(),add.getObject(),person2);
-						producer.publishMessage(environment.getProperty("circleservice.mailbox-topic"),objectMapper.writeValueAsString(addActivity));
+					for(int i=0;i<members.size();i++){User user2 = members.get(i);
+					Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
+					Add addActivity = new Add(add.getContext(),add.getType(),add.getSummary(),add.getActor(),add.getObject(),person2);
+					producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(addActivity));
 					}
 				}
 			}

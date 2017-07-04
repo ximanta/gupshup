@@ -1,18 +1,14 @@
 package com.stackroute.gupshup.circleservice.controller;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,48 +28,41 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value="circle")
 public class CircleController {
 
-	//----------------circle service Auto wired------------------
+	//---------------------------Autowired Circle service------------------
 	@Autowired
 	private CircleService circleService;
 
-	//-----------------Auto wired link assembler-----------------
+	//---------------------------Autowired link assembler-----------------
 	@Autowired
 	private LinkAssembler linkAssembler;
 
-	
-
-	//-----------------get all circle-----------------
-	@ApiOperation(value="List All Circles", notes="circle details")
+	//---------------------------Get all circle---------------------------
+	@ApiOperation(value="List All Circles", notes="list all circles")
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<List<Circle>> listAllCircles(@Valid BindingResult bindingResult) {
-		List<Circle> circle = null;
-		Map<String,String> message = new HashMap<String,String>();
-		if(bindingResult.hasErrors()){
-			List<ObjectError> errors = bindingResult.getAllErrors();
-			for(ObjectError error: errors){
-				message.put("error-"+error.hashCode(),error.getDefaultMessage());
-			}
-			return new ResponseEntity<List<Circle>>(circle, HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<List<Circle>> listAllCircles() {
+		List<Circle> circlelist = null;
 		try {
 			if(circleService.findAllCircles()==null) {
-				return new ResponseEntity<List<Circle>>(circle, HttpStatus.NO_CONTENT);
+				return new ResponseEntity<List<Circle>>(circlelist, HttpStatus.NO_CONTENT);
 			}
 			else {
-				circle = circleService.findAllCircles();
-				linkAssembler.assembleLinksForCircleList(circle);
+				circlelist = circleService.findAllCircles();
+				linkAssembler.assembleLinksForCircleList(circlelist);
 			}
 		} catch (CircleException e) {
-			return new ResponseEntity<List<Circle>>(circle, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<List<Circle>>(circlelist, HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Circle>>(circle, HttpStatus.FOUND);
+		return new ResponseEntity<List<Circle>>(circlelist, HttpStatus.FOUND);
 	}
 
-	//-----------------------------create circle------------------------------
-	@ApiOperation(value="Save Circle", notes="circle details added")
+	//----------------------------Create circle------------------------------
+	@ApiOperation(value="Save Circle", notes="Save circle details ")
 	@RequestMapping(value="",method=RequestMethod.POST)
-	public ResponseEntity<Circle> saveCircle(@RequestBody Circle circle ) {
+	public ResponseEntity<Circle> saveCircle(@Valid @RequestBody Circle circle, BindingResult result ) {
 		Circle circlesave = null;
+		if(result.hasErrors()){
+			return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+		}
 		try {
 			if(circle.getCircleName()==null) {
 				return new ResponseEntity<Circle>(circlesave,HttpStatus.BAD_REQUEST);
@@ -90,7 +79,7 @@ public class CircleController {
 		return new ResponseEntity<Circle>(circlesave, HttpStatus.CREATED);
 	}
 
-	//------------------------------delete circle by id-----------------
+	//----------------------------Delete circle by id-----------------
 	@ApiOperation(value="Delete Circle", notes="circle details deleted")
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 	public ResponseEntity<Circle> deleteCircle(@PathVariable String id)  {
@@ -111,11 +100,10 @@ public class CircleController {
 
 	}
 
-	//-------------------Retrieve Single circle--------------------------------------------------------
+	//----------------------------Retrieve Single circle--------------------------------------------------------
 	@ApiOperation(value="Get One Circle detail", notes="get circle details")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Circle> getCircle(@PathVariable("id") String id) {
-
 		Circle circle = null;
 		try {
 			if (circleService.findById(id) == null) {
@@ -131,7 +119,7 @@ public class CircleController {
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}   
 
-	//-------------------------update circle-----------------------------
+	//----------------------------Update circle-----------------------------
 	@ApiOperation(value="Update Circle", notes="update circle details")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Circle> updateCircle(@PathVariable String id, @RequestBody Circle circle){
@@ -153,7 +141,7 @@ public class CircleController {
 		return new ResponseEntity<Circle>(circle, HttpStatus.OK);
 	}
 
-	//-----------------Delete all user------------------
+	//------------------------------Delete all user------------------
 	@ApiOperation(value="Delete All Circle", notes="delete all circle details")
 	@RequestMapping(value = "/deleteall", method = RequestMethod.DELETE)
 	public ResponseEntity<Circle> deleteAllCircle() {
@@ -167,7 +155,6 @@ public class CircleController {
 		}
 		catch (CircleException e) {
 			return new ResponseEntity<Circle>(HttpStatus.NOT_FOUND);
-
 		}
 		return new ResponseEntity<Circle>(HttpStatus.OK);
 	}

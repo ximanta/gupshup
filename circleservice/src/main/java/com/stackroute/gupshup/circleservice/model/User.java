@@ -1,42 +1,42 @@
 package com.stackroute.gupshup.circleservice.model;
 
-//import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 public class User {
 	
-	//@NotNull(message="user name is required")
-	private String userName;
+	@NotNull(message="user name is required")
+	private String username;
 	
+	private String fullname;
 	private String profilePicture;
-	
-	//@NotNull(message="email id is required")
-	private String emailId;
 	
 	public User() {
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public String getFullname() {
+		return fullname;
 	}
 
 	public String getProfilePicture() {
 		return profilePicture;
 	}
 
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
 	public void setProfilePicture(String profilePicture) {
 		this.profilePicture = profilePicture;
 	}
-
-	public String getEmailId() {
-		return emailId;
-	}
-
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
-	}
+	
+	
 
 }

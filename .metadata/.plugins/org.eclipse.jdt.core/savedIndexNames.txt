@@ -1,1 +1,0 @@
-INDEX VERSION 1.130+/home/user/new_Work/final_code/gupshup/.metadata/.plugins/org.eclipse.jdt.core

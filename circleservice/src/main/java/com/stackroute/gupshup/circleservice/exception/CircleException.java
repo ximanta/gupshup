@@ -5,7 +5,9 @@ package com.stackroute.gupshup.circleservice.exception;
 //@ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class CircleException extends Exception {
 
-    public CircleException(String message) {
+	private static final long serialVersionUID = 1L;
+
+	public CircleException(String message) {
         super(message);
     }
 
