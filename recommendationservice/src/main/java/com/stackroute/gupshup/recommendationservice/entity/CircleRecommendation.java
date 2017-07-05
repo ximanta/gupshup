@@ -1,5 +1,7 @@
 package com.stackroute.gupshup.recommendationservice.entity;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,7 +26,7 @@ public class CircleRecommendation {
 	
 	@NotNull(message="circle keywords cannot be null")
 	@Size(min=1, message="circle keyword cannot be empty")
-	String keyword;
+	List<String> keyword;
 	
 	@NotNull(message="username cannot be null")
 	@Size(min=1, message="username cannot be empty")
@@ -36,7 +38,7 @@ public class CircleRecommendation {
 	public CircleRecommendation(
 			@JsonProperty("circleId") String circleId,
 			@JsonProperty("circleName") String circleName,
-			@JsonProperty("keyword") String keyword,
+			@JsonProperty("keyword") List<String> keyword,
 			@JsonProperty("createdBy") String createdBy
 			){
 		this.circleId = circleId;
@@ -61,11 +63,11 @@ public class CircleRecommendation {
 		this.circleId = circleId;
 	}
 
-	public String getKeyword() {
+	public List<String> getKeyword() {
 		return keyword;
 	}
 
-	public void setKeyword(String keyword) {
+	public void setKeyword(List<String> keyword) {
 		this.keyword = keyword;
 	}
 	

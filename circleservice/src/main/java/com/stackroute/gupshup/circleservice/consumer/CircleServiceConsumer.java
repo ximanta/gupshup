@@ -25,7 +25,7 @@ public class CircleServiceConsumer {
         consumerRunnable.getKafkaConsumer().wakeup();
         
         try {
-			consumerRunnable.join(100);
+			consumerRunnable.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

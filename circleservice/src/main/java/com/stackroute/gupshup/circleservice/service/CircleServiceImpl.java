@@ -175,6 +175,7 @@ public class CircleServiceImpl implements CircleService {
 	//----------------------add mail to the mailbox-----------
 	@Override
 	public void addMailtoMailbox(String circleId,Mail mail) throws CircleException {
+		System.out.println(circleId + "circleId");
 		if(circleId != null) {
 			Circle circle = findById(circleId);
 			if(circle != null){
@@ -208,9 +209,7 @@ public class CircleServiceImpl implements CircleService {
 			circle = circleRepo.findOne(circleId);
 			if(circle != null){
 				members=circle.getCircleMembers();
-
 				boolean flag = false;
-
 				for(User u:members){
 					if(u.getUsername().equals(user.getUsername())){
 						flag  = true;
@@ -258,43 +257,49 @@ public class CircleServiceImpl implements CircleService {
 		String type = node.path("type").asText();
 		ObjectMapper objectMapper = new ObjectMapper();
 
+		System.out.println(type);
 		if(type!=null) {
 			//---------------------Join--------------------------------
 			if(type.equalsIgnoreCase("join")){
+				System.out.println("here");
 				Join join = objectMapper.treeToValue(node, Join.class);
 				Group group = (Group) join.getObject();
 				Person person = (Person) join.getActor();
 				String profilePicture = person.getImage();
 
-				String circleId = group.getName();
+				String circleId = group.getId();
 				User user = new User();
 				user.setUsername(person.getId());
 				user.setFullname(person.getName());
 				user.setProfilePicture(profilePicture);
 
-				Circle circle = addCircleMember(circleId, user);
+				Circle circle = null;
+				circle = addCircleMember(circleId, user);
+				System.out.println(circleId + " "+ user.getUsername());
 
 				if(circle != null){
-					String message = user.getFullname()+" has joined "+circle.getCircleName();
+					String message = user.getUsername()+" has joined "+circle.getCircleName();
+					System.out.println(message);
 					Mail mail=new Mail();
 					mail.setTo(circleId);
 					mail.setFrom(user.getUsername());
 					mail.setMailID(circleId+new Date().toString());
 					mail.setTimeCreated(new Date());
 					mail.setMessage(message);
+
 					addMailtoMailbox(circleId, mail);
+					List<User> members=null;
+					members = getCircleMembers(circleId);
 
-					List<User> members = getCircleMembers(circleId);
-
-					if(members!=null) {
-						for(int i=0;i<members.size();i++) {
-							User user2 = members.get(i);
-							Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
-							Join join2 = new Join(join.getContext(),join.getType(),message,person2,group);
-							producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(join2));
-							producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),objectMapper.writeValueAsString(join2));
-						}
-					}
+//					if(members!=null) {
+//						for(int i=0;i<members.size();i++) {
+//							User user2 = members.get(i);
+//							Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
+//							Join join2 = new Join(join.getContext(),join.getType(),message,person2,group);
+//							producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(join2));
+//							producer.publishMessage(environment.getProperty("circleservice.topic.recommendation"),objectMapper.writeValueAsString(join2));
+//						}
+//					}
 				}
 			}
 
@@ -326,13 +331,13 @@ public class CircleServiceImpl implements CircleService {
 			if(type.equalsIgnoreCase("add")) {
 				Add add = objectMapper.treeToValue(node,Add.class);
 				Group group = (Group) add.getTarget();
-				String circleId = group.getName();
+				String circleId = group.getId();
 				Note note = (Note) add.getObject();
 				Person person = (Person) add.getActor();
 
 				Mail mail=new Mail();
 				mail.setTo(circleId);
-				mail.setFrom(person.getName());
+				mail.setFrom(person.getId());
 				mail.setMailID(circleId+new Date().toString());
 				mail.setTimeCreated(new Date());
 				mail.setMessage(note.getContent());
@@ -343,7 +348,8 @@ public class CircleServiceImpl implements CircleService {
 
 				if(members!=null)
 				{
-					for(int i=0;i<members.size();i++){User user2 = members.get(i);
+					for(int i=0;i<members.size();i++){
+					User user2 = members.get(i);
 					Person person2 = new Person(null,user2.getUsername(),"Person",user2.getFullname(),null);
 					Add addActivity = new Add(add.getContext(),add.getType(),add.getSummary(),add.getActor(),add.getObject(),person2);
 					producer.publishMessage(environment.getProperty("circleservice.topic.mailbox"),objectMapper.writeValueAsString(addActivity));
