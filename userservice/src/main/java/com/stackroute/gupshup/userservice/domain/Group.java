@@ -4,33 +4,29 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class Person implements ASObject{
+public final class Group implements ASObject{
 	
 	private final String context;
 	
-	@NotNull(message="type is required")
+	@NotNull(message="Type is required")
 	private final String type;
 	
-	@NotNull(message="id is required")
+	@NotNull(message="Id is required")
 	private final String id;
 	
-	@NotNull(message="name is required")
+	@NotNull(message="Name is required")
 	private final String name;
 	
-	private final String image ;
-	
 	@JsonCreator
-	public Person(
+	public Group(
 			@JsonProperty("@context") String context,
-			@JsonProperty("type") String type,
 			@JsonProperty("id") String id,
-			@JsonProperty("name") String name,
-			@JsonProperty("image") String image) {
+			@JsonProperty("type") String type,
+			@JsonProperty("name") String name) {
 		this.context = context;
 		this.type = type;
 		this.name = name;
 		this.id = id;
-		this.image = image;
 	}
 
 	@Override
@@ -49,10 +45,6 @@ public final class Person implements ASObject{
 
 	public String getId() {
 		return id;
-	}
-
-	public String getImage() {
-		return image;
 	}
 	
 }

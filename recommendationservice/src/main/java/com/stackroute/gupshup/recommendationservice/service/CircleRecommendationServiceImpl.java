@@ -1,6 +1,8 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
-import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
 
 @Service
@@ -43,15 +44,6 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		System.out.println(circleRecommendation);
 		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
 	}
-	
-	
-	/*@Override
-	public Iterable<Map<String, Object>> created(String user, String circleId){
-		
-		System.out.println("service:"+user+" "+circleId);
-		System.out.println("created relationship");
-		return circleRecommendationRepository.created(user, circleId);
-	}*/
 	
 	@Override
 	public Iterable<Map<String, Object>> subscribed(String user, String circleId){
@@ -89,10 +81,11 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			String user = actor.path("name").asText();
 			String circleId = objectType.path("circleId").asText();
 			String circleName = objectType.path("circleName").asText();
-			String keyword = objectType.path("keyword").asText();
+			String k= objectType.path("keyword").asText();
+			List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
 			String createdBy = objectType.path("createdBy").asText();
 		
-			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
+			if(user=="" || circleId=="" || circleName=="" || keyword==null || createdBy=="")
 			{
 				System.out.println("Create: userame, circlename or keyword field is empty");
 				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
@@ -108,7 +101,6 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 				circleRecommendation.setCreatedBy(createdBy);
 				
 				circleRecommendationService.createCircle(circleRecommendation);
-				//circleRecommendationService.created(user, circleId);
 			}
 		}
 		
@@ -150,10 +142,11 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			String user = actor.path("name").asText();
 			String circleId = objectType.path("circleId").asText();
 			String circleName = objectType.path("circleName").asText();
-			String keyword = objectType.path("keyword").asText();
+			String k= objectType.path("keyword").asText();
+			List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
 			String createdBy = objectType.path("createdBy").asText();
 		
-			if(user=="" || circleId=="" || circleName=="" || keyword=="" || createdBy=="")
+			if(user=="" || circleId=="" || circleName=="" || keyword==null || createdBy=="")
 			{
 				System.out.println("Update: userame, circlename or keyword field is empty");
 				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);

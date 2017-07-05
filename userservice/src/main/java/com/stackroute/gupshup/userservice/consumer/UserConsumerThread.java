@@ -45,7 +45,7 @@ public class UserConsumerThread extends Thread {
 		configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
 		configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty(consumerGroupId));
-		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("userconsumer.clientid"));
+		configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("clientId"));
 		
 		userConsumer = new KafkaConsumer<String, String>(configProperties);
 		/* subscribing a topic */
