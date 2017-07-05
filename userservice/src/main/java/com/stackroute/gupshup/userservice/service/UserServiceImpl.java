@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.userservice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import com.stackroute.gupshup.userservice.domain.Add;
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Follow;
+import com.stackroute.gupshup.userservice.domain.Group;
+import com.stackroute.gupshup.userservice.domain.Join;
 import com.stackroute.gupshup.userservice.domain.Note;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
@@ -48,18 +51,22 @@ public class UserServiceImpl implements UserService {
 		/* code to check if a user is already registered */
 		User newUser = getUserByUserName(user.getUserName());
 		if(newUser == null) {
+			User savedUser = userRepository.save(user);
 			/* creating the object of new registered user to publish it to mailbox service */
-			Person person =new Person(null,"Person",user.getUserName());
+			Person person =new Person(null,"Person",savedUser.getUserName(),null,null);
 			Activity activity = new Create(null,"CreateUser","user registered",person,person);
-		
+//			Group group =new Group(null,"595b872493515b0bfdce17e3","Group","gupshup");
+//			Join join =new Join(null,"Join",user.getUserName()+" has joined gupshup",person, group);
 			/* publishing the created object to mailbox topic and recommendation topic */
 			try {
 				userProducer.publishUserActivity(environment.getProperty("userproducer.mailbox-topic"),new ObjectMapper().writeValueAsString(activity));
+//				userProducer.publishUserActivity("circle",new ObjectMapper().writeValueAsString(join));
 				userProducer.publishUserActivity(environment.getProperty("userproducer.recommendation-topic"), new ObjectMapper().writeValueAsString(activity));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
-			return userRepository.save(user);
+			user.setFollowing(new ArrayList<>());
+			return savedUser;
 		}
 		return new User();
 	}
@@ -128,7 +135,7 @@ public class UserServiceImpl implements UserService {
         String userName  = targetNode.path("name").asText();
                 
         /* creating the object of user to delete */
-        Person person = new Person(null, "Person", userName);
+        Person person = new Person(null, "Person", userName,null,null);
         Activity activity = new Delete(null, "DeleteUser", "user deleted", person, person);
         
         String deleteStatus = deleteUser(userName);
@@ -190,8 +197,8 @@ public class UserServiceImpl implements UserService {
 				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 				userRepository.save(sourceUser);
 			}
-			Person person1 =new Person(null,"Person",sourceUserName);
-			Person person2 =new Person(null,"Person",targetUserName);
+			Person person1 =new Person(null,"Person",sourceUserName,null,null);
+			Person person2 =new Person(null,"Person",targetUserName,null,null);
 			
 			Activity activity = new  Follow(null, "Follow", sourceUserName+" followed "+targetUserName, person1, person2);
 			try {
