@@ -257,7 +257,7 @@ public class InboxServiceImpl implements InboxService
 
 	//--------------------------------TO CHECK TYPE OF ACTIVITY---------------------------	
 	@Override
-	@KafkaListener(topics = "test")
+	@KafkaListener(topics = "mailbox")
 	public void checkActivityType(@Payload String activity, @Header(name=KafkaHeaders.RECEIVED_PARTITION_ID) int partitionID ) {
 		System.out.println(activity +" from partition "+partitionID);
 		
@@ -270,11 +270,12 @@ public class InboxServiceImpl implements InboxService
 
 			System.out.println(activityType);
 			
-			if(activityType.equalsIgnoreCase("CreateUser")) {
-				userInboxService.createUser(node);
-			}
-			else if(activityType.equalsIgnoreCase("Create")){
-				circleInboxService.createCircle(node);
+			if(activityType.equalsIgnoreCase("Create")) {
+				String target = node.path("object").path("name").asText();
+				if(target.equalsIgnoreCase("Group"))
+					circleInboxService.createCircle(node);
+				if(target.equalsIgnoreCase("Person"))
+					userInboxService.createUser(node);
 			}
 			else if(activityType.equals("Delete")) {
 				String target = node.path("object").path("name").asText();

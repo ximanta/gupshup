@@ -11,18 +11,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.Activity;
-import com.stackroute.gupshup.userservice.domain.Add;
 import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Follow;
-import com.stackroute.gupshup.userservice.domain.Group;
-import com.stackroute.gupshup.userservice.domain.Join;
-import com.stackroute.gupshup.userservice.domain.Note;
 import com.stackroute.gupshup.userservice.domain.Person;
 import com.stackroute.gupshup.userservice.domain.User;
-
 import com.stackroute.gupshup.userservice.exception.UserNotFoundException;
-
 import com.stackroute.gupshup.userservice.producer.UserProducer;
 import com.stackroute.gupshup.userservice.repository.UserRepository;
 
@@ -54,7 +48,7 @@ public class UserServiceImpl implements UserService {
 			User savedUser = userRepository.save(user);
 			/* creating the object of new registered user to publish it to mailbox service */
 			Person person =new Person(null,"Person",savedUser.getUserName(),null,null);
-			Activity activity = new Create(null,"CreateUser","user registered",person,person);
+			Activity activity = new Create(null,"Create","user registered",person,person);
 //			Group group =new Group(null,"595b872493515b0bfdce17e3","Group","gupshup");
 //			Join join =new Join(null,"Join",user.getUserName()+" has joined gupshup",person, group);
 			/* publishing the created object to mailbox topic and recommendation topic */
