@@ -11,13 +11,13 @@ public class Mails
 {
 	@Id
 	private String mailID;
+	
 	private String mailboxID;
 	private String to;
     private String from;
     private String message;
     private String circleName;
 	private Date timeCreated;
-	
 	
 	public String getMailboxID() {
 		return mailboxID;
@@ -73,5 +73,12 @@ public class Mails
 	public void setTimeCreated(Date timeCreated) {
 		this.timeCreated = timeCreated;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "Mails [mailID=" + mailID + ", mailboxID=" + mailboxID + ", to=" + to + ", from=" + from + ", message="
+				+ message + ", circleName=" + circleName + ", timeCreated=" + timeCreated + "]";
+	}
+
+	
 }

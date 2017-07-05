@@ -25,22 +25,20 @@ circleservice:
 # production configuration
 spring:
     profiles: production
+    data:
+      mongodb:
+       username: superAdmin
+       password: admin123
+       authentication-database: admin
+       database: gupshup
     
 eureka:
  client:
    serviceUrl:
      defaultZone: http://172.23.239.182:8761/eureka/
      
-spring:
- data:
-  mongodb:
-    username: superAdmin
-    password: admin123
-    authentication-database: admin
-    database: gupshup
-
 circleservice:
-   bootstrap-server: localhost:9092
+   bootstrap-server: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
    topic:
     circle: circle
     mailbox: mailbox

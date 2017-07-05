@@ -1,7 +1,5 @@
 package com.stackroute.gupshup.mailboxservice.model;
 
-
-
 import java.util.Date;
 //import java.util.List;
 
@@ -16,13 +14,12 @@ public class Mailbox extends ResourceSupport {
 	
 	@Id
 	private String mailboxID;
+	
 	@NotNull(message="username can not be null")
 	private String username;
+	
 	private Date mailboxCreatedDate;
 	private long mailCount;
-	
-//	private List<Mails> inbox;
-//	private List<Mails> outbox;
 
 	public long getMailCount() {
 		return mailCount;

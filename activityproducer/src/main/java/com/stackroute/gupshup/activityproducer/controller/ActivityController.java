@@ -1,4 +1,5 @@
 package com.stackroute.gupshup.activityproducer.controller;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +31,6 @@ import com.stackroute.gupshup.activityproducer.domain.Follow;
 import com.stackroute.gupshup.activityproducer.domain.Join;
 import com.stackroute.gupshup.activityproducer.domain.Leave;
 import com.stackroute.gupshup.activityproducer.domain.Like;
-import com.stackroute.gupshup.activityproducer.producer.ActivityProducer;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,15 +40,15 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/activity/")
 @Api(value="REST Controller that receives activities")
 public class ActivityController {
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	//---------------------------------autowired activityProducer service---------------
+
 	@Autowired
-	ActivityProducer activityProducer;
-	
-	//---------------------------------autowired environment----------------------------
+	private KafkaTemplate<String, String> kafkaTemplate;
+
 	@Autowired
 	Environment environment;
-	
+
 	//----------------------------------Join Activity-----------------------------------
 	@ApiOperation(value="join activity", notes="join a circle")
 	@RequestMapping(value="join", method=RequestMethod.POST)
@@ -59,7 +62,7 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(join));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(join));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
@@ -68,7 +71,7 @@ public class ActivityController {
 		message.put("message","Activity Published Successfully");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
-	
+
 	//----------------------------------Leave Activity--------------------------------
 	@ApiOperation(value="leave activity", notes="leave a circle")
 	@RequestMapping(value="leave", method=RequestMethod.POST)
@@ -82,11 +85,11 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(leave));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(leave));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
-			
+
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
@@ -106,7 +109,7 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(like));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(like));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
@@ -129,7 +132,7 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(dislike));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(dislike));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
@@ -152,7 +155,7 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.user-topic"),new ObjectMapper().writeValueAsString(follow));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.user"),new ObjectMapper().writeValueAsString(follow));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
@@ -175,7 +178,7 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.mailbox-topic"),new ObjectMapper().writeValueAsString(create));
+			kafkaTemplate.send(environment.getProperty("activityproducer.topic.mailbox"),new ObjectMapper().writeValueAsString(create));
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
@@ -198,14 +201,17 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			activityProducer.publishMessage(environment.getProperty("activityproducer.circle-topic"),new ObjectMapper().writeValueAsString(add));
+			System.out.println(environment.getProperty("activityproducer.topic.circle"));
+			ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(add));
+			
 		} catch (JsonProcessingException e) {
 			message.put("error",e.getMessage());
 			logger.error(e.toString());
+			System.out.println("here");
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		message.put("message","Activity Published Successfully");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
-	
+
 }

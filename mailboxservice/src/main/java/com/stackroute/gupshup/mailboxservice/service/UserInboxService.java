@@ -9,13 +9,10 @@ import com.stackroute.gupshup.mailboxservice.model.Mails;
 
 public interface UserInboxService
 {
-
-
 	public Mailbox createUser(JsonNode node);
 	public void deleteUser(JsonNode node);
 	//public Mailbox updateUser(JsonNode node);
 	public List<Mails> followUser(JsonNode node);
 	//public Mailbox directMessage(JsonNode node);
-
 }
 

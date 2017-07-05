@@ -35,7 +35,6 @@ userproducer:
 userconsumer:
   bootstrap-servers: 172.23.239.202:9092
   consumer-groupid: test-consumer-group
-  clientid: simple
   user-topic: user
      
 ---
@@ -72,7 +71,7 @@ logging:
 
      
 userproducer:
-  bootstrap-servers: 172.23.239.202:9092
+  bootstrap-servers: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
   mailbox-topic: mailbox
   recommendation-topic: recommendation
   
@@ -80,7 +79,6 @@ userproducer:
 userconsumer:
   bootstrap-servers: 172.23.239.202:9092
   consumer-groupid: test-consumer-group
-  clientid: simple
   user-topic: user
 
      

@@ -1,16 +1,21 @@
 package com.stackroute.gupshup.mailboxservice.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stackroute.gupshup.mailboxservice.exception.ActivityException;
 import com.stackroute.gupshup.mailboxservice.model.Mailbox;
 import com.stackroute.gupshup.mailboxservice.model.Mails;
 import com.stackroute.gupshup.mailboxservice.repository.*;
-//import scala.annotation.meta.setter;
-
 
 @Service
 public class InboxServiceImpl implements InboxService
@@ -28,22 +33,15 @@ public class InboxServiceImpl implements InboxService
 	@Autowired
 	CircleInboxService circleInboxService;
 
-
 	//--------------------------------TO VIEW USER MAILBOX (REST)-------------------------
-
 	@Override
-	public List<Mails> viewMailBoxService(String name) 
+	public List<Mails> viewMailBox(String name) 
 	{
 		List<Mails> list = new ArrayList<Mails>();
-		//Mailbox mail=new Mailbox();
-		System.out.println("INSIDE VIEW ALL MAILS FOR A PERTICULAR USER :::: USER NAME : "+name);
 
-		for(Mails mail:mailsRepository.findAll())
-		{
+		for(Mails mail:mailsRepository.findAll()) {
 			String userName=mail.getTo();
-			System.out.println("USER NAME ::: "+userName);
-			if(userName.equals(name))
-			{
+			if(userName.equals(name)) {
 				list.add(mail);
 			}
 
@@ -52,15 +50,12 @@ public class InboxServiceImpl implements InboxService
 	}
 
 	//-----------------------------TO VIEW USER INBOX MAILS (REST)---------------------------
-
-
 	public List<Mails> viewInboxMails(String userName) 
 	{
 		System.out.println("INSIDE VIEW USER INBOX MAILS METHOD ::: USER NAME: "+userName);
-
 		List<Mails> mails=new ArrayList<Mails>();
-		for(Mails mail:mailsRepository.findAll())
-		{
+
+		for(Mails mail:mailsRepository.findAll()) {
 			String curName=mail.getTo();
 			//System.out.println("USER NAME : "+Name);
 			if(userName.equals(curName))
@@ -73,9 +68,8 @@ public class InboxServiceImpl implements InboxService
 	}
 
 	//--------------------------------TO CREATE USER MAILBOX---------------------------
-
 	@Override
-	public Mailbox createMailBoxService(String userName)
+	public Mailbox createMailBox(String userName)
 	{
 
 		Mailbox mailBox = new Mailbox();
@@ -111,31 +105,31 @@ public class InboxServiceImpl implements InboxService
 	{
 		System.out.println("THE MAIL COUNT FOR USER  ::::"+userName);
 		//INCREMENTING MAIL COUNT FOR THIS MAILBOX 
-        Mailbox mailBox= getMailbox(userName);
-        long count=mailBox.getMailCount()+1;
-        System.out.println("COUNT ::::"+count);
-        mailBox.setMailCount(count);
-        mailBoxRepository.save(mailBox);
+		Mailbox mailBox= getMailbox(userName);
+		long count=mailBox.getMailCount()+1;
+		System.out.println("COUNT ::::"+count);
+		mailBox.setMailCount(count);
+		mailBoxRepository.save(mailBox);
 	}
-	
+
 	@Override
 	public void decrementMailCount(String userName)
 	{
 		System.out.println("THE MAIL COUNT FOR USER  ::::"+userName);
 		//DECREMENTING MAIL COUNT FOR THIS MAILBOX 
-        Mailbox mailBox= getMailbox(userName);
-        long count=mailBox.getMailCount()-1;
-        System.out.println("COUNT ::::"+count);
-        mailBox.setMailCount(count);
-        mailBoxRepository.save(mailBox);
+		Mailbox mailBox= getMailbox(userName);
+		long count=mailBox.getMailCount()-1;
+		System.out.println("COUNT ::::"+count);
+		mailBox.setMailCount(count);
+		mailBoxRepository.save(mailBox);
 	}
 
-	
+
 	//--------------------------------TO DELETE USER MAILBOX---------------------------
 
 	@Override
 
-	public void deleteMailBoxService(String userName) 
+	public void deleteMailBox(String userName) 
 	{
 		System.out.println("INSIDE DELETE MAILBOX METHOD ::: USER NAME : "+userName);
 
@@ -168,18 +162,7 @@ public class InboxServiceImpl implements InboxService
 
 	}
 
-
-	//--------------------------------TO DELETE ALL MAILBOXES---------------------------
-
-	@Override
-	public void flushInboxDb() 
-	{
-		// TODO Auto-generated method stub
-		mailBoxRepository.deleteAll();
-	}
-
 	//--------------------TO CHECK WHETHER MAILBOX FOR A USER EXIST OR NOT--------------
-
 	@Override
 	public String checkUserName(String userName)
 	{
@@ -206,7 +189,6 @@ public class InboxServiceImpl implements InboxService
 	}
 
 	//--------------------------TO GET MAILBOXID FROM USERNAME-------------------------------
-
 	@Override
 	public String getMailboxID(String userName)
 	{
@@ -219,9 +201,9 @@ public class InboxServiceImpl implements InboxService
 		}
 		return mailboxID;
 	}
-	
+
 	//------------------------TO GET MAILBOX FOR PARTICULAR USER-----------------------
-	
+
 	@Override
 	public Mailbox getMailbox(String userName)
 	{
@@ -234,8 +216,8 @@ public class InboxServiceImpl implements InboxService
 		}
 		return mailBox1;
 	}
-	
-	
+
+
 	//---------------------------UPDATING USER INBOX-----------------------------------------
 
 
@@ -254,13 +236,11 @@ public class InboxServiceImpl implements InboxService
 	@Override
 	public String deleteInbox(Mails mail) 
 	{
-		
 		boolean status=false;
 		for(Mails mails:mailsRepository.findAll())
 		{
 			String mailId=mails.getMailID();
-			if(mailId.equalsIgnoreCase(mail.getMailID()))
-			{
+			if(mailId.equalsIgnoreCase(mail.getMailID())) {
 				status=true;
 			}
 		}
@@ -273,95 +253,63 @@ public class InboxServiceImpl implements InboxService
 		}
 		else
 			return "mailId doesnot exist";
-
 	}
+
 	//--------------------------------TO CHECK TYPE OF ACTIVITY---------------------------	
-
 	@Override
-	public void checkActivityType(JsonNode node) 
-	{
+	@KafkaListener(topics = "test")
+	public void checkActivityType(@Payload String activity, @Header(name=KafkaHeaders.RECEIVED_PARTITION_ID) int partitionID ) {
+		System.out.println(activity +" from partition "+partitionID);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = null;
+		
+		try {
+			node = mapper.readTree(activity);
+			String activityType = node.path("type").asText();
 
-		System.out.println("entering activity");
-		String activityType = node.path("type").asText();
-	
-
-		System.out.println("activity:"+activityType);
-
-		if(activityType.equalsIgnoreCase("CreateCircle"))
-		{
-			System.out.println("entering create circle");	
-			circleInboxService.createCircle(node);
+			System.out.println(activityType);
+			
+			if(activityType.equalsIgnoreCase("CreateUser")) {
+				userInboxService.createUser(node);
+			}
+			else if(activityType.equalsIgnoreCase("Create")){
+				circleInboxService.createCircle(node);
+			}
+			else if(activityType.equals("Delete")) {
+				String target = node.path("object").path("name").asText();
+				if(target.equalsIgnoreCase("Group"))
+					circleInboxService.deleteCircle(node);
+				if(target.equalsIgnoreCase("Person"))
+					userInboxService.deleteUser(node);
+			}
+			//		else if(activityType.equals("Update")) {
+			//			String target = node.path("object").path("name").asText();
+			//			if(target.equalsIgnoreCase("Group"))
+			//				circleInboxService.updateCircle(node);
+			//			if(target.equalsIgnoreCase("Person"))
+			//				userInboxService.updateUser(node);
+			//		}
+			else if(activityType.equals("Join")) {
+				circleInboxService.joinCircle(node);
+			}
+			else if(activityType.equals("Leave")) {
+				circleInboxService.leaveCircle(node);	
+			}
+			else if(activityType.equals("Follow")) {
+				userInboxService.followUser(node);
+			}
+			else if(activityType.equals("Add")) {
+				circleInboxService.messageCircle(node);
+			}
+			else
+				throw new ActivityException(activityType+": "+"not found");
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (ActivityException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
-
-		else if(activityType.equals("Join"))
-		{
-			System.out.println("entering join circle");
-			circleInboxService.joinCircle(node);
-		}
-
-		else if(activityType.equals("Leave"))
-		{
-			System.out.println("entering leave circle");
-			circleInboxService.leaveCircle(node);	
-		}
-
-		else if(activityType.equals("DeleteCircle"))
-		{
-			System.out.println("entering delete circle");
-			circleInboxService.deleteCircle(node);
-		}
-
-		else if(activityType.equals("Post"))
-		{
-			System.out.println("entering post circle");
-			circleInboxService.messageCircle(node);
-		}
-
-		//		else if(activityType.equals("Update"))
-		//		{
-		//			System.out.println("entering update circle");
-		//			circleInboxService.messageCircle(node);
-		//		}
-
-		else if(activityType.equals("CreateUser"))
-		{
-			System.out.println("INBOX SERVICE : entering creating user");
-			userInboxService.createUser(node);
-		}
-
-
-		else if(activityType.equals("DeleteUser"))
-		{
-			System.out.println("entering deleting user");
-			userInboxService.deleteUser(node);
-		}
-
-		else if(activityType.equals("Follow"))
-		{
-			System.out.println("entering follow user");
-			userInboxService.followUser(node);
-		}
-
-		//		else if(activityType.equals("Update") && objectType.equalsIgnoreCase("person"))
-		//		{
-		//			System.out.println("entering update user");
-		//			userInboxService.updateUser(node);
-		//		}
-		//
-		//		else if(activityType.equals("Direct") && objectType.equalsIgnoreCase("person"))
-		//		{
-		//			System.out.println("entering direct message :user");
-		//			userInboxService.directMessage(node);
-		//		}
-
-		else
-		{
-			System.out.println("----------------No Activity as such-----------------------------------------------");
-		}
-
 	}
-
 }
-
-
-//----------------------------------------END------------------------------------------

@@ -12,28 +12,23 @@ import com.stackroute.gupshup.mailboxservice.model.Mails;
 public interface InboxService 
 {
 	//to display all mailbox
-	public List<Mails> viewMailBoxService(String userName); 
+	public List<Mails> viewMailBox(String userName); 
 
 	//Actions related to mailbox
-	public Mailbox createMailBoxService(String userName);
-	public void deleteMailBoxService(String userName);
-	public void flushInboxDb();
+	public Mailbox createMailBox(String userName);
+	public void deleteMailBox(String userName);
 
 	//to  add/delete mails into particular mailbox 
 	public Mails updateInbox(Mails mail); 
-	public String deleteInbox(Mails mail);//------------>REST<--------------- 
+	public String deleteInbox(Mails mail);
 
 	//to check activity type
-	public void checkActivityType(JsonNode node);
-
+	public void checkActivityType(String activity, int partitionID);
+	
 	public String checkUserName(String userName);
-
 	public String getMailboxID(String userName);
-
 	public void incrementMailCount(String userName);
-
 	public Mailbox getMailbox(String userName);
-
 	public void decrementMailCount(String userName);
 
 

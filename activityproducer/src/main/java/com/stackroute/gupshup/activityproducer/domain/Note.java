@@ -1,4 +1,5 @@
 package com.stackroute.gupshup.activityproducer.domain;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;

@@ -17,77 +17,101 @@ public class UserInboxServiceImpl implements UserInboxService
 	@Autowired
 	InboxService inboxService;
 
-
-
 	//----------------------TO CREATE A USER MAILBOX WITH DEFAULT MESSAGE-------------
-
 	@Override
 	public Mailbox createUser(JsonNode node) 
 	{
-
-		System.out.println("ENTERED USER-INBOX:CREATE USER :::");
-		Mails mail=new Mails();
-		Mailbox mailbox = null;
 		JsonNode actor = node.path("actor");
-		String userName = actor.path("name").asText();
+		String userName = actor.path("id").asText();
+		
+		Mails mail=new Mails();
+		Mailbox mailbox = inboxService.getMailbox(userName);
 
-		//to check whether user name exists or not
-		String userName1=inboxService.checkUserName(userName);
-		System.out.println("------"+userName);
+		if(mailbox == null) {
+			// creating a empty mailbox for a registered user
+			mailbox=inboxService.createMailBox(userName);
 
-		if(userName1!=null)
-		{
-			System.out.println("Name Field is empty or Name already exists");
-		}
-
-		else
-		{
-			System.out.println("before");	
-			//creating a empty mailbox for a registered user
-			mailbox=inboxService.createMailBoxService(userName);
-			System.out.println("after");
-
-			//update newly created mailbox with default message
+			// update newly created mailbox with default message
 			String message="Mailbox has been successfully created for ::::"+userName;
 			mail.setTo(userName);
 			mail.setTimeCreated(new Date());
 			mail.setMailboxID(mailbox.getMailboxID());
 			mail.setCircleName(null);
 			mail.setMessage(message);
-			System.out.println("NEW MAIL HAS BEEN CREATED FOR REGISTERED USER :: USER NAME : "+mail.getTo());
 			inboxService.updateInbox(mail);
 		}
-
 		return mailbox;
 	}
 
-
 	//----------------------TO DELETE A USER MAILBOX-----------------------------------
-
 	@Override
 	public void deleteUser(JsonNode node) 
 	{
-
 		JsonNode actor = node.path("actor");
 		String userName = actor.path("name").asText();
 
-		//to check whether user name exists or not
-		String userName1=inboxService.checkUserName(userName);
-		System.out.println("----------"+userName1);
+		// to check whether user name exists or not
+		Mailbox mailbox = inboxService.getMailbox(userName);
 
-		if(userName1==null)
-		{
-			System.out.println("Name Field is empty or User Name doesnot exist");
+		if(mailbox != null) {
+			// delete the  mailbox for the particular user
+			inboxService.deleteMailBox(userName);
 		}
-		else
-		{
-			//Delete the  mailbox for the particular user
-			inboxService.deleteMailBoxService(userName);
-		}
-
 	}
 
+	//-----------------------TO NOTIFY BOTH WHO FOLLOWS AND WHO IS BEING FOLLOWED-----------
+	@Override
+	public List<Mails> followUser(JsonNode node)
+	{
+		List<Mails> list = new ArrayList<Mails>();
+		Mails actorMail=new Mails();
+		Mails targetMail=new Mails();
+		
+		JsonNode actor = node.path("actor");
+		String actorUserName = actor.path("name").asText();
+		
+		JsonNode target = node.path("target");
+		String targetUserName = target.path("name").asText();
 
+		// to check whether user mailbox exists or not
+		Mailbox actorMailbox = inboxService.getMailbox(actorUserName);
+		Mailbox targetMailbox = inboxService.getMailbox(targetUserName);
+
+		if( actorMailbox != null && targetMailbox != null) {
+			// mail for actor
+			String mailboxID = actorMailbox.getMailboxID();
+			String message= "You started following "+targetUserName;
+
+			actorMail.setMailboxID(mailboxID);
+			actorMail.setTo(actorUserName);
+			actorMail.setCircleName(null);
+			actorMail.setFrom(actorUserName);
+			actorMail.setMessage(message);
+			actorMail.setTimeCreated(new Date());
+			Mails mail1=inboxService.updateInbox(actorMail);
+			list.add(mail1);
+
+			//INCREMENTING MAIL COUNT FOR THIS MAILBOX 
+			inboxService.incrementMailCount(actorUserName);
+
+			// mail for target
+			mailboxID = targetMailbox.getMailboxID();
+			message= "You are follwed by "+ actorUserName;
+			targetMail.setMailboxID(mailboxID);
+			targetMail.setTo(targetUserName);
+			targetMail.setFrom(actorUserName);
+			targetMail.setMessage(message);
+			targetMail.setTimeCreated(new Date());
+			targetMail.setCircleName(null);
+			Mails mail2=inboxService.updateInbox(targetMail);
+			list.add(mail2);
+
+			//INCREMENTING MAIL COUNT FOR THIS MAILBOX 
+			inboxService.incrementMailCount(actorUserName);
+		}
+		return list;
+	}
+	
 	//---------------------TO NOTIFY THE USER ABOUT UPDATION IN USER PROFILE-----------
 	//	@Override
 	//	public Mailbox updateUser(JsonNode node) 
@@ -115,80 +139,7 @@ public class UserInboxServiceImpl implements UserInboxService
 	//
 	//	}
 
-
-	//--------------------TO NOTIFY BOTH WHO FOLLOWS AND WHO IS BEING FOLLOWED-----------
-
-	@Override
-	public List<Mails> followUser(JsonNode node)
-	{
-		Mails mailActor=new Mails();
-		Mails mailTarget=new Mails();
-
-		System.out.println("ENTERING USER-INBOX SERVICE:FOLLOW USER");
-		JsonNode actor = node.path("actor");
-		String followerUserName = actor.path("name").asText();
-		JsonNode target = node.path("target");
-		String targetUserName = target.path("name").asText();
-
-		List<Mails> list=new ArrayList<Mails>();
-
-		//to check whether user name exists or not
-		String followerUserName1=inboxService.checkUserName(followerUserName);
-		String targetUserName1=inboxService.checkUserName(targetUserName);
-		System.out.println(" FOLLOWER : "+followerUserName+" TARGET : "+targetUserName);
-		System.out.println(" FOLLOWER1 : "+followerUserName1+" TARGET1 : "+targetUserName1);
-
-		if( followerUserName1==null || targetUserName1==null )
-		{
-			System.out.println("SORRY!!! NAME FIELDS ARE EITHER EMPTY or USER NAME DOESNOT EXIST ::: {FOLLOW USER METHOD}");
-		}
-		else
-		{
-			//FOLLOWED USER
-
-
-				String mailboxID=inboxService.getMailboxID(targetUserName);
-				String message= followerUserName+" is following you";
-				System.out.println(followerUserName+" is following you.....");
-	
-				mailActor.setMailboxID(mailboxID);
-				mailActor.setTo(targetUserName);
-				mailActor.setCircleName(null);
-				mailActor.setFrom(followerUserName);
-				mailActor.setMessage(message);
-				mailActor.setTimeCreated(new Date());
-				Mails mail1=inboxService.updateInbox(mailActor);
-				list.add(mail1);
-	
-				//INCREMENTING MAIL COUNT FOR THIS MAILBOX 
-				inboxService.incrementMailCount(targetUserName);
-
-			//FOLLOWING USER
-
-				mailboxID=inboxService.getMailboxID(followerUserName);
-				message= "you are following "+targetUserName;
-				System.out.println("you are following "+targetUserName);
-				mailTarget.setMailboxID(mailboxID);
-				mailTarget.setTo(followerUserName);
-				mailTarget.setFrom(targetUserName);
-				mailTarget.setMessage(message);
-				mailTarget.setTimeCreated(new Date());
-				mailTarget.setCircleName(null);
-				Mails mail2=inboxService.updateInbox(mailTarget);
-				list.add(mail2);
-	
-				//INCREMENTING MAIL COUNT FOR THIS MAILBOX 
-				inboxService.incrementMailCount(followerUserName);
-		}
-		return list;
-	}
-
-
-
-
-
 	//-----------------------DIRECT MESSAGING---------------------------------------- 
-
 	//	@Override
 	//	public Mailbox directMessage(JsonNode node) 
 	//	{
@@ -216,5 +167,3 @@ public class UserInboxServiceImpl implements UserInboxService
 	//	}
 	//
 }
-
-//-----------------------------------END----------------------------------------------

@@ -12,6 +12,13 @@ spring:
       authentication-database: admin
       database: admin  
       port: 27017
+
+mailboxservice:
+  topic:
+    circle: circle
+    mailbox: mailbox
+    recommendation: recommendation
+  bootstrap-server: http://localhost:9092
      
 ---
 
@@ -31,4 +38,9 @@ eureka:
    serviceUrl:
      defaultZone: http://172.23.239.182:8761/eureka/
      
-  
+mailboxservice:
+  topic:
+    circle: circle
+    mailbox: mailbox
+    recommendation: recommendation
+  bootstrap-server: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
