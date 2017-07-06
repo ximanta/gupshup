@@ -48,6 +48,11 @@ public class ActivityController {
 
 	@Autowired
 	Environment environment;
+	
+	@RequestMapping("/hello")
+	public String hello(){
+		return "welcome";
+	}
 
 	//----------------------------------Join Activity-----------------------------------
 	@ApiOperation(value="join activity", notes="join a circle")
@@ -201,7 +206,6 @@ public class ActivityController {
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			System.out.println(environment.getProperty("activityproducer.topic.circle"));
 			ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(environment.getProperty("activityproducer.topic.circle"),new ObjectMapper().writeValueAsString(add));
 			
 		} catch (JsonProcessingException e) {
