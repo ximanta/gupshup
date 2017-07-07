@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
+import com.stackroute.gupshup.recommendationservice.exception.RecommendationException;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
+import com.stackroute.gupshup.recommendationservice.repository.UserRecommendationRepository;
 
 @Service
 public class CircleRecommendationServiceImpl implements CircleRecommendationService {
@@ -19,49 +21,94 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	CircleRecommendationRepository circleRecommendationRepository;
 	
 	@Autowired
+	UserRecommendationRepository userRecommendationRepository;
+	
+	@Autowired
 	CircleRecommendationService circleRecommendationService;
 	
 	@Override
-	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation){
+	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation) throws RecommendationException{
 		
+		String s = circleRecommendationRepository.findByName(circleRecommendation.getCircleId());
+		Map<String, Object> circle;
+		if(s != null)
+		{
+			throw new RecommendationException("circle ID already exists");
+		}
+		else{
 		System.out.println("circle created");
-		Map<String, Object> circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
 		circleRecommendationRepository.created(circleRecommendation.getCreatedBy(), circleRecommendation.getCircleId());
+		}
 		return circle;
 	}
 	
 	@Override
-	public String deleteCircle(String circleId)
-	{
+	public String deleteCircle(String circleId) throws RecommendationException{
+		String c = circleRecommendationRepository.findByName(circleId);
+		if(c==null)
+		{
+			throw new RecommendationException("Circle ID does not exist");
+		}
 		circleRecommendationRepository.deleteCircle(circleId);
 		return "circle deleted";
 	}
 	
 	@Override
-	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation){
+	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation) throws RecommendationException{
 		
+		String c = circleRecommendationRepository.findByName(circleRecommendation.getCircleId());
+		if(c==null)
+		{
+			throw new RecommendationException("Circle ID does not exist");
+		}
+		else
+		{
 		System.out.println("circle updated");
 		System.out.println(circleRecommendation);
 		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		}
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> subscribed(String user, String circleId){
+	public Iterable<Map<String, Object>> subscribed(String user, String circleId) throws RecommendationException{
+		String c = circleRecommendationRepository.findByName(circleId);
+		String u = userRecommendationRepository.findByName(user);
+		if(c==null||u==null)
+		{
+			throw new RecommendationException("Circle ID does not exist");
+		}
+		else{
 		System.out.println("user subscribed");
 		return circleRecommendationRepository.subscribed(user, circleId);
+		}
 	}
 	
 	@Override
-	public String leaveCircle(String name, String circleId){
+	public String leaveCircle(String name, String circleId) throws RecommendationException{
+		String u = userRecommendationRepository.findByName(name);
+		String c = circleRecommendationRepository.findByName(circleId);
+		if(c==null||u==null)
+		{
+			throw new RecommendationException("Circle ID or Username does not exist");
+		}
+		else{
 		circleRecommendationRepository.leaveCircle(name, circleId);
 		return name+" left "+ circleId;
+		}
 		
 	}
 	
 	@Override
-	public Iterable<List<String>> subscribeRecommendation(String user){
-		
+	public Iterable<List<String>> subscribeRecommendation(String user) throws RecommendationException{
+		String u = userRecommendationRepository.findByName(user);
+		if(u==null)
+		{
+			throw new RecommendationException("Username does not exist");
+		}
+		else{
 		return circleRecommendationRepository.subscribeRecommendation(user);
+		}
 	}
 	
 	@Override
@@ -89,19 +136,23 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			{
 				System.out.println("Create: userame, circlename or keyword field is empty");
 				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
-			}
-			else
-			{
-				System.out.println("create circle");
-				CircleRecommendation circleRecommendation = new CircleRecommendation();
-				
-				circleRecommendation.setCircleId(circleId);
-				circleRecommendation.setCircleName(circleName);
-				circleRecommendation.setKeyword(keyword);
-				circleRecommendation.setCreatedBy(createdBy);
-				
-				circleRecommendationService.createCircle(circleRecommendation);
-			}
+			} else
+				try {
+					{
+						System.out.println("create circle");
+						CircleRecommendation circleRecommendation = new CircleRecommendation();
+						
+						circleRecommendation.setCircleId(circleId);
+						circleRecommendation.setCircleName(circleName);
+						circleRecommendation.setKeyword(keyword);
+						circleRecommendation.setCreatedBy(createdBy);
+						
+						circleRecommendationService.createCircle(circleRecommendation);
+					}
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		
 		if(activityType.equalsIgnoreCase("Join") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
@@ -116,7 +167,12 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			}
 			else
 			{
-				circleRecommendationService.subscribed(user, circleId);
+				try {
+					circleRecommendationService.subscribed(user, circleId);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -132,7 +188,12 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			}
 			else
 			{
-				circleRecommendationService.leaveCircle(name, circleId);
+				try {
+					circleRecommendationService.leaveCircle(name, circleId);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -161,7 +222,12 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 				circleRecommendation.setKeyword(keyword);
 				circleRecommendation.setCreatedBy(createdBy);
 				
-				circleRecommendationService.updateCircle(circleRecommendation);
+				try {
+					circleRecommendationService.updateCircle(circleRecommendation);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -177,7 +243,12 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			}
 			else
 			{
-				circleRecommendationService.deleteCircle(circleId);
+				try {
+					circleRecommendationService.deleteCircle(circleId);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

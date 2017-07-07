@@ -34,4 +34,6 @@ public interface CircleRecommendationRepository extends GraphRepository<CircleRe
 	@Query("match (a:person)-[r:subscribed]->(b:circle) where a.name={0} and b.circleId={1} delete r")
 	void leaveCircle(String name, String circleId);
 
+	@Query("match (n:circle {circleId:{0}}) return n.circleId")
+	String findByName(String circleId);
 }

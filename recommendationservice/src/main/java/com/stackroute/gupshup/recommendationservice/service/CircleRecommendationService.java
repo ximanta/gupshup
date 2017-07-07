@@ -5,15 +5,15 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
+import com.stackroute.gupshup.recommendationservice.exception.RecommendationException;
 
 public interface CircleRecommendationService {
 	
-	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation);
-	public String deleteCircle(String circleId);
-	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation);
-	//public Iterable<Map<String, Object>> created(String user, String circle);
-	public Iterable<Map<String, Object>> subscribed(String user, String circle);
-	public String leaveCircle(String name, String circleId);
-	public Iterable<List<String>> subscribeRecommendation(String user);
+	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation) throws RecommendationException;
+	public String deleteCircle(String circleId) throws RecommendationException;
+	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation) throws RecommendationException;
+	public Iterable<Map<String, Object>> subscribed(String user, String circle) throws RecommendationException;
+	public String leaveCircle(String name, String circleId) throws RecommendationException;
+	public Iterable<List<String>> subscribeRecommendation(String user) throws RecommendationException;
 	public void getActiviType(JsonNode node);
 }

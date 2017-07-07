@@ -1,6 +1,5 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
+import com.stackroute.gupshup.recommendationservice.exception.RecommendationException;
 import com.stackroute.gupshup.recommendationservice.repository.UserRecommendationRepository;
 
 @Service
@@ -21,8 +21,14 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	UserRecommendationService userRecommendationService;
 	
 	@Override
-	public Map<String, Object> createUser(UserRecommendation userRecommendation){
-		
+	public Map<String, Object> createUser(UserRecommendation userRecommendation) throws RecommendationException{
+		String u = userRecommendationRepository.findByName(userRecommendation.getName());
+		if(u!=null)
+		{
+			System.out.println(u);
+			throw new RecommendationException("Username already exists");
+		}
+		else{
 		System.out.println("Create Service:"+userRecommendation);
 				return userRecommendationRepository.createUser(
 				userRecommendation.getName(),
@@ -31,18 +37,34 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				userRecommendation.getGender(),
 				userRecommendation.getIntrest(),
 				userRecommendation.getDOB());
+		}
 	}
 	
 	@Override
-	public String deleteUser(String user){
+	public String deleteUser(String user) throws RecommendationException{
+		String u = userRecommendationRepository.findByName(user);
+		if(u==null)
+		{
+			System.out.println("delete"+u);
+			throw new RecommendationException("Username does not exist");
+		}
+		else{
 		userRecommendationRepository.deleteUserCreatedCircles(user);
 		userRecommendationRepository.deleteUser(user);
 		return "user deleted";
+		}
 	}
 	
 	@Override
-	public Map<String, Object> updateUser(UserRecommendation userRecommendation){
+	public Map<String, Object> updateUser(UserRecommendation userRecommendation) throws RecommendationException{
 		System.out.println(userRecommendation);
+		String u = userRecommendationRepository.findByName(userRecommendation.getName());
+		if(u==null)
+		{
+			System.out.println("update"+u);
+			throw new RecommendationException("Username does not exist");
+		}
+		else{
 		return userRecommendationRepository.updateUser(
 				userRecommendation.getName(),
 				userRecommendation.getFirstname(),
@@ -50,17 +72,36 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				userRecommendation.getGender(),
 				userRecommendation.getIntrest(),
 				userRecommendation.getDOB());
+		}
 	}
 	
 	@Override
-	public Iterable<Map<String, Object>> follows(String user1, String user2){
+	public Iterable<Map<String, Object>> follows(String user1, String user2) throws RecommendationException{
+		String u1 = userRecommendationRepository.findByName(user1);
+		String u2 = userRecommendationRepository.findByName(user2);
+		if(u1==null||u2==null)
+		{
+			System.out.println("follow:"+u1+" "+u2);
+			throw new RecommendationException("Username does not exist");
+		}
+		else{
 		System.out.println("service "+user1+" "+user2);
 		return userRecommendationRepository.follows(user1, user2);
+		}
 	}
 	
 	@Override
-	public Iterable<List<String>> followRecommendation(String user){
+	public Iterable<List<String>> followRecommendation(String user) throws RecommendationException{
+		String u = userRecommendationRepository.findByName(user);
+		if(u==null||user==null)
+		{
+			System.out.println("follow recomm:"+u);
+			throw new RecommendationException("Username does not exist");
+		}
+		else
+		{
 		return userRecommendationRepository.followPeople(user);
+		}
 	}
 	
 	@Override
@@ -102,7 +143,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				userRecommendation.setLastname(lastname);
 				userRecommendation.setName(name);
 			
-				userRecommendationService.createUser(userRecommendation);
+				try {
+					userRecommendationService.createUser(userRecommendation);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		}
 		
@@ -118,7 +165,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			}
 			else
 			{
-				userRecommendationService.follows(user1, user2);
+				try {
+					userRecommendationService.follows(user1, user2);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -146,7 +198,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				userRecommendation.setLastname(lastname);
 				userRecommendation.setName(name);
 				
-				userRecommendationService.updateUser(userRecommendation);
+				try {
+					userRecommendationService.updateUser(userRecommendation);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -161,7 +218,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			}
 			else
 			{
-				userRecommendationService.deleteUser(user);
+				try {
+					userRecommendationService.deleteUser(user);
+				} catch (RecommendationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
