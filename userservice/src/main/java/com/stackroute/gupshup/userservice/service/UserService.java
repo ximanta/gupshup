@@ -9,7 +9,7 @@ public interface UserService {
 	public User getUserByUserName(String userName);
 	public String updateUser(User user);
 	public String deleteUser(String userName);
-	public void checkActivityType(JsonNode node);
+	public void checkActivityType(String activity);
 	public String followUser(JsonNode node);
 	public void updateUserActivity(JsonNode node);
 	public void deleteUserActivity(JsonNode node);

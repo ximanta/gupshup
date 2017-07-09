@@ -14,6 +14,7 @@ spring:
     
 circleservice:
    bootstrap-server: localhost:9092
+   groupId: circle
    topic:
     circle: circle
     mailbox: mailbox
@@ -39,6 +40,7 @@ eureka:
      
 circleservice:
    bootstrap-server: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
+   groupId: circle
    topic:
     circle: circle
     mailbox: mailbox

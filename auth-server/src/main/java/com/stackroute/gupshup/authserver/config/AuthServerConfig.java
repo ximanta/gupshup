@@ -22,8 +22,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	private Environment env; 
-	
+	DataSource dataSource;
+
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.checkTokenAccess("isAuthenenticated()");
@@ -31,7 +31,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.jdbc(dataSource());
+		clients.jdbc(dataSource);
 	}
 
 	@Override
@@ -39,13 +39,4 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 		endpoints.authenticationManager(authenticationManager);
 	}
 	
-	@Bean
-	public DataSource dataSource() {
-	    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-	    dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-	    dataSource.setUrl(env.getProperty("jdbc.url"));
-	    dataSource.setUsername(env.getProperty("jdbc.user"));
-	    dataSource.setPassword(env.getProperty("jdbc.pass"));
-	    return dataSource;
-	}
 }

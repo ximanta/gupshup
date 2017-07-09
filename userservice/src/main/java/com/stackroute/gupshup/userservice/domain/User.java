@@ -45,6 +45,14 @@ public class User extends ResourceSupport {
 	private long followingCount;
 	private List<User> following;
 		
+	public User() {
+	}
+	
+	public User(String userName, String password) {
+		this.userName = userName;
+		this.password = password;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}

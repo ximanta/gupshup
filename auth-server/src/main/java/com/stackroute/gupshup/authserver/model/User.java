@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class User implements UserDetails {
@@ -18,23 +19,17 @@ public class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
-	private long id;
-	private String username;
+	private String userName;
 	private String password;
 	private String roles;
 	
 	public User() {
 	}
 
-	public User(String username, String password, String roles) {
-		this.username = username;
+	public User(String userName, String password, String roles) {
+		this.userName = userName;
 		this.password = password;
 		this.roles = roles;
-	}
-
-	public long getId() {
-		return id;
 	}
 
 	@Override
@@ -64,16 +59,13 @@ public class User implements UserDetails {
 		return true;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
+	@JsonProperty(value="userName")
 	public String getUsername() {
-		return username;
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUsername(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {

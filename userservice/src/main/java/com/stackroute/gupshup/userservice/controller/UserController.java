@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.User;
 import com.stackroute.gupshup.userservice.exception.UserNotCreatedException;
 import com.stackroute.gupshup.userservice.exception.UserNotDeletedException;
@@ -55,8 +59,16 @@ public class UserController {
 	/* Add a User */
 	@ApiOperation(value = "Add a User")
 	@RequestMapping(value="", method=RequestMethod.POST )
-	public ResponseEntity addUser(@Valid @RequestBody User[] users, BindingResult bindingResult) throws UserNotCreatedException {
+	public ResponseEntity addUser(@Valid @RequestBody User users, BindingResult bindingResult) throws UserNotCreatedException {
 
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			restTemplate.postForEntity("http://localhost:9000/register",new User(users.getUserName(), users.getPassword()),String.class);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+			e.printStackTrace();
+		} 
 		Locale locale = LocaleContextHolder.getLocale();
 		String message = messageSource.getMessage ("error.user.alreadyregistered", null, locale );
 
@@ -67,9 +79,7 @@ public class UserController {
 		}
 		try {
 			User newUser = null;
-			for(int i=0;i<users.length;i++){
-				newUser = userService.addUser(users[i]);
-			}
+			newUser = userService.addUser(users);
 			if(newUser.getUserName() == null) {
 				throw new UserNotCreatedException("User already registered");
 			} else {

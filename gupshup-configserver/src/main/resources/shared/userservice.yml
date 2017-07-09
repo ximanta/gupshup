@@ -11,7 +11,6 @@ spring:
       password: admin123
       authentication-database: admin
       database: gupshup  
-      port: 27017
       
 
 logging:
@@ -27,15 +26,13 @@ logging:
           
   file: logs/spring-boot-logging.log
 
-userproducer:
-  bootstrap-servers: 172.23.239.202:9092
-  mailbox-topic: mailbox
-  recommendation-topic: recommendation
-  
-userconsumer:
-  bootstrap-servers: 172.23.239.202:9092
-  consumer-groupid: test-consumer-group
-  user-topic: user
+userservice:
+    bootstrap-servers: localhost:9092
+    groupId: user
+    topic:
+      user: user 
+      mailbox: mailbox
+      recommendation: recommendation
      
 ---
 
@@ -71,14 +68,9 @@ logging:
 
      
 userproducer:
-  bootstrap-servers: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
-  mailbox-topic: mailbox
-  recommendation-topic: recommendation
-  
-  
-userconsumer:
-  bootstrap-servers: 172.23.239.202:9092
-  consumer-groupid: test-consumer-group
-  user-topic: user
-
-     
+    bootstrap-servers: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
+    groupId: user
+    topic:
+      user: user 
+      mailbox: mailbox
+      recommendation: recommendation

@@ -20,6 +20,7 @@ public class AuthController {
 	
 	@RequestMapping("/register")
 	public ResponseEntity<User> register(@RequestBody User user){
+		System.out.println(user);
 		user.setRoles("USER");
 		User savedUser = userRepository.save(user);
 		return new ResponseEntity<User>(savedUser, HttpStatus.CREATED);

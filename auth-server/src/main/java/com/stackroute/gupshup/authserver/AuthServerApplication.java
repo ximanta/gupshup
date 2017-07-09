@@ -23,7 +23,7 @@ public class AuthServerApplication {
 
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return repository.findByUsername(username);
+				return repository.findByUserName(username);
 				
 			}
 		});

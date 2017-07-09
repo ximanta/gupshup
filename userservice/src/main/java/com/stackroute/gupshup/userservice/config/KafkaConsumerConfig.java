@@ -1,4 +1,4 @@
-package com.stackroute.gupshup.mailboxservice.config;
+package com.stackroute.gupshup.userservice.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +24,10 @@ public class KafkaConsumerConfig {
 	@Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("mailboxservice.bootstrap-server"));
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("mailboxservice.groupId"));
-        props.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("mailboxservice.clientId"));
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("userservice.bootstrap-servers"));
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("userservice.groupId"));
+        // Client ID must be given at runtime
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, environment.getProperty("clientId"));
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
