@@ -36,4 +36,7 @@ public interface CircleRecommendationRepository extends GraphRepository<CircleRe
 
 	@Query("match (n:circle {circleId:{0}}) return n.circleId")
 	String findByName(String circleId);
+	
+	@Query("match (n:circle {circleId:{0}}) return n")
+	CircleRecommendation findCircle(String circleId);
 }

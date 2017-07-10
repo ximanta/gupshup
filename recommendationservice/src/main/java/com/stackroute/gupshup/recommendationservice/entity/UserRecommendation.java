@@ -1,17 +1,20 @@
 package com.stackroute.gupshup.recommendationservice.entity;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.springframework.data.annotation.Id;
+import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NodeEntity(label="person")
-public class UserRecommendation {
+public class UserRecommendation extends ResourceSupport{
 	
 	@GraphId Long id;
 	
@@ -32,7 +35,7 @@ public class UserRecommendation {
 	@Size(min=1, message="gender cannot be empty")
 	private String gender;
 	
-	private String intrest;
+	private List<String> intrest;
 	
 	@NotNull(message="Date of Birth cannot be null")
 	private int DOB;
@@ -45,7 +48,7 @@ public class UserRecommendation {
 			@JsonProperty("firstname") String firstname, 
 			@JsonProperty("lastname") String lastname, 
 			@JsonProperty("gender") String gender, 
-			@JsonProperty("intrest") String intrest,
+			@JsonProperty("intrest") List<String> intrest,
 			@JsonProperty("DOB") int DOB){
 		this.name = name;
 		this.firstname = firstname;
@@ -79,11 +82,11 @@ public class UserRecommendation {
 		this.gender = gender;
 	}
 
-	public String getIntrest() {
+	public List<String> getIntrest() {
 		return intrest;
 	}
 
-	public void setIntrest(String intrest) {
+	public void setIntrest(List<String> intrest) {
 		this.intrest = intrest;
 	}
 
@@ -93,15 +96,6 @@ public class UserRecommendation {
 
 	public void setDOB(int dOB) {
 		DOB = dOB;
-	}
-	
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {
