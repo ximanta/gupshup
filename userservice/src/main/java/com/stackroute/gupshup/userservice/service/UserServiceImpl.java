@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
 	/* method to check the type of activity  */
 
 	@Override
-	@KafkaListener(topics="user")
+	@KafkaListener(topics="userservice.topic.user")
 	public void checkActivityType(String activity)
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -219,7 +219,9 @@ public class UserServiceImpl implements UserService {
 	public void updateUserActivity(JsonNode node)
 	{
 		try {
-			kafkaTemplate.send(environment.getProperty("userservice.topic.mailboxrecommendation"), new ObjectMapper().writeValueAsString(node));
+			kafkaTemplate.send(environment.getProperty("userservice.topic.mailbox"), new ObjectMapper().writeValueAsString(node));
+			kafkaTemplate.send(environment.getProperty("userservice.topic.recommendationj"), new ObjectMapper().writeValueAsString(node));
+			
 		} catch (JsonProcessingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

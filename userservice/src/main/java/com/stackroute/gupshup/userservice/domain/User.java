@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize
@@ -25,6 +26,7 @@ public class User extends ResourceSupport {
 	@NotNull(message = "error.lastName.notnull")
 	private String lastName;
 	
+	@JsonIgnoreProperties
 	@NotNull(message = "error.password.notnull")
 	@Size(min=8, message = "error.password.size")
 	private String password;

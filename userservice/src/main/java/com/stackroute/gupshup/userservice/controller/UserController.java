@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -55,6 +56,9 @@ public class UserController {
 
 	@Autowired
 	MessageSource messageSource;
+	
+	@Autowired
+	private Environment environment;
 
 	/* Add a User */
 	@ApiOperation(value = "Add a User")
@@ -62,13 +66,7 @@ public class UserController {
 	public ResponseEntity addUser(@Valid @RequestBody User users, BindingResult bindingResult) throws UserNotCreatedException {
 
 		RestTemplate restTemplate = new RestTemplate();
-		try {
-			restTemplate.postForEntity("http://localhost:9000/register",new User(users.getUserName(), users.getPassword()),String.class);
-		} catch (RestClientException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e);
-			e.printStackTrace();
-		} 
+
 		Locale locale = LocaleContextHolder.getLocale();
 		String message = messageSource.getMessage ("error.user.alreadyregistered", null, locale );
 
@@ -83,10 +81,14 @@ public class UserController {
 			if(newUser.getUserName() == null) {
 				throw new UserNotCreatedException("User already registered");
 			} else {
+				restTemplate.postForEntity(environment.getProperty("authserver.url"),new User(users.getUserName(), users.getPassword()),String.class);
 				User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 				return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 			}
 		} catch(UserNotCreatedException exception) {
+			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+		} catch (RestClientException e) {
+			// TODO Auto-generated catch block
 			return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
 		} /*catch(NullPointerException exception) {
 				return new ResponseEntity<>(exception.toString(), HttpStatus.NOT_FOUND);
