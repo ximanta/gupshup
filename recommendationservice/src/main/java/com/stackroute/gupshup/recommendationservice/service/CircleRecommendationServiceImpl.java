@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
+import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 import com.stackroute.gupshup.recommendationservice.exception.RecommendationException;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
 import com.stackroute.gupshup.recommendationservice.repository.UserRecommendationRepository;
@@ -109,6 +110,11 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		else{
 		return circleRecommendationRepository.subscribeRecommendation(user);
 		}
+	}
+	
+	@Override
+	public CircleRecommendation findCircle(String circleId){
+		return circleRecommendationService.findCircle(circleId);
 	}
 	
 	@Override

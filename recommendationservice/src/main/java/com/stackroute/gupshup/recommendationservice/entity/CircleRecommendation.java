@@ -7,15 +7,18 @@ import javax.validation.constraints.Size;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.annotation.Id;
+import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NodeEntity(label="circle")
-public class CircleRecommendation {
+public class CircleRecommendation extends ResourceSupport{
 	
 	@GraphId Long id;
 
+	@Id
 	@NotNull(message="circle id cannot be null")
 	@Size(min=1, message="circle id cannot be empty")
 	String circleId;
@@ -45,14 +48,6 @@ public class CircleRecommendation {
 		this.circleName = circleName;
 		this.keyword = keyword;
 		this.createdBy = createdBy;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 	
 	public String getCircleId() {
