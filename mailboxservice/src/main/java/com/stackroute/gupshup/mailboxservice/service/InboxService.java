@@ -13,7 +13,7 @@ public interface InboxService {
 	public Mailbox createMailbox(String userName) throws MailboxException;
 	public Mailbox addCircle( String userName, String circleID) throws MailboxException;
 	public Mails addDeletedMessage(String userName, String circleID, String mailID) throws MailboxException;
-	public List<Message> getMessages(String username, String circleID);
+	public List<Message> getMessages(String username, String circleID, int page);
 	public List<Mails> getDeletedMails(String userName, String circleID);
 	
 }

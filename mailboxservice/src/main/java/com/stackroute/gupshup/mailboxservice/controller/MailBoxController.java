@@ -23,10 +23,10 @@ public class MailBoxController
 
 
 	//---------------Retrieve inbox for user name---------------
-	@RequestMapping(value = "/{circleID}/{userName}", method = RequestMethod.GET)
-	public ResponseEntity<List<Message>> getMessages(@PathVariable String circleID,@PathVariable String userName)
+	@RequestMapping(value = "/{circleID}/{userName}/{page}", method = RequestMethod.GET)
+	public ResponseEntity<List<Message>> getMessages(@PathVariable String circleID,@PathVariable String userName,@PathVariable int page)
 	{
-		List<Message> messages = inboxService.getMessages(circleID, userName);
+		List<Message> messages = inboxService.getMessages(circleID, userName, page);
 		return new ResponseEntity<List<Message>>(messages, HttpStatus.FOUND);
 	}
 
