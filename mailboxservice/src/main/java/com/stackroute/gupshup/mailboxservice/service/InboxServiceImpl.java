@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,10 @@ public class InboxServiceImpl implements InboxService {
 
 	@Autowired
 	MailsRepository mailsRepository;
-
+	
+	@Autowired
+	Environment environment;
+	
 	@Override
 	@KafkaListener(topics="mailbox")
 	public void consumeActivity(String activity) 
@@ -158,16 +162,17 @@ public class InboxServiceImpl implements InboxService {
 	}
 
 	@Override
-	public List<Message> getMessages(String userName, String circleID) 
+	public List<Message> getMessages(String userName, String circleID, int page) 
 	{
 		RestTemplate restTemplate=new RestTemplate();	
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userName", userName);
 		params.put("circleID", circleID);
-		ResponseEntity<Message[]> entity = restTemplate.getForEntity("http://localhost:8080/circle/{circleID}/user/{userName}",Message[].class,params);
+		params.put("page", page);
+		
+		ResponseEntity<Message[]> entity = restTemplate.getForEntity(environment.getProperty("circleservice-address")+"/circle/{circleID}/mailbox?userName={userName}&page={page}" ,Message[].class,params);
 		List<Message> messages = Arrays.asList(entity.getBody());
 		List<Message> newMessages=new ArrayList<Message>();
-
 
 		List<Mails> mailboxMails = mailsRepository.findAll(userName, circleID);
 

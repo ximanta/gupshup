@@ -10,7 +10,7 @@ eureka:
 security:
   oauth2:
     resource:
-      userInfoUri: http://localhost:9000/me
+      userInfoUri: http://172.23.239.202:9000/me
    
 ---
 

@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.stackroute.gupshup.authserver.repository.UserRepository;
 
@@ -26,6 +27,6 @@ public class AuthServerApplication {
 				return repository.findByUserName(username);
 				
 			}
-		});
+		}).passwordEncoder(new BCryptPasswordEncoder());
 	}
 }

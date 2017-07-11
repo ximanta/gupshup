@@ -15,5 +15,6 @@ public interface CircleRecommendationService {
 	public Iterable<Map<String, Object>> subscribed(String user, String circle) throws RecommendationException;
 	public String leaveCircle(String name, String circleId) throws RecommendationException;
 	public Iterable<List<String>> subscribeRecommendation(String user) throws RecommendationException;
+	public CircleRecommendation findCircle(String circleId);
 	public void getActiviType(JsonNode node);
 }

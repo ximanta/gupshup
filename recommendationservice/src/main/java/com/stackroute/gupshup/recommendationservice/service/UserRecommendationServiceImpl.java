@@ -1,5 +1,7 @@
 package com.stackroute.gupshup.recommendationservice.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +107,11 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 	
 	@Override
+	public UserRecommendation findUser(String name){
+		return userRecommendationRepository.findUser(name);
+	}
+	
+	@Override
 	public void getActivityType(JsonNode node)
 	{
 		System.out.println("user: entering activity");
@@ -124,10 +131,11 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			String firstname = actor.path("firstname").asText();
 			String lastname = actor.path("lastname").asText();
 			String gender = actor.path("gender").asText();
-			String intrest = actor.path("intrest").asText();
+			String i = actor.path("intrest").asText();
+			List<String> intrest = new ArrayList<String>(Arrays.asList(i.split(",")));
 			String DOB = actor.path("DOB").asText();
 		
-			if(name==""||firstname==""||lastname==""||gender==""||intrest==""||DOB=="")
+			if(name==""||firstname==""||lastname==""||gender==""||intrest==null||DOB=="")
 			{
 				System.out.println("Create: Empty Fields");
 			}
@@ -180,10 +188,11 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			String firstname = actor.path("firstname").asText();
 			String lastname = actor.path("lastname").asText();
 			String gender = actor.path("gender").asText();
-			String intrest = actor.path("intrest").asText();
+			String i = actor.path("intrest").asText();
+			List<String> intrest=new ArrayList<String>(Arrays.asList(i.split(",")));
 			String DOB = actor.path("DOB").asText();
 		
-			if(name==""||firstname==""||lastname==""||gender==""||intrest==""||DOB=="")
+			if(name==""||firstname==""||lastname==""||gender==""||intrest==null||DOB=="")
 			{
 				System.out.println("Update: Empty Fields");
 			}

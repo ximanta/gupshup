@@ -27,7 +27,7 @@ logging:
   file: logs/spring-boot-logging.log
 
 userservice:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 172.23.239.202:9092
     groupId: user
     topic:
       user: user 
@@ -51,7 +51,7 @@ spring:
 eureka:
  client:
    serviceUrl:
-     defaultZone: http://172.23.239.182:8761/eureka/
+     defaultZone: http://172.23.239.160:8761/eureka/
       
 logging:
   level:
@@ -67,10 +67,13 @@ logging:
   file: logs/spring-boot-logging.log
 
      
-userproducer:
+userservice:
     bootstrap-servers: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
     groupId: user
     topic:
       user: user 
       mailbox: mailbox
       recommendation: recommendation
+      
+authserver:
+  url: http://172.23.239.202:9000/register
