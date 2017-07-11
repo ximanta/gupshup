@@ -2,8 +2,8 @@ spring:
   application:
     name: mailboxservice
   profiles:
-    active: native
+    active: production
   cloud:
     config:
-      uri: http://localhost:8888
+      uri: http://172.23.239.202:8888
   

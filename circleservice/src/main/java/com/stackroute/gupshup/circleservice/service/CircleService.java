@@ -24,5 +24,6 @@ public interface CircleService {
 	public List<Member> getCircles(String username) throws CircleException;
 	 
 	public void getActivityType(String activity) throws CircleException;
+	public void changeStatus(String userName);
 }
 	

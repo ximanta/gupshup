@@ -11,17 +11,10 @@ public class Message
 	private String From;
 	private String message;
 	private Date   timeCreated;
-	private String userName;
 	private String circleID;
 
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+	
 
 	public String getCircleID() {
 		return circleID;
