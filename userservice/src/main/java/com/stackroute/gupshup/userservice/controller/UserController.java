@@ -81,7 +81,7 @@ public class UserController {
 			if(newUser.getUserName() == null) {
 				throw new UserNotCreatedException("User already registered");
 			} else {
-				restTemplate.postForEntity(environment.getProperty("authserver.url"),new User(users.getUserName(), users.getPassword()),String.class);
+//				restTemplate.postForEntity(environment.getProperty("authserver.url"),new User(users.getUserName(), users.getPassword()),String.class);
 				User newUserLinks = userLinkAssembler.UserProfileLinks(newUser);
 				return new ResponseEntity<User>(newUserLinks, HttpStatus.CREATED);
 			}
