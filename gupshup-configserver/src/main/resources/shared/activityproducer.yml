@@ -6,10 +6,11 @@ eureka:
 
 activityproducer:
   bootstrap-server: localhost:9092
-  circle-topic: circle
-  mailbox-topic: mailbox
-  user-topic: user
-  recommendation-topic: recommendation
+  topic:
+    circle: circle
+    mailbox: mailbox
+    user: user
+    recommendation: recommendation
   
 ---
 
@@ -23,8 +24,9 @@ eureka:
      defaultZone: http://172.23.239.182:8761/eureka/
 
 activityproducer:
-  bootstrap-server: 172.23.239.202:9092
-  circle-topic: circle
-  mailbox-topic: mailbox
-  user-topic: user
-  recommendation-topic: recommendation
+  bootstrap-server: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
+  topic:
+    circle: circle
+    mailbox: mailbox
+    user: user
+    recommendation: recommendation
