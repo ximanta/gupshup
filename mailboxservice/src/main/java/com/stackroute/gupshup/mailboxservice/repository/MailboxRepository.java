@@ -1,14 +1,11 @@
 package com.stackroute.gupshup.mailboxservice.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
 
 import com.stackroute.gupshup.mailboxservice.model.Mailbox;
 
-@Repository
-public interface MailboxRepository  extends MongoRepository<Mailbox, String> {
-	
+public interface MailboxRepository extends MongoRepository<Mailbox, String>{
+
+	public Mailbox findOneByUsername(String userName);
+
 }
-
-
-

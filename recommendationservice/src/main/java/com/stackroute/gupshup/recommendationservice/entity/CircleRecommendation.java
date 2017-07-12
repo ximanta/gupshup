@@ -1,71 +1,91 @@
 package com.stackroute.gupshup.recommendationservice.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.annotation.Id;
+import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NodeEntity(label="circle")
-public class CircleRecommendation {
+public class CircleRecommendation extends ResourceSupport{
 	
 	@GraphId Long id;
+
+	@Id
+	@NotNull(message="circle id cannot be null")
+	@Size(min=1, message="circle id cannot be empty")
+	String circleId;
 	
-	@NotNull(message="circle name cannot be null")
+	@NotNull(message="ciecle name cannot be null")
+	@Size(min=1, message="circle name cannot be empty")
+	String circleName;
+	
+	@NotNull(message="circle keywords cannot be null")
 	@Size(min=1, message="circle keyword cannot be empty")
-	String keyword;
+	List<String> keyword;
 	
-	@NotNull(message="circle type cannot be null")
-	@Size(min=1, message="circle type cannot be empty")
-	String type;
+	@NotNull(message="username cannot be null")
+	@Size(min=1, message="username cannot be empty")
+	String createdBy;
 	
 	public CircleRecommendation(){ };
 	
 	@JsonCreator
 	public CircleRecommendation(
-			@JsonProperty("keyword") String keyword,
-			@JsonProperty("type") String type
+			@JsonProperty("circleId") String circleId,
+			@JsonProperty("circleName") String circleName,
+			@JsonProperty("keyword") List<String> keyword,
+			@JsonProperty("createdBy") String createdBy
 			){
+		this.circleId = circleId;
+		this.circleName = circleName;
 		this.keyword = keyword;
-		this.type = type;
+		this.createdBy = createdBy;
 	}
 	
-	public Long getId() {
-		return id;
+	public String getCircleId() {
+		return circleId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCircleId(String circleId) {
+		this.circleId = circleId;
 	}
 
-	public String getKeyword() {
+	public List<String> getKeyword() {
 		return keyword;
 	}
 
-	public void setKeyword(String keyword) {
+	public void setKeyword(List<String> keyword) {
 		this.keyword = keyword;
 	}
 	
-	public String getType() {
-		return type;
+	public String getCircleName() {
+		return circleName;
+	}
+	
+	public void setCircleName(String circleName) {
+		this.circleName = circleName;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	@Override
 	public String toString() {
-		return "CircleRecommendation [id=" + id + ", keyword=" + keyword + ", type=" + type + "]";
+		return "CircleRecommendation [id=" + id + ", circleId=" + circleId + ", circleName=" + circleName + ", keyword="
+				+ keyword + ", createdBy=" + createdBy + "]";
 	}
-	
-	
 
 }

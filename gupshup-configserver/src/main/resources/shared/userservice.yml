@@ -77,3 +77,4 @@ userservice:
       
 authserver:
   url: http://172.23.239.202:9000/register
+

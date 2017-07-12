@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workingSetManager>
-<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1497412292148_1" label="gupshup" name="gupshup">
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/gupshup-apigateway" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/gupshup-discoveryregistry" type="4"/>
-<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/activitystreamservice" type="4"/>
-</workingSet>
-<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1497412231439_0" label="Window Working Set" name="Aggregate for window 1497412231439"/>
-</workingSetManager>

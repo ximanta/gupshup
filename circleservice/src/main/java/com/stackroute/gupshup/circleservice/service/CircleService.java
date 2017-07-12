@@ -3,33 +3,27 @@ package com.stackroute.gupshup.circleservice.service;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.circleservice.exception.CircleException;
-import com.stackroute.gupshup.circleservice.model.*;
+import com.stackroute.gupshup.circleservice.model.Circle;
+import com.stackroute.gupshup.circleservice.model.Mailbox;
+import com.stackroute.gupshup.circleservice.model.Member;
 
 public interface CircleService {
 	
+	public List<Circle> listAllCircles() throws CircleException;
+	public Circle findByID(String circleId);
 	public Circle createCircle(Circle circle) throws CircleException,JsonProcessingException;
+	public Circle updateCircle(Circle circle) throws CircleException,JsonProcessingException;
+	public void deleteCircle(String circleId) throws CircleException;
 	
-	public void deleteCircle(String id) throws CircleException,JsonProcessingException;
+	public void addCircleMember(Member member);
+	public void addMails( Mailbox mailbox );
 	
-	public List<Circle> findAllCircles() throws CircleException;
-	
-	public Circle findById(String id) throws CircleException;
-	
-	public void updateCircle(Circle currentCircle) throws CircleException,JsonProcessingException;
-	
-	public void deleteAllCircle() throws CircleException;
-	
-	public List<User> getCircleMembers(String circleId) throws CircleException;
-	
-	public Circle addCircleMember(String circleId, User user) throws CircleException;
-	
-	public Circle deleteCircleMember(String circleId, String userName) throws CircleException;
-
-	public void addMailtoMailbox(String circleId,Mail mail) throws CircleException;
-	
-	public void getActivityType(JsonNode node) throws CircleException,JsonProcessingException;
-	
-	
+	public List<Mailbox> getMails(String circleId, String userName, int page) throws CircleException;
+	public List<Member> getMembers(String circleId) throws CircleException;
+	public List<Member> getCircles(String username) throws CircleException;
+	 
+	public void getActivityType(String activity) throws CircleException;
+	public void changeStatus(String userName);
 }
+	

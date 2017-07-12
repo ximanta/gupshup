@@ -1,6 +1,6 @@
 package com.stackroute.gupshup.circleservice.model;
 
-//import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,21 +9,29 @@ public final class Person implements ASObject{
 	
 	private final String context;
 	
-	//@NotNull(message="type is required")
+	@NotNull(message="type is required")
 	private final String type;
 	
-	//@NotNull(message="username is required")
+	@NotNull(message="id is required")
+	private final String id;
+	
+	@NotNull(message="name is required")
 	private final String name;
-
-	//@NotNull(message="circle name is required")
-	private final String circleName;
+	
+	private final String image ;
 	
 	@JsonCreator
-	public Person(@JsonProperty("@context") String context, @JsonProperty("type") String type, @JsonProperty("name") String name,@JsonProperty("circleName") String circleName) {
+	public Person(
+			@JsonProperty("@context") String context,
+			@JsonProperty("id") String id,
+			@JsonProperty("type") String type,
+			@JsonProperty("name") String name,
+			@JsonProperty("image") String image) {
 		this.context = context;
 		this.type = type;
 		this.name = name;
-		this.circleName = circleName;
+		this.id = id;
+		this.image = image;
 	}
 
 	@Override
@@ -39,8 +47,13 @@ public final class Person implements ASObject{
 	public String getName() {
 		return name;
 	}
-	
-	public String getcirlceName() {
-		return circleName;
+
+	public String getId() {
+		return id;
 	}
+
+	public String getImage() {
+		return image;
+	}
+	
 }

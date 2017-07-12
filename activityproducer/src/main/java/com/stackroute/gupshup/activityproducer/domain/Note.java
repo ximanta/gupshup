@@ -1,4 +1,5 @@
 package com.stackroute.gupshup.activityproducer.domain;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,16 +13,20 @@ public final class Note implements ASObject {
 	@NotNull(message="type is required")
 	private final String type;
 	
-	private final String summary;
+	private final String name;
 	
 	@NotNull(message="content can not be null")
 	private final String content;
 
 	@JsonCreator
-	public Note(@JsonProperty("context") String context, @JsonProperty("type") String type, @JsonProperty("summary") String summary, @JsonProperty("content") String content) {
+	public Note(
+			@JsonProperty("context") String context, 
+			@JsonProperty("type") String type, 
+			@JsonProperty("name") String name, 
+			@JsonProperty("content") String content) {
 		this.context = context;
 		this.type = type;
-		this.summary = summary;
+		this.name = name;
 		this.content = content;
 	}
 
@@ -33,14 +38,12 @@ public final class Note implements ASObject {
 		return type;
 	}
 
-	public String getSummary() {
-		return summary;
+	public String getName() {
+		return name;
 	}
 
 	public String getContent() {
 		return content;
 	}
-
-	
 	
 }

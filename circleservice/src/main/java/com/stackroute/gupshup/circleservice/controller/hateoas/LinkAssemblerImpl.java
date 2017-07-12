@@ -12,7 +12,7 @@ import com.stackroute.gupshup.circleservice.model.Circle;
 @Component
 public class LinkAssemblerImpl implements LinkAssembler {
 
-	//----------create link for circle bean---------------
+	//----------------------Create link for circle bean---------------
 	@Override
 	public Iterable<Circle> assembleLinksForCircleList(List<Circle> circle)
 	{
@@ -27,5 +27,4 @@ public class LinkAssemblerImpl implements LinkAssembler {
 		}
 		return circle;
 	}
-
 }

@@ -14,4 +14,5 @@ public class ActivityProducerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ActivityProducerApplication.class, args);
 	}
+	
 }

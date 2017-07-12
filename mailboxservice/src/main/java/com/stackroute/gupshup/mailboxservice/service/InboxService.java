@@ -1,26 +1,19 @@
 package com.stackroute.gupshup.mailboxservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.stackroute.gupshup.mailboxservice.exception.MailboxNotFoundException;
+import java.util.List;
+
+import com.stackroute.gupshup.mailboxservice.exception.MailboxException;
 import com.stackroute.gupshup.mailboxservice.model.Mailbox;
 import com.stackroute.gupshup.mailboxservice.model.Mails;
+import com.stackroute.gupshup.mailboxservice.model.Message;
 
-public interface InboxService 
-{
+public interface InboxService {
 	
-	 //to display a user mailbox
-	 public Mailbox viewMailbox(String userName); 
-    
-	 //Actions related to mailbox
-	 public Mailbox createMailbox(String userName);
-     public void deleteMailbox(String userName) throws MailboxNotFoundException;
-	 public void flushInboxDb();
-	 
-	 //to  add/delete mails into particular mailbox 
-	 public Mailbox addMail(Mails mail); 
-	 public Mailbox deleteMail(Mails mail); 
-	 
-	 //to check activity type
-     public void checkActivityType(JsonNode node);
-	 
+	public void consumeActivity(String activity);
+	public Mailbox createMailbox(String userName) throws MailboxException;
+	public Mailbox addCircle( String userName, String circleID) throws MailboxException;
+	public Mails addDeletedMessage(String userName, String circleID, String mailID) throws MailboxException;
+	public List<Message> getMessages(String username, String circleID, int page);
+	public List<Mails> getDeletedMails(String userName, String circleID);
+	
 }

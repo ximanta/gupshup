@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -31,6 +32,7 @@ public class User extends ResourceSupport {
 	private String lastName;
 	
 	@ApiModelProperty(notes = "Password of the User")
+	@JsonIgnoreProperties
 	@NotNull(message = "error.password.notnull")
 	@Size(min=8, message = "error.password.size")
 	private String password;
@@ -60,6 +62,14 @@ public class User extends ResourceSupport {
 	@ApiModelProperty(notes = "User's following list")
 	private List<User> following;
 		
+	public User() {
+	}
+	
+	public User(String userName, String password) {
+		this.userName = userName;
+		this.password = password;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}

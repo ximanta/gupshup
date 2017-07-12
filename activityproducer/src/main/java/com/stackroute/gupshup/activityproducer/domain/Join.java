@@ -1,4 +1,5 @@
 package com.stackroute.gupshup.activityproducer.domain;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -54,6 +55,5 @@ public class Join implements Activity{
 	public ASObject getObject() {
 		return object;
 	}
-	
 
 }
