@@ -212,10 +212,5 @@ public class ActivityController {
 		message.put("message","Activity Published Successfully");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
-<<<<<<< HEAD
-	
-	
-=======
 
->>>>>>> c0c5ce61fcc697db172081dac08a5548b6acf798
 }
