@@ -8,18 +8,17 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 import com.stackroute.gupshup.recommendationservice.consumer.RecommendationConsumer;
 
-
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableNeo4jRepositories(basePackages={"com.stackroute.gupshup.recommendationservice.repository"})
 public class RecommendationApplication {
-	
+	/*------main class for recommendationservice--------*/
 	public static void main(String[] args) {
-		//SpringApplication.run(RecommendationApplication.class, args);
-		
+				
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(RecommendationApplication.class, args);
 	       RecommendationConsumer recommendationConsumer=applicationContext.getBean(RecommendationConsumer.class);
 	       recommendationConsumer.consumeActivity("recommendation");
 	}
 }
+
 

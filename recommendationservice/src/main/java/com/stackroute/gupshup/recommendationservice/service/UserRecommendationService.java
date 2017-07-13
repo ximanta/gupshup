@@ -17,3 +17,4 @@ public interface UserRecommendationService {
 	public UserRecommendation findUser(String name);
 	public void getActivityType(JsonNode node);
 }
+

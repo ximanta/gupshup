@@ -8,3 +8,4 @@ public interface RecommendationLinkAssembler {
 	public UserRecommendation userRecommendationLinks(UserRecommendation userRecommendation);
 	public CircleRecommendation circleRecommendationLinks(CircleRecommendation circleRecommendation);
 }
+

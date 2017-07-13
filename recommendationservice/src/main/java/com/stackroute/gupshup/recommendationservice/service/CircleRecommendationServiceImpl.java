@@ -27,6 +27,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	@Autowired
 	CircleRecommendationService circleRecommendationService;
 	
+	/*------method to create a circle node in neo4j-------*/
 	@Override
 	public Map<String, Object> createCircle(CircleRecommendation circleRecommendation) throws RecommendationException{
 		
@@ -44,6 +45,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		return circle;
 	}
 	
+	/*------method to delete a circle node in neo4j-------*/
 	@Override
 	public String deleteCircle(String circleId) throws RecommendationException{
 		String c = circleRecommendationRepository.findByName(circleId);
@@ -55,6 +57,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		return "circle deleted";
 	}
 	
+	/*------method to update a circle node in neo4j-------*/
 	@Override
 	public Map<String, Object> updateCircle(CircleRecommendation circleRecommendation) throws RecommendationException{
 		
@@ -71,6 +74,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		}
 	}
 	
+	/*----------method to create a subscribed relationship in neo4j when user subscribes to a circle-------*/
 	@Override
 	public Iterable<Map<String, Object>> subscribed(String user, String circleId) throws RecommendationException{
 		String c = circleRecommendationRepository.findByName(circleId);
@@ -85,6 +89,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		}
 	}
 	
+	/*--------method to delete subscribe relationship in neo4j when user wants to leave a circle-------*/
 	@Override
 	public String leaveCircle(String name, String circleId) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(name);
@@ -100,6 +105,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		
 	}
 	
+	/*---------circle subscribe recommendation for a user---------*/
 	@Override
 	public Iterable<List<String>> subscribeRecommendation(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
@@ -112,11 +118,13 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		}
 	}
 	
+	/*--------query to get circle properties through circle ID------*/
 	@Override
 	public CircleRecommendation findCircle(String circleId){
 		return circleRecommendationService.findCircle(circleId);
 	}
 	
+	/*---------method to check activity type of activity stream when json is consumed through kafka-----------*/
 	@Override
 	public void getActiviType(JsonNode node){
 		
@@ -261,3 +269,4 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		
 	}
 }
+

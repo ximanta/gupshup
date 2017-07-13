@@ -22,6 +22,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	@Autowired
 	UserRecommendationService userRecommendationService;
 	
+	/*------method to create a user node in neo4j-------*/
 	@Override
 	public Map<String, Object> createUser(UserRecommendation userRecommendation) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(userRecommendation.getName());
@@ -42,6 +43,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 	}
 	
+	/*------method to delete a user node in neo4j-------*/
 	@Override
 	public String deleteUser(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
@@ -57,6 +59,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 	}
 	
+	/*------method to update a user node in neo4j-------*/
 	@Override
 	public Map<String, Object> updateUser(UserRecommendation userRecommendation) throws RecommendationException{
 		System.out.println(userRecommendation);
@@ -77,6 +80,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 	}
 	
+	/*----------method to create a follow relationship in neo4j when user follows another user-------*/
 	@Override
 	public Iterable<Map<String, Object>> follows(String user1, String user2) throws RecommendationException{
 		String u1 = userRecommendationRepository.findByName(user1);
@@ -92,6 +96,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 	}
 	
+	/*--------recommendation method to follow friend of friend with distinct results-----*/
 	@Override
 	public Iterable<List<String>> followRecommendation(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
@@ -106,11 +111,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 	}
 	
+	/*-------method to get propeties of the user through username from neo4j---------*/
 	@Override
 	public UserRecommendation findUser(String name){
 		return userRecommendationRepository.findUser(name);
 	}
 	
+	/*---------method to check activity type of activity stream when json is consumed through kafka-----------*/
 	@Override
 	public void getActivityType(JsonNode node)
 	{
@@ -230,7 +237,6 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 				try {
 					userRecommendationService.deleteUser(user);
 				} catch (RecommendationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -239,3 +245,4 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	}
 	
 }
+
