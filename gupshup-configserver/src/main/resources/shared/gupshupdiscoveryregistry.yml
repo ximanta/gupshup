@@ -7,10 +7,10 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-logging:
-  level:
-    com:  
-      netflix:
-         eureka: OFF
-         discovery: OFF
+#logging:
+#  level:
+#    com:  
+#      netflix:
+#         eureka: OFF
+#         discovery: OFF
       
