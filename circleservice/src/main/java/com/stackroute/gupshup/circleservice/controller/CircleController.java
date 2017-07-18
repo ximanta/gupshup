@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import com.stackroute.gupshup.circleservice.service.CircleService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "circle")
 public class CircleController {
 
@@ -34,21 +36,29 @@ public class CircleController {
 
 	@Autowired
 	private LinkAssembler linkAssembler;
+	
+	
+
+	public void setLinkAssembler(LinkAssembler linkAssembler) {
+		this.linkAssembler = linkAssembler;
+	}
 
 	//-----------------------Get all circle---------------------------------------
 	@ApiOperation(value = "List All Circles", notes = "To get all circles")
 	@RequestMapping(value = "", method=RequestMethod.GET)
 	public ResponseEntity<List<Circle>> listAllCircles() {
 		List<Circle> circleList = null;
+		Circle circleLinks = null;
 		try {
 			circleList = circleService.listAllCircles();
+			linkAssembler.assembleLinksForCircleList(circleList);
 			if(circleList == null) {
 				return new ResponseEntity<List<Circle>>(circleList,HttpStatus.NO_CONTENT);
 			}
 		} catch (CircleException e) {
 			return new ResponseEntity<List<Circle>>(circleList,HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<List<Circle>>(circleList,HttpStatus.FOUND);
+		return new ResponseEntity<List<Circle>>(circleList,HttpStatus.OK);
 	}
 
 	//-------------------------Create a circle-----------------------------------
@@ -56,6 +66,7 @@ public class CircleController {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<Circle> createCircle(@Valid @RequestBody Circle circle, BindingResult result) {
 		Circle circlesave = null;
+		Circle circleLinks = null;
 		if(result.hasErrors()){
 			return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 		}
@@ -65,6 +76,10 @@ public class CircleController {
 			}
 			else {
 				circlesave=circleService.createCircle(circle);
+				
+				if(circlesave.getCircleName() == null) {
+					throw new CircleException("circle already existed");
+				}
 			}
 		} catch(CircleException circleCreationException){
 			return new ResponseEntity<Circle>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,7 +87,7 @@ public class CircleController {
 			e.printStackTrace();
 			return new ResponseEntity<Circle>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<Circle>(circlesave, HttpStatus.CREATED);
+		return new ResponseEntity<Circle>(circleLinks, HttpStatus.CREATED);
 	}
 
 	//---------------------------Update Circle-------------------------------------

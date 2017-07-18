@@ -1,0 +1,21 @@
+.settings
+.metadata
+.recommenders
+Servers/Pivotal tc Server Developer Edition v3.2-config/catalina.policy
+Servers/Pivotal tc Server Developer Edition v3.2-config/catalina.properties
+Servers/Pivotal tc Server Developer Edition v3.2-config/context.xml
+Servers/Pivotal tc Server Developer Edition v3.2-config/jmxremote.access
+Servers/Pivotal tc Server Developer Edition v3.2-config/jmxremote.password
+Servers/Pivotal tc Server Developer Edition v3.2-config/server.xml
+Servers/Pivotal tc Server Developer Edition v3.2-config/tomcat-users.xml
+Servers/Pivotal tc Server Developer Edition v3.2-config/web.xml
+circleservice/logs/spring-boot-logging.log
+circleservice/logs/spring-boot-logging.log.1
+circleservice/logs/spring-boot-logging.log.2
+circleservice/logs/spring-boot-logging.log.3
+circleservice/src/main/resources/Dockerfile
+circleservice/src/main/resources/circleservice-0.0.1-SNAPSHOT.jar
+mailboxservice/src/main/resources/Dockerfile
+mailboxservice/src/main/resources/mailboxservice-0.0.1-SNAPSHOT.jar
+Servers/.project
+RemoteSystemsTempFiles/.project

@@ -14,10 +14,9 @@ public class LinkAssemblerImpl implements LinkAssembler {
 
 	//----------------------Create link for circle bean---------------
 	@Override
-	public Iterable<Circle> assembleLinksForCircleList(List<Circle> circle)
+	public List<Circle> assembleLinksForCircleList(List<Circle> circle)
 	{
-		for(Circle circle1:circle)
-		{    
+		for(Circle circle1 : circle) {
 			Link selfLink=linkTo(CircleController.class).slash(circle1.getCircleId()).withSelfRel();
 			circle1.add(selfLink);
 			Link updateLink=linkTo(CircleController.class).slash(circle1.getCircleId()).withRel("update");

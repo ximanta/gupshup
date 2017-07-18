@@ -6,3 +6,22 @@ spring:
   cloud:
     config:
       uri: http://172.23.239.202:8888
+
+#spring:
+#  profiles:
+#    active: native
+#  data:
+#    mongodb:
+#      authentication-database: admin
+#      username: superAdmin
+#      password: admin123
+#      database: gupshup
+#
+#circleservice:
+#   bootstrap-server: localhost:9092
+#   groupId: circle
+#   topic:
+#    circle: circle
+#    mailbox: mailbox
+#    user: user
+#    recommendation: recommendation   

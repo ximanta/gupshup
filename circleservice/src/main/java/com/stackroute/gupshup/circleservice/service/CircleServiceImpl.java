@@ -3,7 +3,9 @@ package com.stackroute.gupshup.circleservice.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -12,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.circleservice.exception.CircleException;
 import com.stackroute.gupshup.circleservice.model.Add;
 import com.stackroute.gupshup.circleservice.model.Circle;
+import com.stackroute.gupshup.circleservice.model.Delete;
 import com.stackroute.gupshup.circleservice.model.Group;
 import com.stackroute.gupshup.circleservice.model.Join;
 import com.stackroute.gupshup.circleservice.model.Leave;
@@ -69,8 +74,10 @@ public class CircleServiceImpl implements CircleService{
 	public Circle createCircle(Circle circle) throws CircleException,JsonProcessingException{
 		Circle savedCircle = null;
 		Circle circle1 = circleRepo.findByCircleName(circle.getCircleName());
+		//System.out.println("circle name:"+circle1.getCircleName());
 		if(circle1 == null) 
 		{
+			//System.out.println("here"+circle1.getCircleName()+"circlename");
 			if(circle.getCircleName() == null) {
 				throw new CircleException("Give circle name");
 			}
@@ -101,11 +108,24 @@ public class CircleServiceImpl implements CircleService{
 				//			Create createActivity = new Create(null, "create", null, person, group);
 				//			ObjectMapper objectMapper = new ObjectMapper();
 				//			kafkaTemplate.send(environment.getProperty("circleservice.topic.mailbox"), objectMapper.writeValueAsString(createActivity));
-	
+				
+				Person person = new Person(null, circle.getCircleCreatedBy(), "person", null, null);
+				Map<String, Object> recommendActivity = new HashMap<>();
+				recommendActivity.put("type", "create");
+				recommendActivity.put("actor", person);
+				Map<String, Object> group = new HashMap<>();
+				group.put("type", "group");
+				group.put("id", circle.getCircleId());
+				group.put("name", circle.getCircleName());
+				group.put("keywords", circle.getKeywords());
+				recommendActivity.put("object", group);
+				ObjectMapper objectMapper = new ObjectMapper();
+				kafkaTemplate.send(environment.getProperty("circleservice.topic.recommendation"), objectMapper.writeValueAsString(recommendActivity));
+				
 			}
 		}
 		else {
-			return circle;
+			throw new CircleException("circle already existed");
 		}
 		return savedCircle;
 	}
@@ -129,17 +149,36 @@ public class CircleServiceImpl implements CircleService{
 			mail.setTimeCreated(date);
 			addMails(mail);
 
+			Person person = new Person(null, circle.getCircleCreatedBy(), "person", null, null);
+			Map<String, Object> recommendActivity = new HashMap<>();
+			recommendActivity.put("type", "update");
+			recommendActivity.put("actor", person);
+			Map<String, Object> group = new HashMap<>();
+			group.put("type", "group");
+			group.put("id", circle.getCircleId());
+			group.put("name", circle.getCircleName());
+			group.put("description", circle.getCircleDescription());
+			group.put("keywords", circle.getKeywords());
+			recommendActivity.put("object", group);
+			ObjectMapper objectMapper = new ObjectMapper();
+			kafkaTemplate.send(environment.getProperty("circleservice.topic.recommendation"), objectMapper.writeValueAsString(recommendActivity));
+			
 		}
 		return updatedCircle;
 	}
 
 	//--------------------Add members to a circle-------------------------------------
 	@Override
-	public void addCircleMember(Member member) {
-		Circle circle = circleRepo.findOne(member.getCircleId());
-		circle.setTotalUsers(circle.getTotalUsers()+1);
-		circleRepo.save(circle);
-		memberRepo.save(member);
+	public void addCircleMember(Member member) throws CircleException {
+		if(member == null) {
+			throw new CircleException("member not found");
+		}
+		else {
+			Circle circle = circleRepo.findOne(member.getCircleId());
+			circle.setTotalUsers(circle.getTotalUsers()+1);
+			circleRepo.save(circle);
+			memberRepo.save(member);
+		}
 	}
 
 	//------------------------Add mails to mailbox-------------------------------------
@@ -164,21 +203,26 @@ public class CircleServiceImpl implements CircleService{
 				node = objectMapper.readTree(activity);
 				String type = node.path("type").asText();
 				if(type != null) {
+					System.out.println("type asctivity :"+type);
 					//----------------------Join Activity--------------------------
 					if(type.equalsIgnoreCase("join")) {
 						Join join = objectMapper.treeToValue(node, Join.class);
 						Group group = (Group) join.getObject();
 						Person person = (Person) join.getActor();
-
+						
+						Member member = memberRepo.findOneByCircleIdAndUsername(group.getId(), person.getId());
+						System.out.println("here afetr checking memnber");
+						if(member == null) {
+							System.out.println("**********************************");
 						String profilePicture = person.getImage();
 						String circleId = group.getId();
-						Member member = new Member();
-						member.setCircleId(circleId);
-						member.setProfilePicture(profilePicture);
-						member.setUsername(person.getId());
+						Member member1 = new Member();
+						member1.setCircleId(circleId);
+						member1.setProfilePicture(profilePicture);
+						member1.setUsername(person.getId());
 						Circle circle = findByID(circleId);
-						member.setCircleName(circle.getCircleName());
-						addCircleMember(member);
+						member1.setCircleName(circle.getCircleName());
+						addCircleMember(member1);
 
 						Mailbox mail = new Mailbox();
 						mail.setCircleId(circleId);
@@ -188,14 +232,28 @@ public class CircleServiceImpl implements CircleService{
 						Date date = new Date();
 						mail.setTimeCreated(date);
 						addMails(mail);
+						
+						Person person1 = new Person(null, person.getId(), "person", null, null);
+						Group group1 = new Group(null, group.getId(), "group", group.getName());
+						Join join1 = new Join(null, "join", null, person1, group1);
+						ObjectMapper objectMapper1 = new ObjectMapper();
+						kafkaTemplate.send(environment.getProperty("circleservice.topic.recommendation"), objectMapper1.writeValueAsString(join1));
+
+						}
+						else
+						{
+							System.out.println("member already joined");
+						}
 
 						//						Person person1 = new Person(null, circle.getCircleCreatedBy(), "Person", null, null);
 						//						Group group1 = new Group(null, circle.getCircleId(), "Group", circle.getCircleName());
 						//						Create createActivity = new Create(null, "create", null, person1, group1);
 						//						ObjectMapper objectMapper1 = new ObjectMapper();
 						//						kafkaTemplate.send(environment.getProperty("circleservice.topic.mailbox"), objectMapper1.writeValueAsString(createActivity));
-
+						
 					}
+						
+						
 
 					//-----------------------Leave Activity-----------------------------------
 					if(type.equalsIgnoreCase("leave")) {
@@ -220,10 +278,17 @@ public class CircleServiceImpl implements CircleService{
 						Date date = new Date();
 						mail.setTimeCreated(date);
 						addMails(mail);
+						
+						Person person2 = new Person(null, person.getId(), "person", null, null);
+						Group group2 = new Group(null, group.getId(), "group", group.getName());
+						Leave leave2 = new Leave(null, "leave", null, person2, group2);
+						ObjectMapper objectMapper2 = new ObjectMapper();
+						kafkaTemplate.send(environment.getProperty("circleservice.topic.recommendation"), objectMapper2.writeValueAsString(leave2));
 					}
 
 					//---------------------------Add Activity---------------------------------
 					if(type.equalsIgnoreCase("add")) {
+						System.out.println("in add");
 						Add add = objectMapper.treeToValue(node, Add.class);
 						Person person = (Person) add.getActor();
 						Note note = (Note) add.getObject();
@@ -238,9 +303,10 @@ public class CircleServiceImpl implements CircleService{
 						mail.setTimeCreated(date);
 						addMails(mail);
 					}
+				}
 
 				}
-			} catch (IOException e) {
+		 catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -252,23 +318,33 @@ public class CircleServiceImpl implements CircleService{
 
 		Member member = memberRepo.findOneByCircleIdAndUsername(circleId, username);
 
-		Circle circle = findByID(circleId);
-		Date date = new Date();
-		member.setAccessTime(date);
-		member.setReadMails(circle.getTotalmails());
-		memberRepo.save(member);
-
-		Pageable pageable = new PageRequest(page,10,Sort.Direction.DESC,"timeCreated");
-		List<Mailbox> mails = mailboxRepo.findAllMails(circleId, pageable);
-		return mails;
+		if(member == null) {
+			throw new CircleException("no mailbox existed");
+		}
+		else {
+			
+			Circle circle = findByID(circleId);
+			Date date = new Date();
+			member.setAccessTime(date);
+			member.setReadMails(circle.getTotalmails());
+			memberRepo.save(member);
+			
+			Pageable pageable = new PageRequest(page,10,Sort.Direction.DESC,"timeCreated");
+			List<Mailbox> mails = mailboxRepo.findAllMails(circleId, pageable);
+			return mails;
+		}
 	}
 
 	//--------------------------get members by circleId---------------------------------------
 	@Override
 	public List<Member> getMembers(String circleId) throws CircleException {
 		List<Member> members = null;
-		if(circleId != null)
+		if(circleId != null) {
 			members = memberRepo.findAllMemeber(circleId);
+			if(members == null) {
+				throw new CircleException("give circle not existed");
+			}
+		}
 		return members;
 	}
 
@@ -302,13 +378,30 @@ public class CircleServiceImpl implements CircleService{
 	//------------------------------delete circle--------------------------------------------------
 	@Override
 	public void deleteCircle(String circleId) {
-		if(circleId != null)
+		Circle deleteCircle  = null;
+		if(circleId != null) {
+			deleteCircle = circleRepo.findOne(circleId);
 			circleRepo.delete(circleId);
+			
+			Person person = new Person(null, deleteCircle.getCircleCreatedBy(), "person", null, null);
+			Group group = new Group(null, deleteCircle.getCircleId(), "group", deleteCircle.getCircleName());
+			Delete deleteActivity = new Delete(null, "delete", null, person, group);
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				System.out.println("here in delete circle method");
+				kafkaTemplate.send(environment.getProperty("circleservice.topic.recommendation"), objectMapper.writeValueAsString(deleteActivity));
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	//-----------------------------changeStatus----------------------------------------------------
 	@Override
-	public void changeStatus(String userName) {
+	@MessageMapping("/logout/{userName}")
+	public void changeStatus(@DestinationVariable String userName) {
 		if(userName != null) {
 			List<Member> members = memberRepo.findAllCircle(userName);
 			for(Member member : members) {

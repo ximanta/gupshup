@@ -45,7 +45,7 @@ public class User extends ResourceSupport {
 	
 	private String profilePhoto;
 	private long followingCount;
-	private List<User> following;
+	private List<String> following;
 		
 	public User() {
 	}
@@ -116,10 +116,10 @@ public class User extends ResourceSupport {
 	public void setFollowingCount(long followingCount) {
 		this.followingCount = followingCount;
 	}
-	public List<User> getFollowing() {
+	public List<String> getFollowing() {
 		return following;
 	}
-	public void setFollowing(List<User> following) {
+	public void setFollowing(List<String> following) {
 		this.following = following;
 	}
 	@Override
