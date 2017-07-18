@@ -33,14 +33,15 @@ public class InboxServiceImpl implements InboxService {
 
 	@Autowired
 	MailsRepository mailsRepository;
-	
+
 	@Autowired
 	Environment environment;
-	
+
 	@Override
 	@KafkaListener(topics="mailbox")
 	public void consumeActivity(String activity) 
 	{
+		System.out.println(activity);
 		ObjectMapper mapper=new ObjectMapper();
 		if(activity!=null && activity.length()>0)
 		{
@@ -57,7 +58,7 @@ public class InboxServiceImpl implements InboxService {
 				if(activityType.equalsIgnoreCase("Create") && objectType.equalsIgnoreCase("person"))
 				{
 					String userName=node.path("actor").path("id").asText();
-					System.out.println("entering create circle");	
+					System.out.println("entering create user");	
 					createMailbox(userName);
 				}
 
@@ -80,11 +81,13 @@ public class InboxServiceImpl implements InboxService {
 			}
 		}
 	}
-	
+
 	@Override
 	public Mailbox createMailbox(String userName) throws MailboxException {
+		
 		Mailbox savedMaibox = null;
 		if(userName!=null) {
+			System.out.println(userName);
 			Mailbox mailbox = mailboxRepository.findOneByUsername(userName);
 			if(mailbox!=null) {
 				savedMaibox=mailbox;
@@ -164,31 +167,37 @@ public class InboxServiceImpl implements InboxService {
 	@Override
 	public List<Message> getMessages(String userName, String circleID, int page) 
 	{
-		RestTemplate restTemplate=new RestTemplate();	
+		RestTemplate restTemplate=new RestTemplate();
+		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userName", userName);
 		params.put("circleID", circleID);
 		params.put("page", page);
 		
-		ResponseEntity<Message[]> entity = restTemplate.getForEntity(environment.getProperty("circleservice-address")+"/circle/{circleID}/mailbox?userName={userName}&page={page}" ,Message[].class,params);
+		String url = environment.getProperty("mailboxservice.circleservice-address")+"/circle/{circleID}/mailbox?userName={userName}&page={page}";
+		
+		ResponseEntity<Message[]> entity = restTemplate.getForEntity(url, Message[].class,params);
 		List<Message> messages = Arrays.asList(entity.getBody());
 		List<Message> newMessages=new ArrayList<Message>();
-
 		List<Mails> mailboxMails = mailsRepository.findAll(userName, circleID);
 
-		for(Mails mails : mailboxMails)
-		{
-			String mailID=mails.getMailID();
-			for(Message msg:messages)
+		if(mailboxMails != null) {
+			for(Mails mails : mailboxMails)
 			{
-				if(!msg.getMailID().equalsIgnoreCase(mailID))
+				String mailID=mails.getMailID();
+				for(Message msg:messages)
 				{
-					newMessages.add(msg);
+					if(!msg.getMailID().equalsIgnoreCase(mailID))
+					{
+						newMessages.add(msg);
+					}
 				}
 			}
+			return newMessages;
 		}
-
-		return newMessages;
+		else {
+			return messages;
+		}
 	}
 
 

@@ -39,6 +39,5 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 		.authenticationManager(authenticationManager);
 
 	}
-
-
+	
 }
