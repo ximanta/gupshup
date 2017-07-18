@@ -13,6 +13,7 @@ import org.springframework.hateoas.ResourceSupport;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/*----------Bean class for creating circle nodes in neo4j---------*/
 @NodeEntity(label="person")
 public class UserRecommendation extends ResourceSupport{
 	

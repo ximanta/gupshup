@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.stackroute.gupshup.recommendationservice.service.CircleRecommendationService;
 import com.stackroute.gupshup.recommendationservice.service.UserRecommendationService;
 
+/*-----kafka consumer class-------*/
 @Service
 public class RecommendationConsumer {
 	
@@ -15,6 +16,7 @@ public class RecommendationConsumer {
 	@Autowired
 	CircleRecommendationService circleRecommendationService;
 	
+	/*--------method to consume messages from recommendation topic--------*/
 	public void consumeActivity(String topic){
 		
 		RecommendationConsumerThread recommendationConsumerRunnable = new RecommendationConsumerThread(topic, topic, userRecommendationService, circleRecommendationService);
@@ -30,3 +32,4 @@ public class RecommendationConsumer {
 	}
 
 }
+

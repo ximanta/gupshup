@@ -12,39 +12,53 @@ import org.springframework.hateoas.ResourceSupport;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @JsonSerialize
 @Document
 public class User extends ResourceSupport {
 	
+	@ApiModelProperty(notes = "Username of the User")
 	@Id
 	@NotNull(message = "error.userName.notnull")
 	private String userName;
 	
+	@ApiModelProperty(notes = "First name of the User")
 	@NotNull(message = "error.firstName.notnull")
 	private String firstName;
 	
+	@ApiModelProperty(notes = "Last name of the User")
 	@NotNull(message = "error.lastName.notnull")
 	private String lastName;
 	
+	@ApiModelProperty(notes = "Password of the User")
 	@JsonIgnoreProperties
 	@NotNull(message = "error.password.notnull")
 	@Size(min=8, message = "error.password.size")
 	private String password;
 	
+	@ApiModelProperty(notes = "Gender of the User")
 	@NotNull(message = "error.gender.notnull")
 	private String gender;
 	
+	@ApiModelProperty(notes = "Date of Birth of the User")
 	@NotNull(message = "error.dob.notnull")
 	private String dob;
 	
+	@ApiModelProperty(notes = "Email Id of the User")
 	@NotNull(message = "error.emailId.notnull")
 	private String emailId;
 	
+	@ApiModelProperty(notes = "Contact number of the User")
 	@NotNull(message = "error.contactNo.notnull")
 	private String contactNo;
 	
+	@ApiModelProperty(notes = "Phofile photo of the User")
 	private String profilePhoto;
+	
+	@ApiModelProperty(notes = "Number of following users")
 	private long followingCount;
+	
 	private List<String> following;
 		
 	public User() {

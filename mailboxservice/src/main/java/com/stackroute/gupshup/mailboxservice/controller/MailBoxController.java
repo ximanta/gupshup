@@ -2,12 +2,16 @@ package com.stackroute.gupshup.mailboxservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.stackroute.gupshup.mailboxservice.exception.MailboxException;
 import com.stackroute.gupshup.mailboxservice.model.Mails;
@@ -15,19 +19,27 @@ import com.stackroute.gupshup.mailboxservice.model.Message;
 import com.stackroute.gupshup.mailboxservice.service.InboxService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/mailbox")
 public class MailBoxController 
 {
 	@Autowired
 	private InboxService inboxService;
-
+	
+	@Autowired
+	private Environment environment;
 
 	//---------------Retrieve inbox for user name---------------
-	@RequestMapping(value = "/{circleID}/{userName}/{page}", method = RequestMethod.GET)
-	public ResponseEntity<List<Message>> getMessages(@PathVariable String circleID,@PathVariable String userName,@PathVariable int page)
+	@RequestMapping(value = "/{circleID}", method = RequestMethod.GET)
+	public ResponseEntity getMessages(@PathVariable String circleID, @RequestParam String userName, @RequestParam int page)
 	{
-		List<Message> messages = inboxService.getMessages(circleID, userName, page);
-		return new ResponseEntity<List<Message>>(messages, HttpStatus.FOUND);
+		RestTemplate restTemplate = new RestTemplate();
+		String url = environment.getProperty("mailboxservice.circleservice-address")+"/circle/"+circleID+"/mailbox?userName="+userName+"&page="+page;
+
+		ResponseEntity<Message[]> entity = restTemplate.getForEntity(url, Message[].class);
+		
+//		List<Message> messages = inboxService.getMessages(circleID, userName, page);
+		return new ResponseEntity(entity.getBody(), HttpStatus.OK);
 	}
 
 	//---------------Retrieve inbox for user name---------------
@@ -40,7 +52,7 @@ public class MailBoxController
 	}
 
 	//----------------Add deleted mail-----------------------------
-	@RequestMapping(value = "/{circleID}/{userName}/{mailID}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{circleID}/{userName}/{page}", method = RequestMethod.POST)
 	public ResponseEntity<Mails> deleteInboxMail(@PathVariable String circleID,@PathVariable String userName,@PathVariable String mailID)
 	{
 

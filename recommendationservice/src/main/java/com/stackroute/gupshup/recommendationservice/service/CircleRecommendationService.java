@@ -18,3 +18,4 @@ public interface CircleRecommendationService {
 	public CircleRecommendation findCircle(String circleId);
 	public void getActiviType(JsonNode node);
 }
+

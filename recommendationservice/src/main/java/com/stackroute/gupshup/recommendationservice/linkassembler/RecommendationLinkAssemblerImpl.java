@@ -14,7 +14,7 @@ import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 public class RecommendationLinkAssemblerImpl implements RecommendationLinkAssembler {
 
 	
-
+	/*-------add, delete and update hateous links for circle-------*/
 	@Override
 	public CircleRecommendation circleRecommendationLinks(CircleRecommendation circleRecommendation) {
 		
@@ -30,6 +30,7 @@ public class RecommendationLinkAssemblerImpl implements RecommendationLinkAssemb
 		return circleRecommendation;
 	}
 
+	/*-------add, delete and update hateous links for user-------*/
 	@Override
 	public UserRecommendation userRecommendationLinks(UserRecommendation userRecommendation) {
 		
@@ -49,3 +50,4 @@ public class RecommendationLinkAssemblerImpl implements RecommendationLinkAssemb
 	
 
 }
+

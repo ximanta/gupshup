@@ -46,6 +46,7 @@ public class RecommendationController {
 		this.recommendationLinkAssembler = recommendationLinkAssembler;
 	}
 	
+	/*------method to notify user of incorrect URL in GE Tmethod-----*/
 	@ApiOperation(value="Get method error path")
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity getRouteError(){
@@ -53,24 +54,28 @@ public class RecommendationController {
 		return new ResponseEntity<>("Incorrect URL",HttpStatus.FORBIDDEN);
 	}
 	
+	/*------method to notify user of incorrect URL in POST method-----*/
 	@ApiOperation(value="Post method error path")
 	@RequestMapping(value="/{id}", method=RequestMethod.POST)
 	public ResponseEntity postRouteError(){
 		return new ResponseEntity<>("Incorrect URL",HttpStatus.FORBIDDEN);
 	}
 	
+	/*------method to notify user of incorrect URL in PUT method-----*/
 	@ApiOperation(value="Put method error path")
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public ResponseEntity putRouteError(){
 		return new ResponseEntity<>("Incorrect URL",HttpStatus.FORBIDDEN);
 	}
 	
+	/*------method to notify user of incorrect URL in DELETE method-----*/
 	@ApiOperation(value="Delete method error path")
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity deleteRouteError(){
 		return new ResponseEntity<>("Incorrect URL",HttpStatus.FORBIDDEN);
 	}
 	
+	/*--------recommendation method to follow friend of friend with distinct results-----*/
 	@ApiOperation(value="Follow User Recommendation")
 	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)
 	public ResponseEntity followFriendOfFriend(@PathVariable String id)
@@ -78,8 +83,6 @@ public class RecommendationController {
 		Iterable<List<String>> list;
 		try {
 			list = userRecommendationService.followRecommendation(id);
-			UserRecommendation userRecommendation = userRecommendationService.findUser(id);
-			UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -88,14 +91,13 @@ public class RecommendationController {
 		return new ResponseEntity<Iterable<List<String>>>(list, HttpStatus.OK);
 	}
 	
+	/*---------circle subscribe recommendation for a user---------*/
 	@ApiOperation(value="Subscribe to Circle Recommendation")
 	@RequestMapping(value="/circle/{id}", method=RequestMethod.GET)
 	public ResponseEntity subscribeRecommendation(@PathVariable String id){
 		Iterable<List<String>> list;
 		try {
 			list=circleRecommendationService.subscribeRecommendation(id);
-			UserRecommendation userRecommendation = userRecommendationService.findUser(id);
-			UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,6 +106,7 @@ public class RecommendationController {
 		return new ResponseEntity<>(list,HttpStatus.OK);
 	}
 	
+	/*------method to create a user node in neo4j-------*/
 	@ApiOperation(value="Create a user node")
 	@RequestMapping(value="/createuser", method=RequestMethod.POST)
 	public ResponseEntity createUser(@Valid @RequestBody UserRecommendation userRecommendation, BindingResult bindingResult){
@@ -122,6 +125,7 @@ public class RecommendationController {
 		return new ResponseEntity<>(userRecommendation,HttpStatus.OK);
 	}
 	
+	/*------method to update a user node in neo4j-------*/
 	@ApiOperation(value="Update a user")
 	@RequestMapping(value="/updateuser", method=RequestMethod.PUT)
 	public ResponseEntity updateUser(@Valid @RequestBody UserRecommendation userRecommendation, BindingResult bindingResult){
@@ -141,14 +145,15 @@ public class RecommendationController {
 		return new ResponseEntity<>(u,HttpStatus.OK);
 	}
 	
+	/*------method to delete a user node in neo4j-------*/
 	@ApiOperation(value="Delete a user")
 	@RequestMapping(value="/deleteuser/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity<String> deleteUser(@PathVariable String id)
 	{
 		try {
 			userRecommendationService.deleteUser(id);
-			UserRecommendation userRecommendation = userRecommendationService.findUser(id);
-			UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
+			//UserRecommendation userRecommendation = userRecommendationService.findUser(id);
+			//UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,6 +163,7 @@ public class RecommendationController {
 		return new ResponseEntity<>("User Deleted", HttpStatus.OK);
 	}
 	
+	/*------method to create a circle node in neo4j-------*/
 	@ApiOperation(value="Create a circle node")
 	@RequestMapping(value="/createcircle", method=RequestMethod.POST)
 	public ResponseEntity createCircle(@Valid @RequestBody CircleRecommendation circleRecommendation, BindingResult bindingResult){
@@ -178,14 +184,15 @@ public class RecommendationController {
 		return new ResponseEntity<>(circleRecommendation, HttpStatus.OK);
 	}
 	
+	/*------method to delete a circle node in neo4j-------*/
 	@ApiOperation(value="Delete a circle")
 	@RequestMapping(value="/deletecircle/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity deleteCircle(@PathVariable String id)
 	{
 		try {
 			circleRecommendationService.deleteCircle(id);
-			CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id);
-			CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
+			//CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id);
+			//CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,6 +202,7 @@ public class RecommendationController {
 		return new ResponseEntity<>("Circle deleted",HttpStatus.OK);
 	}
 	
+	/*------method to update a circle node in neo4j-------*/
 	@ApiOperation(value="Update a circle")
 	@RequestMapping(value="/updatecircle", method=RequestMethod.PUT)
 	public ResponseEntity updateCircle(@Valid @RequestBody CircleRecommendation circleRecommendation, BindingResult bindingResult){
@@ -214,13 +222,14 @@ public class RecommendationController {
 		return new ResponseEntity<>(circleRecommendation,HttpStatus.OK);
 	}
 	
+	/*----------method to create a follow relationship in neo4j when user follows another user-------*/
 	@ApiOperation(value="Follow user")
 	@RequestMapping(value="/follows/{id1}/{id2}", method=RequestMethod.GET)
 	public ResponseEntity follows(@PathVariable String id1, @PathVariable String id2){
 		try {
 			userRecommendationService.follows(id1,id2);
-			UserRecommendation userRecommendation = userRecommendationService.findUser(id1);
-			UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
+			//UserRecommendation userRecommendation = userRecommendationService.findUser(id1);
+			//UserRecommendation u = recommendationLinkAssembler.userRecommendationLinks(userRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -230,13 +239,14 @@ public class RecommendationController {
 		return new ResponseEntity<>(id1+" follows "+id2,HttpStatus.OK);
 	}
 	
+	/*----------method to create a subscribed relationship in neo4j when user subscribes to a circle-------*/
 	@ApiOperation(value="Subscribe to a Circle")
 	@RequestMapping(value="/subscribed/{id1}/{id2}", method=RequestMethod.GET)
 	public ResponseEntity subscribed(@PathVariable String id1, @PathVariable String id2){
 		try {
 			circleRecommendationService.subscribed(id1,id2);
-			CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id2);
-			CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
+			//CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id2);
+			//CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -246,13 +256,14 @@ public class RecommendationController {
 		return new ResponseEntity<>(id1+" subscribed to "+id2,HttpStatus.OK);
 	}
 	
+	/*--------method to delete subscribe relationship in neo4j when user wants to leave a circle-------*/
 	@ApiOperation(value="Unsubscribe from a Circle")
 	@RequestMapping(value="/leavecircle/{id1}/{id2}", method=RequestMethod.GET)
 	public ResponseEntity leaveCircle(@PathVariable String id1, @PathVariable String id2){
 		try {
 			circleRecommendationService.leaveCircle(id1, id2);
-			CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id2);
-			CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
+			//CircleRecommendation circleRecommendation = circleRecommendationService.findCircle(id2);
+			//CircleRecommendation c = recommendationLinkAssembler.circleRecommendationLinks(circleRecommendation);
 		} catch (RecommendationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -262,3 +273,4 @@ public class RecommendationController {
 	}
 
 }
+

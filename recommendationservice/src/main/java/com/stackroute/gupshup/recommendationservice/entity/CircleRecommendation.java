@@ -13,6 +13,7 @@ import org.springframework.hateoas.ResourceSupport;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/*-----------Bean class for user for creating nodes in neo4j----------*/
 @NodeEntity(label="circle")
 public class CircleRecommendation extends ResourceSupport{
 	
@@ -89,3 +90,4 @@ public class CircleRecommendation extends ResourceSupport{
 	}
 
 }
+

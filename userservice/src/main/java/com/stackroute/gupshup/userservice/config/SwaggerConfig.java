@@ -2,8 +2,13 @@ package com.stackroute.gupshup.userservice.config;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -15,6 +20,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+	
+	@Autowired
+	MessageSource messageSource;
+	
 	@Bean
 	public Docket productApi() {
 				return new Docket(DocumentationType.SWAGGER_2)
@@ -26,6 +35,11 @@ public class SwaggerConfig {
 	}
 	
 	private ApiInfo metaData() {
+		
+		/*Locale locale = LocaleContextHolder.getLocale();
+		String message1 = messageSource.getMessage ("error.user.alreadyregistered", null, locale );
+		String message2 = messageSource.getMessage ("error.user.alreadyregistered", null, locale );
+		*/
 		ApiInfo apiInfo = new ApiInfo(
 				"Spring Boot USER REST API",
 				"Spring Boot REST API for USER",
