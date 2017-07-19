@@ -3,6 +3,7 @@ package com.stackroute.gupshup.recommendationservice.service;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	
 	/*---------circle subscribe recommendation for a user---------*/
 	@Override
-	public Iterable<List<String>> subscribeRecommendation(String user) throws RecommendationException{
+	public Iterable<List<Map<String,String>>> subscribeRecommendation(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
 		if(u==null)
 		{
@@ -142,10 +143,10 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			String circleId = objectType.path("id").asText();
 			String circleName = objectType.path("name").asText();
 			ArrayList<String> keyword = new ArrayList<String>();
-			keyword.add(objectType.path("keywords").asText());
-			System.out.println("k: "+keyword);
-			//List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
-			System.out.println(keyword);
+			Iterator<JsonNode> elements = objectType.path("keywords").elements();
+			while(elements.hasNext()) {
+				keyword.add(elements.next().asText());
+			}
 			String createdBy = actor.path("id").asText();
 		
 			if(circleId=="" || circleName=="" || keyword==null || createdBy=="")
@@ -219,7 +220,11 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 			String circleId = objectType.path("id").asText();
 			String circleName = objectType.path("name").asText();
 			String k= objectType.path("keywords").asText();
-			ArrayList<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
+			ArrayList<String> keyword = new ArrayList<String>();
+			Iterator<JsonNode> elements = objectType.path("keywords").elements();
+			while(elements.hasNext()) {
+				keyword.add(elements.next().asText());
+			}
 			String createdBy = actor.path("id").asText();
 		
 			if(circleId=="" || circleName=="" || keyword==null || createdBy=="")

@@ -2,6 +2,7 @@ package com.stackroute.gupshup.recommendationservice.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 	
 	/*--------recommendation method to follow friend of friend with distinct results-----*/
 	@Override
-	public Iterable<List<String>> followRecommendation(String user) throws RecommendationException{
+	public List<Map<String,String>> followRecommendation(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
 		if(u==null||user==null)
 		{
@@ -107,7 +108,12 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		}
 		else
 		{
-		return userRecommendationRepository.followPeople(user);
+			ArrayList<Map<String,String>> l1 = userRecommendationRepository.followSameCirclePeople(user);
+			ArrayList<Map<String,String>> l2 = userRecommendationRepository.followPeople(user);
+			ArrayList<Map<String,String>> l = new ArrayList<Map<String,String>>();
+				l.addAll(l1);
+				l.addAll(l2);
+			return l;
 		}
 	}
 	

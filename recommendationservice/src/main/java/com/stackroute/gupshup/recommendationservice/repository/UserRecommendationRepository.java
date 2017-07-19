@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.recommendationservice.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,21 +30,16 @@ void deleteUser(String user);
 @Query("MATCH (a:person{name: {0}}) SET a.firstname = {1}, a.lastname = {2}, a.gender = {3}, a.intrest = {4}, a.DOB = {5} RETURN a")
 Map<String, Object> updateUser(String name, String firstname, String lastname, String gender, List<String> intrest, String DOB);
 
-/*----------query to create a follow relationship in neo4j when user follows another user-------*/
 @Query("match (a:person), (b:person) where a.name={0} and b.name={1} create (a)-[:follows]->(b) return a,b")
 Iterable<Map<String, Object>> follows(String name1, String name2);
 
-/*--------recommendation query to follow friend of friend-----*/
-@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return morepeople.name")
-Iterable<List<String>> followFriendOfFriend(String user);
-
 /*---------recommendation query to follow people subscribed to same circle--------*/
-@Query("match (n:person {name:{0}}),(n)-[:created|:subscribed]->(things)<-[:created|:subscribed]-(people:person) where not (n)-[:follows]->(people) return distinct people.name")
-Iterable<List<String>> followSameCirclePeople(String user);
+@Query("match (n:person {name:{0}}),(n)-[:created|:subscribed]->(things)<-[:created|:subscribed]-(people:person) where not (n)-[:follows]->(people) and not people.name=n.name return distinct people.name AS name, people.firstname AS firstname, people.lastname AS lastname")
+ArrayList<Map<String,String>> followSameCirclePeople(String user);
 
 /*--------recommendation query to follow friend of friend with distinct results-----*/
-@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return distinct morepeople.name")
-Iterable<List<String>> followPeople(String user);
+@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return distinct morepeople.name AS name, morepeople.firstname AS firstname, morepeople.lastname AS lastname")
+ArrayList<Map<String,String>> followPeople(String user);
 
 /*-------query to get name of the user through username from neo4j---------*/
 @Query("match (n:person {name:{0}}) return n.name")
