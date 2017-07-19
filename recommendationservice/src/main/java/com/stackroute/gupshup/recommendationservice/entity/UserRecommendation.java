@@ -38,8 +38,9 @@ public class UserRecommendation extends ResourceSupport{
 	
 	private List<String> intrest;
 	
-	@NotNull(message="Date of Birth cannot be null")
-	private int DOB;
+	//@NotNull(message="Date of Birth cannot be null")
+	//@Size(min=1, message="Date of Birth cannot be empty")
+	private String DOB;
 	
 	public UserRecommendation(){};
 	
@@ -50,7 +51,7 @@ public class UserRecommendation extends ResourceSupport{
 			@JsonProperty("lastname") String lastname, 
 			@JsonProperty("gender") String gender, 
 			@JsonProperty("intrest") List<String> intrest,
-			@JsonProperty("DOB") int DOB){
+			@JsonProperty("DOB") String DOB){
 		this.name = name;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -91,11 +92,11 @@ public class UserRecommendation extends ResourceSupport{
 		this.intrest = intrest;
 	}
 
-	public int getDOB() {
+	public String getDOB() {
 		return DOB;
 	}
 
-	public void setDOB(int dOB) {
+	public void setDOB(String dOB) {
 		DOB = dOB;
 	}
 

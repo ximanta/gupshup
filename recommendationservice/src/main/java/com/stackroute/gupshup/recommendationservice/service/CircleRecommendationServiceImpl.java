@@ -39,7 +39,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		}
 		else{
 		System.out.println("circle created");
-		circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		circle = circleRecommendationRepository.createCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeywords(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
 		circleRecommendationRepository.created(circleRecommendation.getCreatedBy(), circleRecommendation.getCircleId());
 		}
 		return circle;
@@ -70,7 +70,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		{
 		System.out.println("circle updated");
 		System.out.println(circleRecommendation);
-		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeyword(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
+		return circleRecommendationRepository.updateCircle(circleRecommendation.getCircleId(), circleRecommendation.getKeywords(), circleRecommendation.getCircleName(), circleRecommendation.getCreatedBy());
 		}
 	}
 	
@@ -139,17 +139,19 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		if(activityType.equalsIgnoreCase("Create") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
 		
-			String user = actor.path("name").asText();
-			String circleId = objectType.path("circleId").asText();
-			String circleName = objectType.path("circleName").asText();
-			String k= objectType.path("keyword").asText();
-			List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
-			String createdBy = objectType.path("createdBy").asText();
+			String circleId = objectType.path("id").asText();
+			String circleName = objectType.path("name").asText();
+			ArrayList<String> keyword = new ArrayList<String>();
+			keyword.add(objectType.path("keywords").asText());
+			System.out.println("k: "+keyword);
+			//List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
+			System.out.println(keyword);
+			String createdBy = actor.path("id").asText();
 		
-			if(user=="" || circleId=="" || circleName=="" || keyword==null || createdBy=="")
+			if(circleId=="" || circleName=="" || keyword==null || createdBy=="")
 			{
 				System.out.println("Create: userame, circlename or keyword field is empty");
-				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
+				System.out.println("circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
 			} else
 				try {
 					{
@@ -158,7 +160,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 						
 						circleRecommendation.setCircleId(circleId);
 						circleRecommendation.setCircleName(circleName);
-						circleRecommendation.setKeyword(keyword);
+						circleRecommendation.setKeywords(keyword);
 						circleRecommendation.setCreatedBy(createdBy);
 						
 						circleRecommendationService.createCircle(circleRecommendation);
@@ -172,8 +174,8 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		if(activityType.equalsIgnoreCase("Join") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
 		
-			String user = actor.path("name").asText();
-			String circleId = objectType.path("circleId").asText();
+			String user = actor.path("id").asText();
+			String circleId = objectType.path("id").asText();
 		
 			if(user=="" || circleId=="")
 			{
@@ -193,8 +195,8 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		if(activityType.equalsIgnoreCase("Leave") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
 		
-			String name = actor.path("name").asText();
-			String circleId = objectType.path("circleId").asText();
+			String name = actor.path("id").asText();
+			String circleId = objectType.path("id").asText();
 		
 			if(name=="" || circleId=="")
 			{
@@ -214,17 +216,16 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		if(activityType.equalsIgnoreCase("Update") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
 		
-			String user = actor.path("name").asText();
-			String circleId = objectType.path("circleId").asText();
-			String circleName = objectType.path("circleName").asText();
-			String k= objectType.path("keyword").asText();
-			List<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
-			String createdBy = objectType.path("createdBy").asText();
+			String circleId = objectType.path("id").asText();
+			String circleName = objectType.path("name").asText();
+			String k= objectType.path("keywords").asText();
+			ArrayList<String> keyword = new ArrayList<String>(Arrays.asList(k.split(",")));
+			String createdBy = actor.path("id").asText();
 		
-			if(user=="" || circleId=="" || circleName=="" || keyword==null || createdBy=="")
+			if(circleId=="" || circleName=="" || keyword==null || createdBy=="")
 			{
 				System.out.println("Update: userame, circlename or keyword field is empty");
-				System.out.println("user: "+user+" circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
+				System.out.println("circleId: "+circleId+" circleName: "+circleName+" keyword: "+keyword+" createdBy: "+createdBy);
 			}
 			else
 			{
@@ -233,7 +234,7 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 				
 				circleRecommendation.setCircleId(circleId);
 				circleRecommendation.setCircleName(circleName);
-				circleRecommendation.setKeyword(keyword);
+				circleRecommendation.setKeywords(keyword);
 				circleRecommendation.setCreatedBy(createdBy);
 				
 				try {
@@ -248,8 +249,8 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		if(activityType.equalsIgnoreCase("Delete") && actorType.equalsIgnoreCase("Person") && objType.equalsIgnoreCase("Group"))
 		{
 		
-			String user = actor.path("name").asText();
-			String circleId = objectType.path("circleId").asText();
+			String user = actor.path("id").asText();
+			String circleId = objectType.path("id").asText();
 		
 			if(user=="" || circleId=="")
 			{

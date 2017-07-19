@@ -134,15 +134,15 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if(activityType.equalsIgnoreCase("Create") && actorType.equalsIgnoreCase("Person"))
 		{
 		
-			String name = actor.path("name").asText();
+			String name = actor.path("username").asText();
 			String firstname = actor.path("firstname").asText();
 			String lastname = actor.path("lastname").asText();
 			String gender = actor.path("gender").asText();
 			String i = actor.path("intrest").asText();
 			List<String> intrest = new ArrayList<String>(Arrays.asList(i.split(",")));
-			String DOB = actor.path("DOB").asText();
+			String DOB = actor.path("dob").asText();
 		
-			if(name==""||firstname==""||lastname==""||gender==""||intrest==null||DOB=="")
+			if(name==""||firstname==""||lastname==""||gender=="")
 			{
 				System.out.println("Create: Empty Fields");
 			}
@@ -150,8 +150,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			{
 				System.out.println("create user");
 				UserRecommendation userRecommendation = new UserRecommendation();
-				int dob = Integer.parseInt(DOB);
-				userRecommendation.setDOB(dob);
+				userRecommendation.setDOB(DOB);
 				userRecommendation.setFirstname(firstname);
 				userRecommendation.setGender(gender);
 				userRecommendation.setIntrest(intrest);
@@ -171,8 +170,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if(activityType.equalsIgnoreCase("Follow") && actorType.equalsIgnoreCase("Person"))
 		{
 		
-			String user1 = actor.path("name").asText();
-			String user2 = objectType.path("name").asText();
+			String user1 = actor.path("id").asText();
+			String user2 = objectType.path("id").asText();
 		
 			if(user1==""||user2=="")
 			{
@@ -191,13 +190,13 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		
 		if(activityType.equalsIgnoreCase("Update") && actorType.equalsIgnoreCase("Person"))
 		{
-			String name = actor.path("name").asText();
+			String name = actor.path("username").asText();
 			String firstname = actor.path("firstname").asText();
 			String lastname = actor.path("lastname").asText();
 			String gender = actor.path("gender").asText();
 			String i = actor.path("intrest").asText();
-			List<String> intrest=new ArrayList<String>(Arrays.asList(i.split(",")));
-			String DOB = actor.path("DOB").asText();
+			List<String> intrest = new ArrayList<String>(Arrays.asList(i.split(",")));
+			String DOB = actor.path("dob").asText();
 		
 			if(name==""||firstname==""||lastname==""||gender==""||intrest==null||DOB=="")
 			{
@@ -206,8 +205,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			else
 			{
 				UserRecommendation userRecommendation = new UserRecommendation();
-				int dob = Integer.parseInt(DOB);
-				userRecommendation.setDOB(dob);
+				userRecommendation.setDOB(DOB);
 				userRecommendation.setFirstname(firstname);
 				userRecommendation.setGender(gender);
 				userRecommendation.setIntrest(intrest);
@@ -226,7 +224,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 		if(activityType.equalsIgnoreCase("Delete") && actorType.equalsIgnoreCase("Person"))
 		{
 		
-			String user = actor.path("name").asText();
+			String user = actor.path("id").asText();
 		
 			if(user=="")
 			{

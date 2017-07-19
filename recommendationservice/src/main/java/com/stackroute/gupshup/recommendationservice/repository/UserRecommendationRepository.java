@@ -15,7 +15,7 @@ public interface UserRecommendationRepository extends GraphRepository<UserRecomm
 
 /*------query to create a user node in neo4j-------*/
 @Query("merge (ay19:person {name:{0}, firstname:{1}, lastname:{2}, gender:{3},intrest:{4}, DOB:{5}}) return ay19")
-Map<String, Object> createUser(String name, String firstname, String lastname, String gender, List<String> intrest, int DOB);
+Map<String, Object> createUser(String name, String firstname, String lastname, String gender, List<String> intrest, String DOB);
 
 /*---------query to delete a user created circles in neo4j------*/
 @Query("MATCH (a:circle {createdBy:{0}}) DETACH DELETE a")
@@ -27,7 +27,7 @@ void deleteUser(String user);
 
 /*---------query to update user properties in neo4j--------*/
 @Query("MATCH (a:person{name: {0}}) SET a.firstname = {1}, a.lastname = {2}, a.gender = {3}, a.intrest = {4}, a.DOB = {5} RETURN a")
-Map<String, Object> updateUser(String name, String firstname, String lastname, String gender, List<String> intrest, int DOB);
+Map<String, Object> updateUser(String name, String firstname, String lastname, String gender, List<String> intrest, String DOB);
 
 /*----------query to create a follow relationship in neo4j when user follows another user-------*/
 @Query("match (a:person), (b:person) where a.name={0} and b.name={1} create (a)-[:follows]->(b) return a,b")
