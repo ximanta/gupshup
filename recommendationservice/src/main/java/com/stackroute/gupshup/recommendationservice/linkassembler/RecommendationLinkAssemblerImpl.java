@@ -4,7 +4,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.stackroute.gupshup.recommendationservice.controller.RecommendationController;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;

@@ -2,7 +2,6 @@ package com.stackroute.gupshup.recommendationservice.service;
 
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.stackroute.gupshup.recommendationservice.entity.CircleRecommendation;
-import com.stackroute.gupshup.recommendationservice.entity.UserRecommendation;
 import com.stackroute.gupshup.recommendationservice.exception.RecommendationException;
 import com.stackroute.gupshup.recommendationservice.repository.CircleRecommendationRepository;
 import com.stackroute.gupshup.recommendationservice.repository.UserRecommendationRepository;
@@ -219,7 +217,6 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 		
 			String circleId = objectType.path("id").asText();
 			String circleName = objectType.path("name").asText();
-			String k= objectType.path("keywords").asText();
 			ArrayList<String> keyword = new ArrayList<String>();
 			Iterator<JsonNode> elements = objectType.path("keywords").elements();
 			while(elements.hasNext()) {
