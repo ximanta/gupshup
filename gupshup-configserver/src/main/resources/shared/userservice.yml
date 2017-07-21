@@ -27,7 +27,7 @@ logging:
   file: logs/spring-boot-logging.log
 
 userservice:
-    bootstrap-servers: 172.23.239.202:9092
+    bootstrap-servers: localhost:9092
     groupId: user
     topic:
       user: user 

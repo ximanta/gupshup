@@ -59,8 +59,7 @@ public class User extends ResourceSupport {
 	@ApiModelProperty(notes = "Number of following users")
 	private long followingCount;
 	
-	@ApiModelProperty(notes = "User's following list")
-	private List<User> following;
+	private List<String> following;
 		
 	public User() {
 	}
@@ -131,10 +130,10 @@ public class User extends ResourceSupport {
 	public void setFollowingCount(long followingCount) {
 		this.followingCount = followingCount;
 	}
-	public List<User> getFollowing() {
+	public List<String> getFollowing() {
 		return following;
 	}
-	public void setFollowing(List<User> following) {
+	public void setFollowing(List<String> following) {
 		this.following = following;
 	}
 	@Override

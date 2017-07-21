@@ -3,6 +3,8 @@ package com.stackroute.gupshup.circleservice.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.hateoas.ResourceSupport;
@@ -12,13 +14,16 @@ public class Circle extends ResourceSupport{
 	
 	@Id
 	private String circleId;
+	@NotNull
 	private String circleName;
+	@NotNull
 	private String circleDescription;
 	private String circleCreatedBy;
 	private String circleCreatedDate;
 	private Date lastupdated;
 	private long totalUsers;
 	private long totalmails;
+	@NotNull
 	private List<String> keywords;
 	
 	public Circle() {

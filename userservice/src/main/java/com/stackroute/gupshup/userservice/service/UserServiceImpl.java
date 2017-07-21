@@ -2,7 +2,9 @@ package com.stackroute.gupshup.userservice.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -14,7 +16,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.userservice.domain.Activity;
-import com.stackroute.gupshup.userservice.domain.Create;
 import com.stackroute.gupshup.userservice.domain.Delete;
 import com.stackroute.gupshup.userservice.domain.Follow;
 import com.stackroute.gupshup.userservice.domain.Person;
@@ -46,15 +47,25 @@ public class UserServiceImpl implements UserService {
 		if(newUser == null) {
 			User savedUser = userRepository.save(user);
 			/* creating the object of new registered user to publish it to mailbox service */
-			Person person =new Person(null,"Person",savedUser.getUserName(),savedUser.getFirstName()+" "+savedUser.getLastName(),null);
-			Activity activity = new Create(null,"Create","user registered",person,person);
+			//Person person =new Person(null,"Person",savedUser.getUserName(),savedUser.getFirstName()+" "+savedUser.getLastName(),null);
+			Map<String, Object> createActivity = new HashMap<>();
+			createActivity.put("type", "create");
+			Map< String, String> person = new HashMap<>();
+			person.put("type", "person");
+			person.put("username", savedUser.getUserName());
+			person.put("firstname", savedUser.getFirstName());
+			person.put("lastname", savedUser.getLastName());
+			person.put("gender", savedUser.getGender());
+			person.put("dob", savedUser.getDob());
+			createActivity.put("actor", person);
+			//Activity activity = new Create(null,"Create","user registered",person,null);
 			//			Group group =new Group(null,"595b872493515b0bfdce17e3","Group","gupshup");
 			//			Join join =new Join(null,"Join",user.getUserName()+" has joined gupshup",person, group);
 			/* publishing the created object to mailbox topic and recommendation topic */
 			try {
-				kafkaTemplate.send(environment.getProperty("userservice.topic.mailbox"),new ObjectMapper().writeValueAsString(activity));
+				kafkaTemplate.send(environment.getProperty("userservice.topic.mailbox"),new ObjectMapper().writeValueAsString(createActivity));
 				//				kafkaTemplate.send("circle",new ObjectMapper().writeValueAsString(join));
-				kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), new ObjectMapper().writeValueAsString(activity));
+				kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), new ObjectMapper().writeValueAsString(createActivity));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
@@ -87,6 +98,23 @@ public class UserServiceImpl implements UserService {
 			else {
 				userRepository.save(user);
 				updateStatus = "updated";
+				Map<String, Object> updateActivity = new HashMap<>();
+				updateActivity.put("type", "update");
+				Person person = new Person(null, "person", updatedUser.getUserName(), null, null);
+				updateActivity.put("actor", person);
+				Map<String, String> group = new HashMap<>();
+				group.put("firstname", updatedUser.getFirstName());
+				group.put("lastname", updatedUser.getLastName());
+				group.put("gender", updatedUser.getGender());
+				group.put("dob", updatedUser.getDob());
+				updateActivity.put("object", group);
+				ObjectMapper objectMapper = new ObjectMapper();
+				try {
+					kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), objectMapper.writeValueAsString(updateActivity));
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		catch(UserNotFoundException exception) {
@@ -110,6 +138,15 @@ public class UserServiceImpl implements UserService {
 				/* deleting the user */
 				userRepository.delete(userName);
 				deleteStatus = "deleted";
+				Person person = new Person(null, "person", user1.getUserName(), null, null);
+				Delete deleteActivity = new Delete(null, "delete", null, person, null);
+				ObjectMapper objectMapper = new ObjectMapper();
+				try {
+					kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), objectMapper.writeValueAsString(deleteActivity));
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} catch(UserNotFoundException exception) {
 			deleteStatus = "NotDeleted";
@@ -148,7 +185,7 @@ public class UserServiceImpl implements UserService {
 	/* method to check the type of activity  */
 
 	@Override
-	@KafkaListener(topics="userservice.topic.user")
+	@KafkaListener(topics="user")
 	public void checkActivityType(String activity)
 	{
 		ObjectMapper mapper = new ObjectMapper();
@@ -157,6 +194,7 @@ public class UserServiceImpl implements UserService {
 			node = mapper.readTree(activity);
 
 			String activityType = node.path("type").asText();
+			System.out.println("activity type :"+activityType);
 			if(activityType.equalsIgnoreCase("follow")) {
 				followUser(node);
 			}
@@ -181,22 +219,28 @@ public class UserServiceImpl implements UserService {
 		/* fetching target user name from the node tree */
 		JsonNode targetNode = node.path("object");
 		String targetUserName = targetNode.path("id").asText();
-
-		User targetUser = getUserByUserName(targetUserName);
+		System.out.println("here"+targetUserName);
+		System.out.println("there"+sourceUserName);
+		
+//		User targetUser = getUserByUserName(targetUserName);
 		User sourceUser = getUserByUserName(sourceUserName);
+//		System.out.println("target use "+targetUser.getUserName());
+		System.out.println("source user "+sourceUser.getUserName());
 		/* updating the following list and following count of a user */
-		List<User> followingList = sourceUser.getFollowing();
-		if(followingList.contains(targetUser)) {
+		List<String> followingList = sourceUser.getFollowing();
+		if(followingList.contains(targetUserName)) {
+//			System.out.println(targetUser.getUserName());
+			System.out.println("already followed");
 			return "already followed";
 		} else {
 			if(sourceUser.getFollowingCount() < 10) {
-				followingList.add(targetUser);
+				followingList.add(targetUserName);
 				sourceUser.setFollowing(followingList);
 				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 				userRepository.save(sourceUser);
 			} else {
 				followingList.remove(0);
-				followingList.add(targetUser);
+				followingList.add(targetUserName);
 				sourceUser.setFollowing(followingList);
 				sourceUser.setFollowingCount(sourceUser.getFollowingCount()+1);
 				userRepository.save(sourceUser);
@@ -206,6 +250,7 @@ public class UserServiceImpl implements UserService {
 
 			Activity activity = new  Follow(null, "Follow", sourceUserName+" followed "+targetUserName, person1, person2);
 			try {
+				System.out.println("hello"+person1.getId()+"   taget"+person2.getId());
 				kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), new ObjectMapper().writeValueAsString(activity));
 			} catch (JsonProcessingException e1) {
 				// TODO Auto-generated catch block
@@ -220,7 +265,7 @@ public class UserServiceImpl implements UserService {
 	{
 		try {
 			kafkaTemplate.send(environment.getProperty("userservice.topic.mailbox"), new ObjectMapper().writeValueAsString(node));
-			kafkaTemplate.send(environment.getProperty("userservice.topic.recommendationj"), new ObjectMapper().writeValueAsString(node));
+			kafkaTemplate.send(environment.getProperty("userservice.topic.recommendation"), new ObjectMapper().writeValueAsString(node));
 			
 		} catch (JsonProcessingException e1) {
 			// TODO Auto-generated catch block

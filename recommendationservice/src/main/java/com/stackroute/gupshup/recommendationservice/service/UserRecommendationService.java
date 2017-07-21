@@ -13,7 +13,7 @@ public interface UserRecommendationService {
 	public String deleteUser(String user) throws RecommendationException;
 	public Map<String, Object> updateUser(UserRecommendation userRecommendation) throws RecommendationException;
 	public Iterable<Map<String, Object>> follows(String user1, String user2) throws RecommendationException;
-	public Iterable<List<String>> followRecommendation(String user) throws RecommendationException;
+	public List<Map<String,String>> followRecommendation(String user) throws RecommendationException;
 	public UserRecommendation findUser(String name);
 	public void getActivityType(JsonNode node);
 }

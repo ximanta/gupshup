@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.recommendationservice.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -30,7 +31,7 @@ public class CircleRecommendation extends ResourceSupport{
 	
 	@NotNull(message="circle keywords cannot be null")
 	@Size(min=1, message="circle keyword cannot be empty")
-	List<String> keyword;
+	List<String> keywords;
 	
 	@NotNull(message="username cannot be null")
 	@Size(min=1, message="username cannot be empty")
@@ -42,12 +43,12 @@ public class CircleRecommendation extends ResourceSupport{
 	public CircleRecommendation(
 			@JsonProperty("circleId") String circleId,
 			@JsonProperty("circleName") String circleName,
-			@JsonProperty("keyword") List<String> keyword,
+			@JsonProperty("keywords") ArrayList<String> keywords,
 			@JsonProperty("createdBy") String createdBy
 			){
 		this.circleId = circleId;
 		this.circleName = circleName;
-		this.keyword = keyword;
+		this.keywords = keywords;
 		this.createdBy = createdBy;
 	}
 	
@@ -59,12 +60,12 @@ public class CircleRecommendation extends ResourceSupport{
 		this.circleId = circleId;
 	}
 
-	public List<String> getKeyword() {
-		return keyword;
+	public List<String> getKeywords() {
+		return keywords;
 	}
 
-	public void setKeyword(List<String> keyword) {
-		this.keyword = keyword;
+	public void setKeywords(List<String> keywords) {
+		this.keywords = keywords;
 	}
 	
 	public String getCircleName() {
@@ -86,7 +87,7 @@ public class CircleRecommendation extends ResourceSupport{
 	@Override
 	public String toString() {
 		return "CircleRecommendation [id=" + id + ", circleId=" + circleId + ", circleName=" + circleName + ", keyword="
-				+ keyword + ", createdBy=" + createdBy + "]";
+				+ keywords + ", createdBy=" + createdBy + "]";
 	}
 
 }

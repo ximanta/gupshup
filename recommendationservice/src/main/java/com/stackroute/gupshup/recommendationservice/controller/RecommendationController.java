@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -80,7 +79,7 @@ public class RecommendationController {
 	@RequestMapping(value="/user/{id}", method=RequestMethod.GET)
 	public ResponseEntity followFriendOfFriend(@PathVariable String id)
 	{
-		Iterable<List<String>> list;
+		List<Map<String,String>> list;
 		try {
 			list = userRecommendationService.followRecommendation(id);
 		} catch (RecommendationException e) {
@@ -88,14 +87,14 @@ public class RecommendationController {
 			e.printStackTrace();
 			return new ResponseEntity<>("Username incorrect",HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<Iterable<List<String>>>(list, HttpStatus.OK);
+		return new ResponseEntity<List<Map<String,String>>>(list,HttpStatus.OK);
 	}
 	
 	/*---------circle subscribe recommendation for a user---------*/
 	@ApiOperation(value="Subscribe to Circle Recommendation")
 	@RequestMapping(value="/circle/{id}", method=RequestMethod.GET)
 	public ResponseEntity subscribeRecommendation(@PathVariable String id){
-		Iterable<List<String>> list;
+		Iterable<List<Map<String,String>>> list;
 		try {
 			list=circleRecommendationService.subscribeRecommendation(id);
 		} catch (RecommendationException e) {

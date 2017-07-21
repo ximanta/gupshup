@@ -16,7 +16,7 @@ public interface CircleService {
 	public Circle updateCircle(Circle circle) throws CircleException,JsonProcessingException;
 	public void deleteCircle(String circleId) throws CircleException;
 	
-	public void addCircleMember(Member member);
+	public void addCircleMember(Member member) throws CircleException;
 	public void addMails( Mailbox mailbox );
 	
 	public List<Mailbox> getMails(String circleId, String userName, int page) throws CircleException;

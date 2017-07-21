@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+
 	<artifactId>circleservice</artifactId>
 	<packaging>jar</packaging>
 
@@ -13,7 +14,6 @@
 		<groupId>com.stackroute.gupshup</groupId>
 		<artifactId>gupshup</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -82,9 +82,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.5</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.19</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

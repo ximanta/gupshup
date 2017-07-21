@@ -38,6 +38,7 @@ import io.swagger.annotations.ApiOperation;
 
 //-------------------------------------Activity Controller-----------------------------
 @RestController
+@CrossOrigin
 @RequestMapping("/activity/")
 @CrossOrigin
 @Api(value="REST Controller that receives activities")
