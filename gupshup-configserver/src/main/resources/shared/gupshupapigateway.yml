@@ -13,6 +13,7 @@ security:
       userInfoUri: http://172.23.239.173:9000/me
    
 
+---
 
 # production configuration
 spring:

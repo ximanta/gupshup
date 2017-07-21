@@ -9,6 +9,8 @@ import com.stackroute.gupshup.mailboxservice.model.Mails;
 
 public interface MailsRepository extends MongoRepository<Mails, String>{
 	
-	@Query("{userName:?0,circleID:?1}")
+	@Query("{username:?0, circleID:?1}")
 	public List<Mails> findAll(String userName, String circleID);
+	
+	public Mails findByMailID(String mailId);
 }

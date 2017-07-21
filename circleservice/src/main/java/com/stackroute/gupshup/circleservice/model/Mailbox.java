@@ -2,11 +2,13 @@ package com.stackroute.gupshup.circleservice.model;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "mailbox")
 public class Mailbox
 {
+	@Id
 	private String mailID;
 	private String To;
 	private String From;
