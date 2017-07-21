@@ -13,8 +13,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,7 +36,6 @@ import io.swagger.annotations.ApiOperation;
 
 //-------------------------------------Activity Controller-----------------------------
 @RestController
-@CrossOrigin
 @RequestMapping("/activity/")
 @CrossOrigin
 @Api(value="REST Controller that receives activities")
