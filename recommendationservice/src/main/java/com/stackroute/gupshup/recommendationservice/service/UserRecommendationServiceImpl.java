@@ -112,6 +112,7 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			ArrayList<Map<String,String>> l = new ArrayList<Map<String,String>>();
 				l.addAll(l1);
 				l.addAll(l2);
+			
 			return l;
 		}
 	}

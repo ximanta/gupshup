@@ -1,5 +1,6 @@
 package com.stackroute.gupshup.recommendationservice.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public interface CircleRecommendationRepository extends GraphRepository<CircleRe
 	
 	/*---------circle subscribe recommendation for a user---------*/
 	@Query("match (a:person {name:{0}})-[:follows]->(people),(people)-[:created |:subscribed]->(things) where not (a)-[:subscribed |:created]->(things) return distinct things.circleId AS circleId, things.circleName AS circleName")
-	Iterable<List<Map<String,String>>> subscribeRecommendation(String user);
+	ArrayList<Map<String,String>> subscribeRecommendation(String user);
 	
 	/*--------query to delete subscribe relationship in neo4j when user wants to leave a circle-------*/
 	@Query("match (a:person)-[r:subscribed]->(b:circle) where a.name={0} and b.circleId={1} delete r")

@@ -94,7 +94,7 @@ public class RecommendationController {
 	@ApiOperation(value="Subscribe to Circle Recommendation")
 	@RequestMapping(value="/circle/{id}", method=RequestMethod.GET)
 	public ResponseEntity subscribeRecommendation(@PathVariable String id){
-		Iterable<List<Map<String,String>>> list;
+		List<Map<String,String>> list;;
 		try {
 			list=circleRecommendationService.subscribeRecommendation(id);
 		} catch (RecommendationException e) {
@@ -102,7 +102,7 @@ public class RecommendationController {
 			e.printStackTrace();
 			return new ResponseEntity<>("Username incorrect",HttpStatus.FORBIDDEN);
 		}
-		return new ResponseEntity<>(list,HttpStatus.OK);
+		return new ResponseEntity<List<Map<String,String>>>(list,HttpStatus.OK);
 	}
 	
 	/*------method to create a user node in neo4j-------*/

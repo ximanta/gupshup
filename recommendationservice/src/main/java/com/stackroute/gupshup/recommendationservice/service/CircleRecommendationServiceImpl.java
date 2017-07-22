@@ -106,14 +106,16 @@ public class CircleRecommendationServiceImpl implements CircleRecommendationServ
 	
 	/*---------circle subscribe recommendation for a user---------*/
 	@Override
-	public Iterable<List<Map<String,String>>> subscribeRecommendation(String user) throws RecommendationException{
+	public List<Map<String,String>> subscribeRecommendation(String user) throws RecommendationException{
 		String u = userRecommendationRepository.findByName(user);
+		
 		if(u==null)
 		{
 			throw new RecommendationException("Username does not exist");
 		}
 		else{
-		return circleRecommendationRepository.subscribeRecommendation(user);
+			ArrayList<Map<String,String>> list =  circleRecommendationRepository.subscribeRecommendation(user);
+			return list;
 		}
 	}
 	
