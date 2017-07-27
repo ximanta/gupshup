@@ -30,6 +30,7 @@ void deleteUser(String user);
 @Query("MATCH (a:person{name: {0}}) SET a.firstname = {1}, a.lastname = {2}, a.gender = {3}, a.intrest = {4}, a.DOB = {5} RETURN a")
 Map<String, Object> updateUser(String name, String firstname, String lastname, String gender, List<String> intrest, String DOB);
 
+/*----------query for one user to follow another user------*/
 @Query("match (a:person), (b:person) where a.name={0} and b.name={1} create (a)-[:follows]->(b) return a,b")
 Iterable<Map<String, Object>> follows(String name1, String name2);
 
@@ -38,7 +39,7 @@ Iterable<Map<String, Object>> follows(String name1, String name2);
 ArrayList<Map<String,String>> followSameCirclePeople(String user);
 
 /*--------recommendation query to follow friend of friend with distinct results-----*/
-@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) return distinct morepeople.name AS name, morepeople.firstname AS firstname, morepeople.lastname AS lastname")
+@Query("match (a:person {name:{0}})-[:follows]->(people), (people)-[:follows]->(morepeople) where not (a)-[:follows]->(morepeople) and not morepeople=a return distinct morepeople.name AS name, morepeople.firstname AS firstname, morepeople.lastname AS lastname")
 ArrayList<Map<String,String>> followPeople(String user);
 
 /*-------query to get name of the user through username from neo4j---------*/

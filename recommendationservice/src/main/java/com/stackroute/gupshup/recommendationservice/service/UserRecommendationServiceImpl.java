@@ -110,8 +110,8 @@ public class UserRecommendationServiceImpl implements UserRecommendationService 
 			ArrayList<Map<String,String>> l1 = userRecommendationRepository.followSameCirclePeople(user);
 			ArrayList<Map<String,String>> l2 = userRecommendationRepository.followPeople(user);
 			ArrayList<Map<String,String>> l = new ArrayList<Map<String,String>>();
-				l.addAll(l1);
 				l.addAll(l2);
+				l.addAll(l1);
 			
 			return l;
 		}

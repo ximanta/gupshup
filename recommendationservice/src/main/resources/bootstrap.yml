@@ -5,7 +5,7 @@ spring:
     active: production
   cloud:
     config:
-      uri: http://172.23.239.202:8888
+      uri: http://172.23.238.186:8888
   
    
   #data:

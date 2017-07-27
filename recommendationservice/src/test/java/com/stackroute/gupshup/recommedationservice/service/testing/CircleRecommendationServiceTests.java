@@ -1,4 +1,4 @@
-package com.stackroute.gupshup.recommedationservice.service.testing;
+/*package com.stackroute.gupshup.recommedationservice.service.testing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class CircleRecommendationServiceTests {
 		assertEquals("GU01",circle.get("circleId") );
 	}
 	
-	/*public void createCircleTest(){
+	public void createCircleTest(){
 	
 	//when CircleRecommendationRepository.createCircle(,,,) called
 	//return Circle
@@ -89,5 +89,6 @@ public class CircleRecommendationServiceTests {
 //	circleRecommendation.setKeywords(keywords);
 //	System.out.println(circleRecommendation.getCircleId());
 	
-}*/
 }
+}
+*/

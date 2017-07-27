@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.gupshup.recommendationservice.service.CircleRecommendationService;
 import com.stackroute.gupshup.recommendationservice.service.UserRecommendationService;
 
-/*------class to create a consumer thread for kafka--------*/
+//------class to create a consumer thread for kafka--------
 public class RecommendationConsumerThread extends Thread{
 	
     private String topicName;
@@ -34,10 +34,10 @@ public class RecommendationConsumerThread extends Thread{
     	this.circleRecommendationService = circleRecommendationService;
     }
     
-    /*---------------method to run kafka consumer thread----------------*/
+   // ---------------method to run kafka consumer thread----------------
     public void run() {
         Properties configProperties = new Properties();
-        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.239.182:9092");
+        configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.23.238.219:9092,172.23.238.219:9093,172.23.238.219:9094");
         configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);

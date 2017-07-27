@@ -16,9 +16,7 @@ public class RecommendationApplication {
 	public static void main(String[] args) {
 				
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(RecommendationApplication.class, args);
-	       RecommendationConsumer recommendationConsumer=applicationContext.getBean(RecommendationConsumer.class);
-	       recommendationConsumer.consumeActivity("recommendation");
+	      RecommendationConsumer recommendationConsumer=applicationContext.getBean(RecommendationConsumer.class);
+	      recommendationConsumer.consumeActivity("recommendation");
 	}
 }
-
-
