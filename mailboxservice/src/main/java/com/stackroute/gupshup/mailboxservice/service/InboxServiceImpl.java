@@ -105,11 +105,11 @@ public class InboxServiceImpl implements InboxService {
 	}
 
 	@Override
-	public List<Mails> filterMails(List<Mails> mailslist) throws MailboxException {
+	public List<Mails> filterMails(List<Mails> mailslist, String username) throws MailboxException {
 		List<Mails> filteredlist = new ArrayList<>();
 		if(mailslist != null) {
 			for(Mails mails : mailslist) {
-				Mails mails2 = mailsRepository.findByMailID(mails.getMailID());
+				Mails mails2 = mailsRepository.findByMailIDAndUsername(mails.getMailID(), username);
 				if(mails2 == null)
 					filteredlist.add(mails);
 			}

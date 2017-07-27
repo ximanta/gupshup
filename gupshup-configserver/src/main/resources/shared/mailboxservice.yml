@@ -38,11 +38,11 @@ spring:
 eureka:
  client:
    serviceUrl:
-     defaultZone: http://172.23.239.182:8761/eureka/
+     defaultZone: http://172.23.238.189:8761/eureka/
      
 mailboxservice:
-  circleservice-address: http://172.23.239.176:8080/circleservice
-  bootstrap-server: 172.23.239.202:9092, 172.23.239.176:9092, 172.23.239.182:9092
+  circleservice-address: http://172.23.238.189:8080/circleservice
+  bootstrap-server: 172.23.238.219:9092, 172.23.238.219:9093, 172.23.238.219:9094
   groupId: mailbox
   topic:
     circle: circle

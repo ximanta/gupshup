@@ -38,13 +38,16 @@ public class MailBoxController {
 		String url = environment.getProperty("mailboxservice.circleservice-address")+"/circle/"+circleID+"/mailbox?userName="+userName+"&page="+page;
 		ResponseEntity<Mails[]> entity = restTemplate.getForEntity(url, Mails[].class);
 		List<Mails> mcList = new ArrayList<>(Arrays.asList(entity.getBody()));
+		System.out.println(userName);
+		System.out.println(mcList.size());
 		List<Mails> filterMails = new ArrayList<>();
 		try {
-			filterMails = inboxService.filterMails(mcList);
+			filterMails = inboxService.filterMails(mcList, userName);
 		} catch (MailboxException e) {
 			e.printStackTrace();
 			new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
+		System.out.println(filterMails.size());
 		return new ResponseEntity(filterMails, HttpStatus.OK);
 	}
 

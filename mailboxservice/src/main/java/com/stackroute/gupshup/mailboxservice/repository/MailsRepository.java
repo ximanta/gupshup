@@ -12,5 +12,5 @@ public interface MailsRepository extends MongoRepository<Mails, String>{
 	@Query("{username:?0, circleID:?1}")
 	public List<Mails> findAll(String userName, String circleID);
 	
-	public Mails findByMailID(String mailId);
+	public Mails findByMailIDAndUsername(String mailId,String username);
 }

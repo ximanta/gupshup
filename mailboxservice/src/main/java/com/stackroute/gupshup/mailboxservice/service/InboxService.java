@@ -12,6 +12,6 @@ public interface InboxService {
 	public Mailbox createMailbox(String userName) throws MailboxException;
 	public Mails addDeletedMail(String userName, String circleId, Mails mails) throws MailboxException;
 	public List<Mails> getDeletedMails(String userName, String circleID) throws MailboxException;
-	public List<Mails> filterMails(List<Mails> mailslist) throws MailboxException;
+	public List<Mails> filterMails(List<Mails> mailslist, String username) throws MailboxException;
 	
 }
